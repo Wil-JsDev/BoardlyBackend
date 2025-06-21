@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6F569562-EC08-4086-8957-E11AB714AFDA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dominio", "Dominio", "{D399A0F0-9B5F-45BE-BD14-FF98278CFDBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boardly.Dominio", "Boardly.Dominio\Boardly.Dominio.csproj", "{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructura", "Infraestructura", "{FE1FFDC9-0D3B-4B18-83F1-206715932650}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boardly.Infraestructura.Persistencia", "Boardly.Infraestructura.Persistencia\Boardly.Infraestructura.Persistencia.csproj", "{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D399A0F0-9B5F-45BE-BD14-FF98278CFDBA} = {6F569562-EC08-4086-8957-E11AB714AFDA}
+		{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C} = {D399A0F0-9B5F-45BE-BD14-FF98278CFDBA}
+		{FE1FFDC9-0D3B-4B18-83F1-206715932650} = {6F569562-EC08-4086-8957-E11AB714AFDA}
+		{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF} = {FE1FFDC9-0D3B-4B18-83F1-206715932650}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B4B1FF5-4111-4FC9-AC46-A7BAFD24F90C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EE8BDE0-DA89-44F2-95AF-D5C6CF9450CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
