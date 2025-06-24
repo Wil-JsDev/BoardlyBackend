@@ -1,6 +1,6 @@
 namespace Boardly.Dominio.Modelos;
 
-public class TareaUsuario
+public sealed class TareaUsuario
 {
     public Guid TareaId { get; set; }
     public Guid UsuarioId { get; set; }

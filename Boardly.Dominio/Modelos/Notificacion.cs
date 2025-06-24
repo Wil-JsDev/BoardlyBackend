@@ -1,6 +1,6 @@
 namespace Boardly.Dominio.Modelos;
 
-public class Notificacion
+public sealed class Notificacion
 {
     public Guid NotificacionId { get; set; }
     public Guid UsuarioId { get; set; }

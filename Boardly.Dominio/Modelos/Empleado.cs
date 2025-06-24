@@ -2,7 +2,7 @@ using Boardly.Dominio.Enum;
 
 namespace Boardly.Dominio.Modelos;
 
-public class Empleado
+public sealed class Empleado
 {
     public Guid EmpleadoId { get; set; } 
     public Guid UsuarioId { get; set; }

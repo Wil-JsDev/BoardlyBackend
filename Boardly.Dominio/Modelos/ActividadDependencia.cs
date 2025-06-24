@@ -1,6 +1,6 @@
 namespace Boardly.Dominio.Modelos;
 
-public class ActividadDependencia
+public sealed class ActividadDependencia
 {
     public Guid ActividadId { get; set; }
     public Guid DependeDeActividadId { get; set; }

@@ -2,7 +2,7 @@ using Boardly.Dominio.Enum;
 
 namespace Boardly.Dominio.Modelos;
 
-public class Proyecto
+public sealed class Proyecto
 {
     public Guid ProyectoId { get; set; }
     public string Nombre { get; set; } = null!;

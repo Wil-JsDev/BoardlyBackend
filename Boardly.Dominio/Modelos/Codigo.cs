@@ -1,6 +1,6 @@
 namespace Boardly.Dominio.Modelos;
 
-public class Codigo
+public sealed class Codigo
 {
     public Guid CodigoId { get; set; }
     public Guid UsuarioId { get; set; }

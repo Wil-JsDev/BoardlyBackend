@@ -1,6 +1,6 @@
 namespace Boardly.Dominio.Modelos;
 
-public class RolProyecto
+public sealed class RolProyecto
 {
     
     public Guid RolProyectoId { get; set; }
