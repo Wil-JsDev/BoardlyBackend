@@ -10,6 +10,7 @@ public sealed class Usuario
     public string? NombreUsuario { get; set; }
     public string Contrasena { get; set; } = null!;
     public DateTime FechaCreacion { get; set; }
+    public bool CuentaConfirmada { get; set; } = false;
     public EstadoUsuario Estado { get; set; } 
     public string? FotoPerfil { get; set; }
     public DateTime? FechaRegistro { get; set; }
