@@ -1,4 +1,8 @@
-﻿using Boardly.Infraestructura.Persistencia.Contexto;
+﻿using Boardly.Dominio.Puertos.Repositorios;
+using Boardly.Dominio.Puertos.Repositorios.Cuentas;
+using Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios;
+using Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios.Cuentas;
+using Boardly.Infraestructura.Persistencia.Contexto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +18,7 @@ public static class InyeccionDeDependencia
 
         servicio.AddDbContext<BoardlyContexto>(postgres =>
         {
-            postgres.UseNpgsql(configuracion.GetConnectionString("TrivoBackend"), b =>
+            postgres.UseNpgsql(configuracion.GetConnectionString("BoardlyBackend"), b =>
             {
                 b.MigrationsAssembly("Boardly.Infraestructura.Persistencia");
             });
@@ -23,6 +27,11 @@ public static class InyeccionDeDependencia
         #endregion
         
         #region ID
+        
+        servicio.AddTransient(typeof(IGenericoRepositorio<>), typeof(GenericoRepositorio<>));
+        servicio.AddTransient<ICeoRepositorio, CeoRepositorio>();
+        servicio.AddTransient<IUsuarioRepositorio, UsuarioRepositorio>();
+        servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
         
         #endregion
 
