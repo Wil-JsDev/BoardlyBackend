@@ -32,14 +32,14 @@ public class ModificarContrasenaUsuario(
         var codigoEntidad = await codigo.BuscarCodigoAsync(solicitud.Codigo, cancellationToken);
         if (codigoEntidad is null)
         {
-            logger.LogWarning("");
+            logger.LogWarning("Código no encontrado: {Codigo}.", solicitud.Codigo);
             
             return ResultadoT<string>.Fallo(Error.NoEncontrado("404", "Código no encontrado"));
         }
 
         if (codigoEntidad.Valor.UsuarioId != solicitud.UsuarioId)
         {
-            logger.LogWarning("");
+            logger.LogWarning("El código {Codigo} no pertenece al usuario con ID {UsuarioId}.", solicitud.Codigo, solicitud.UsuarioId);
             
             return ResultadoT<string>.Fallo(Error.NoEncontrado("403", "El código no corresponde a este usuario"));
         }
@@ -48,7 +48,7 @@ public class ModificarContrasenaUsuario(
         
         await repositorioUsuario.ActualizarContrasenaAsync(usuarioEntidad, contrasenaNueva, cancellationToken);
         
-        logger.LogInformation("");
+        logger.LogInformation("Contraseña actualizada correctamente para el usuario con ID {UsuarioId}.", solicitud.UsuarioId);
         
         return ResultadoT<string>.Exito("La contraseña ha sido actualizada correctamente.");
     }

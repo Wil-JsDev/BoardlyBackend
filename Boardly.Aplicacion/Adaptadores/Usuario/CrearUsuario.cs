@@ -52,12 +52,13 @@ public class CrearUsuario(
         {
             UsuarioId = Guid.NewGuid(),
             Nombre = solicitud.Nombre,
+            Apellido = solicitud.Apellido,
             Correo = solicitud.Correo,
-            NombreUsuario = solicitud.Nombre,
+            NombreUsuario = solicitud.NombreUsuario,
             Contrasena = BCrypt.Net.BCrypt.HashPassword(solicitud.Contrasena),
             FechaCreacion = DateTime.UtcNow,
             FechaRegistro = DateTime.UtcNow,
-            Estado = EstadoUsuario.Activo,
+            Estado = nameof(EstadoUsuario.Activo),
             FotoPerfil = imageUrl
         };
 
@@ -80,8 +81,9 @@ public class CrearUsuario(
         UsuarioDto usuarioDto = new(
             UsuarioId: usuarioEntidad.UsuarioId,
             Nombre: usuarioEntidad.Nombre,
+            Apellido: usuarioEntidad.Apellido,
             Correo: usuarioEntidad.Correo,
-            NombreUsuario: usuarioEntidad.Nombre,
+            NombreUsuario: usuarioEntidad.NombreUsuario,
             FechaCreacion: usuarioEntidad.FechaCreacion,
             Estado: usuarioEntidad.Estado,
             FotoPerfil: usuarioEntidad.FotoPerfil,
