@@ -119,6 +119,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Property<bool>("Revocado")
                         .HasColumnType("boolean");
 
+                    b.Property<bool?>("Usado")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")
                         .HasColumnName("FkUsuarioId");
@@ -450,6 +453,10 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("PkUsuarioId");
+
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Contrasena")
                         .IsRequired()

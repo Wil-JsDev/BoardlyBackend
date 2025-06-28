@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     [DbContext(typeof(BoardlyContexto))]
-    [Migration("20250623172957_Initial")]
+    [Migration("20250628212418_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -120,6 +120,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("Revocado")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("Usado")
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("UsuarioId")
@@ -454,6 +457,10 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("PkUsuarioId");
 
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Contrasena")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -463,6 +470,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<bool>("CuentaConfirmada")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Estado")
                         .IsRequired()

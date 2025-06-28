@@ -56,10 +56,12 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 {
                     PkUsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
                     Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Apellido = table.Column<string>(type: "text", nullable: false),
                     Correo = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     NombreUsuario = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     Contrasena = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CuentaConfirmada = table.Column<bool>(type: "boolean", nullable: false),
                     Estado = table.Column<string>(type: "text", nullable: false),
                     FotoPerfil = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     FechaRegistro = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -121,6 +123,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     Valor = table.Column<string>(type: "text", nullable: false),
                     Expiracion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Creado = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Usado = table.Column<bool>(type: "boolean", nullable: true),
                     Revocado = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
