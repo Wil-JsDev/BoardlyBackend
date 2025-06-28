@@ -6,12 +6,13 @@ public sealed class Usuario
 {
     public Guid UsuarioId { get; set; }
     public string Nombre { get; set; } = null!;
+    public string Apellido { get; set; } = null!;
     public string Correo { get; set; } = null!;
     public string? NombreUsuario { get; set; }
     public string Contrasena { get; set; } = null!;
-    public DateTime FechaCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
     public bool CuentaConfirmada { get; set; } = false;
-    public EstadoUsuario Estado { get; set; } 
+    public string Estado { get; set; } 
     public string? FotoPerfil { get; set; }
     public DateTime? FechaRegistro { get; set; }
     public DateTime? FechaActualizacion { get; set; }

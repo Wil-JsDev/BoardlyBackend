@@ -9,9 +9,9 @@ public sealed class Proyecto
     public string? Descripcion { get; set; }
     public DateTime FechaInicio { get; set; }
     public DateTime? FechaFin { get; set; }
-    public EstadoProyecto Estado { get; set; } 
+    public string Estado { get; set; } 
     public Guid EmpresaId { get; set; }
-    public DateTime FechaCreado { get; set; }
+    public DateTime FechaCreado { get; set; } = DateTime.UtcNow;
     public DateTime FechaActualizacion { get; set; }
 
     public Empresa Empresa { get; set; }

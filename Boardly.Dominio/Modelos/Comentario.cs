@@ -7,7 +7,7 @@ public sealed class Comentario
     public string Contenido { get; set; } 
     public string? Adjunto { get; set; }
     public Guid UsuarioId { get; set; }
-    public DateTime FechaCreado { get; set; }
+    public DateTime FechaCreado { get; set; } = DateTime.UtcNow;
     public Tarea Tarea { get; set; }
     public Usuario Usuario { get; set; }
     
