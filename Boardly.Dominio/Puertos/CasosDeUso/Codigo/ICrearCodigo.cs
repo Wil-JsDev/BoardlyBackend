@@ -1,6 +1,6 @@
 using Boardly.Dominio.Utilidades;
 
-namespace Boardly.Dominio.Puertos.CasosDeUso;
+namespace Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 
 public interface ICrearCodigo
 {
