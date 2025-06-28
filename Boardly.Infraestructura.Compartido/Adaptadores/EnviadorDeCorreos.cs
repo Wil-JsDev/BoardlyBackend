@@ -21,19 +21,19 @@ public class EnviadorDeCorreos: ICorreoServicio<SolicitudCorreo>
         MimeMessage email = new ();
 
         email.Sender = MailboxAddress.Parse(_correoConfiguraciones.EmailFrom);
-        email.To.Add(MailboxAddress.Parse(dto.To)); //This send email
-        email.Subject = dto.Subject;
+        email.To.Add(MailboxAddress.Parse(dto.Destinatario)); //This send email
+        email.Subject = dto.Cuerpo;
             
         BodyBuilder bodyBuilder = new ();
-        bodyBuilder.HtmlBody = dto.Body;
+        bodyBuilder.HtmlBody = dto.Cuerpo;
         email.Body = bodyBuilder.ToMessageBody();
 
         //SMTP configuration
         using MailKit.Net.Smtp.SmtpClient smtp = new();
         smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
-        smtp.Connect(_correoConfiguraciones.SmtpHost, _correoConfiguraciones.SmtpPort,SecureSocketOptions.StartTls);
-        smtp.Authenticate(_correoConfiguraciones.SmtpUser,_correoConfiguraciones.SmtpPass);
+        await smtp.ConnectAsync(_correoConfiguraciones.SmtpHost, _correoConfiguraciones.SmtpPort,SecureSocketOptions.StartTls);
+        await smtp.AuthenticateAsync(_correoConfiguraciones.SmtpUser,_correoConfiguraciones.SmtpPass);
         await smtp.SendAsync(email);
-        smtp.Disconnect(true);
+        await smtp.DisconnectAsync(true);
     }
 }
