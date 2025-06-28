@@ -26,6 +26,7 @@ public class ObtenerIdUsuario(
         UsuarioDto usuarioDto = new(
             UsuarioId: usuarioEntidad.UsuarioId,
             Nombre: usuarioEntidad.Nombre,
+            Apellido: usuarioEntidad.Apellido,
             Correo: usuarioEntidad.Correo,
             NombreUsuario: usuarioEntidad.Nombre,
             FechaCreacion: usuarioEntidad.FechaCreacion,

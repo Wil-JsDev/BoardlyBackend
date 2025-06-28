@@ -42,6 +42,7 @@ public class ResultadoPaginadaUsuario(
         (
             UsuarioId: usuarioEntidad.UsuarioId,
             Nombre: usuarioEntidad.Nombre,
+            Apellido: usuarioEntidad.Apellido,
             Correo: usuarioEntidad.Correo,
             NombreUsuario: usuarioEntidad.Nombre,
             FechaCreacion: usuarioEntidad.FechaCreacion,
