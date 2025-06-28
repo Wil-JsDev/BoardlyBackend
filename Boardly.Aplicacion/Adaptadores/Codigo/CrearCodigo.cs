@@ -1,26 +1,17 @@
 using Boardly.Dominio.Puertos.CasosDeUso;
+using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
 
 namespace Boardly.Aplicacion.Adaptadores.Codigo;
 
-public class CrearCodigo: ICrearCodigo
+public class CrearCodigo(ICodigoRepositorio codigoRepositorio, IUsuarioRepositorio usuarioRepositorio)
+    : ICrearCodigo
 {
-    
-    private readonly ICodigoRepositorio _codigoRepositorio;
-    private readonly IUsuarioRepositorio _usuarioRepositorio;
-    
-
-    public CrearCodigo(ICodigoRepositorio codigoRepositorio, IUsuarioRepositorio usuarioRepositorio)
-    {
-        _codigoRepositorio = codigoRepositorio;
-        _usuarioRepositorio = usuarioRepositorio;
-    }
-    
     public async Task<ResultadoT<string>> CrearCodigoAsync(Guid usuarioId, CancellationToken cancellationToken)
     {
-        var usuario = await _usuarioRepositorio.ObtenerByIdAsync(usuarioId, cancellationToken);
+        var usuario = await usuarioRepositorio.ObtenerByIdAsync(usuarioId, cancellationToken);
         if (usuario == null)
         {
     
@@ -42,7 +33,7 @@ public class CrearCodigo: ICrearCodigo
             Expiracion = DateTime.UtcNow.AddMinutes(10)
         };
 
-        await _codigoRepositorio.CrearCodigoAsync(codigo, cancellationToken);
+        await codigoRepositorio.CrearCodigoAsync(codigo, cancellationToken);
         
         return ResultadoT<string>.Exito(codigo.Valor);
     }

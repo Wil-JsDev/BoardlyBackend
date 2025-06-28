@@ -1,6 +1,6 @@
 ﻿using Boardly.Aplicacion.Adaptadores.Codigo;
 using Boardly.Aplicacion.DTOs.Codigo;
-using Boardly.Dominio.Puertos.CasosDeUso;
+using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Utilidades;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
