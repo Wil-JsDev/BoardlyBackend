@@ -56,8 +56,6 @@ public class CrearUsuario(
             Correo = solicitud.Correo,
             NombreUsuario = solicitud.NombreUsuario,
             Contrasena = BCrypt.Net.BCrypt.HashPassword(solicitud.Contrasena),
-            FechaCreacion = DateTime.UtcNow,
-            FechaRegistro = DateTime.UtcNow,
             Estado = nameof(EstadoUsuario.Activo),
             FotoPerfil = imageUrl
         };

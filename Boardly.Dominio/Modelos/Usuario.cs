@@ -14,7 +14,7 @@ public sealed class Usuario
     public bool CuentaConfirmada { get; set; } = false;
     public string Estado { get; set; } 
     public string? FotoPerfil { get; set; }
-    public DateTime? FechaRegistro { get; set; }
+    public DateTime? FechaRegistro { get; set; } = DateTime.UtcNow;
     public DateTime? FechaActualizacion { get; set; }
     public ICollection<Comentario> Comentarios { get; set; }
     public ICollection<Codigo> Codigos { get; set; }
