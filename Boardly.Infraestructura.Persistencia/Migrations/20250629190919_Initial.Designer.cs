@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     [DbContext(typeof(BoardlyContexto))]
-    [Migration("20250628212418_Initial")]
+    [Migration("20250629190919_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("FechaFinalizacion")
                         .HasColumnType("timestamp with time zone");
@@ -61,7 +61,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Prioridad")
                         .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("ActividadId")
                         .HasName("PKActividadId");
@@ -244,7 +244,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("timestamp with time zone");
@@ -315,7 +315,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("FechaActualizacion")
                         .HasColumnType("timestamp with time zone");
@@ -380,7 +380,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("FechaActualizacion")
                         .HasColumnType("timestamp with time zone");
@@ -476,7 +476,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("FechaActualizacion")
                         .HasColumnType("timestamp with time zone");

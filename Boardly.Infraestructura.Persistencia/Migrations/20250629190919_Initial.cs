@@ -25,9 +25,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 {
                     PkActividadId = table.Column<Guid>(type: "uuid", nullable: false),
                     Nombre = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Prioridad = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    Prioridad = table.Column<string>(type: "varchar(50)", maxLength: 10, nullable: true),
                     Descripcion = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Estado = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<string>(type: "varchar(50)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FechaFinalizacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Orden = table.Column<int>(type: "integer", nullable: false)
@@ -62,7 +62,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     Contrasena = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CuentaConfirmada = table.Column<bool>(type: "boolean", nullable: false),
-                    Estado = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<string>(type: "varchar(50)", nullable: false),
                     FotoPerfil = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     FechaRegistro = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     FechaActualizacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -166,7 +166,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "text", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Estado = table.Column<string>(type: "text", nullable: false)
+                    Estado = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,7 +193,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     Descripcion = table.Column<string>(type: "text", nullable: true),
                     FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FechaFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Estado = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<string>(type: "varchar(50)", nullable: false),
                     FkEmpresaId = table.Column<Guid>(type: "uuid", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FechaActualizacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -248,7 +248,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     FkProyectoId = table.Column<Guid>(type: "uuid", nullable: false),
                     Titulo = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Descripcion = table.Column<string>(type: "text", nullable: true),
-                    Estado = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<string>(type: "varchar(50)", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FechaVencimiento = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
