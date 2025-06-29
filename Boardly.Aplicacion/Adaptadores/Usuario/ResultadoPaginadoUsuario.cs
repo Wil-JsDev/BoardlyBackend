@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Boardly.Aplicacion.Adaptadores.Usuario;
 
-public class ResultadoPaginadaUsuario(
-    ILogger<ResultadoPaginadaUsuario> logger,
+public class ResultadoPaginadoUsuario(
+    ILogger<ResultadoPaginadoUsuario> logger,
     IUsuarioRepositorio repositorioUsuario
     ) : IResultadoPaginaUsuario<PaginacionParametro, UsuarioDto>
 {
@@ -42,6 +42,7 @@ public class ResultadoPaginadaUsuario(
         (
             UsuarioId: usuarioEntidad.UsuarioId,
             Nombre: usuarioEntidad.Nombre,
+            Apellido: usuarioEntidad.Apellido,
             Correo: usuarioEntidad.Correo,
             NombreUsuario: usuarioEntidad.Nombre,
             FechaCreacion: usuarioEntidad.FechaCreacion,

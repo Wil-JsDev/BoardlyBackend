@@ -8,8 +8,8 @@ public sealed class Tarea
     public Guid ProyectoId { get; set; }
     public string Titulo { get; set; } = null!;
     public string? Descripcion { get; set; }
-    public EstadoTarea Estado { get; set; } 
-    public DateTime FechaCreado { get; set; }
+    public string Estado { get; set; } 
+    public DateTime FechaCreado { get; set; } = DateTime.UtcNow;
     public DateTime FechaInicio { get; set; }
     public DateTime FechaVencimiento { get; set; }
     public DateTime? FechaActualizacion { get; set; }

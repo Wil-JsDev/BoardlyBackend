@@ -425,7 +425,7 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.Estado)
                     .IsRequired()
-                    .HasConversion<string>();
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.FotoPerfil)
                     .HasMaxLength(255);
@@ -520,7 +520,7 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.Estado)
                     .IsRequired()
-                    .HasConversion<string>();
+                    .HasColumnType("varchar(50)");
             });
 
             #endregion
@@ -546,7 +546,7 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.Estado)
                     .IsRequired()
-                    .HasConversion<string>();
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.FechaCreado)
                     .IsRequired();
@@ -576,7 +576,7 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.Estado)
                     .IsRequired()
-                    .HasConversion<string>();
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.FechaCreado)
                     .IsRequired();
@@ -608,7 +608,7 @@ public class BoardlyContexto: DbContext
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Prioridad)
-                    .HasConversion<string>()
+                    .HasColumnType("varchar(50)")
                     .HasMaxLength(10);
 
                 entity.Property(e => e.Descripcion)
@@ -616,7 +616,7 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.Estado)
                     .IsRequired()
-                    .HasConversion<string>();
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.FechaInicio)
                     .IsRequired();

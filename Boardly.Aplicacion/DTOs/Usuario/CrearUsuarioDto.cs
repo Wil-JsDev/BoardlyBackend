@@ -5,11 +5,12 @@ namespace Boardly.Aplicacion.DTOs.Usuario;
 
 public record CrearUsuarioDto(
     string Nombre,
+    string Apellido,
     string Correo,
     string? NombreUsuario,
     string? Contrasena,
     DateTime FechaCreacion,
-    EstadoUsuario Estado,
+    string Estado,
     IFormFile? FotoPerfil,
     DateTime? FechaRegistro
 );
