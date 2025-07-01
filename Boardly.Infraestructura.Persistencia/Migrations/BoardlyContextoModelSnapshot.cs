@@ -180,11 +180,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("PkEmpleadoId");
 
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")
                         .HasColumnName("FkUsuarioId");

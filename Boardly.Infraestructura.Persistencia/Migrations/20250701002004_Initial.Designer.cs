@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     [DbContext(typeof(BoardlyContexto))]
-    [Migration("20250629190919_Initial")]
+    [Migration("20250701002004_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -182,11 +182,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("PkEmpleadoId");
-
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")
