@@ -1,4 +1,5 @@
 using Boardly.Aplicacion;
+using Boardly.Infraestructura.Api.ServiciosDeExtensiones;
 using Boardly.Infraestructura.Compartido;
 using Boardly.Infraestructura.Persistencia;
 using Serilog;
@@ -20,12 +21,16 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     
+    builder.Services.AgregarVersionado();
+    builder.Services.AgregarValidaciones();
     builder.Services.AgregarPersistencia(configuracion);
     builder.Services.AgregarAplicacion();
     builder.Services.AgregarCompartido(configuracion);
 
     var app = builder.Build();
 
+    app.UseExceptionHandler(_ => { });
+    
     app.UseSerilogRequestLogging();
     
     // Configure the HTTP request pipeline.
