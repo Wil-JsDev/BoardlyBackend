@@ -29,7 +29,7 @@ public static class InyeccionDeDependencia
         #region Usuario
 
             servicios.AddScoped<ICrearUsuario<CrearUsuarioDto, UsuarioDto>, CrearUsuario>();
-            servicios.AddScoped<IActualizarUsuario<ActualizarUsuarioDto, ActualizarUsuarioDto>>();
+            servicios.AddScoped<IActualizarUsuario<ActualizarUsuarioDto, ActualizarUsuarioDto>, ActualizarUsuario>();
             servicios.AddScoped<IBorrarUsuario, BorrarUsuario>();
             servicios.AddScoped<IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto>, ModificarContrasenaUsuario>();
             servicios.AddScoped<IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
@@ -40,7 +40,7 @@ public static class InyeccionDeDependencia
         
         #region CEO
 
-            servicios.AddScoped<IBorrarCeo, IBorrarCeo>();
+            servicios.AddScoped<IBorrarCeo, BorrarCeo>();
             servicios.AddScoped<ICrearCeo<CrearCeoDto, CeoDto>, CrearCeo>();
             
         #endregion
