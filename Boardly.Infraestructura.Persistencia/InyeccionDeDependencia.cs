@@ -13,6 +13,17 @@ public static class InyeccionDeDependencia
 {
     public static void AgregarPersistencia(this IServiceCollection servicio, IConfiguration configuracion)
     {
+
+        #region Redis
+
+        string conexionString = configuracion.GetConnectionString("Redis")!;
+        servicio.AddStackExchangeRedisCache(opciones =>
+        {
+            opciones.Configuration = conexionString;
+        });
+
+        #endregion
+        
         
         #region DbContexto
 
@@ -28,11 +39,13 @@ public static class InyeccionDeDependencia
         
         #region ID
         
-        servicio.AddTransient(typeof(IGenericoRepositorio<>), typeof(GenericoRepositorio<>));
-        servicio.AddTransient<ICeoRepositorio, CeoRepositorio>();
-        servicio.AddTransient<IUsuarioRepositorio, UsuarioRepositorio>();
-        servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
-        
+            servicio.AddTransient(typeof(IGenericoRepositorio<>), typeof(GenericoRepositorio<>));
+            servicio.AddTransient<ICeoRepositorio, CeoRepositorio>();
+            servicio.AddTransient<IUsuarioRepositorio, UsuarioRepositorio>();
+            servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
+            servicio.AddTransient<IEmpresaRepositorio, EmpresaRepositorio>();
+            servicio.AddTransient<ICodigoRepositorio, CodigoRepositorio>();
+            
         #endregion
 
     }
