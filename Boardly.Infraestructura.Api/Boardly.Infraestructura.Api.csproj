@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Boardly.Aplicacion\Boardly.Aplicacion.csproj" />
+      <ProjectReference Include="..\Boardly.Infraestructura.Compartido\Boardly.Infraestructura.Compartido.csproj" />
       <ProjectReference Include="..\Boardly.Infraestructura.Persistencia\Boardly.Infraestructura.Persistencia.csproj" />
     </ItemGroup>
 
