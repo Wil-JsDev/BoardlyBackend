@@ -26,13 +26,13 @@ public static class InyeccionDeDependencia
         
             servicios.Configure<CorreoConfiguraciones>(configuracion.GetSection("CorreoConfiguraciones"));
             servicios.Configure<CloudinaryConfiguraciones>(configuracion.GetSection("CloudinaryConfiguraciones"));  
-            servicios.Configure<CloudinaryConfiguraciones>(configuracion.GetSection("JwtConfiguraciones"));   
+            servicios.Configure<JwtConfiguraciones>(configuracion.GetSection("JwtConfiguraciones"));   
             
         #endregion
 
         #region JWT
         
-            servicios.Configure<JwtConfiguraciones>(configuracion.GetSection("JWTConfiguraciones"));
+            servicios.Configure<JwtConfiguraciones>(configuracion.GetSection("JwtConfiguraciones"));
             servicios.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,9 +49,9 @@ public static class InyeccionDeDependencia
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
-                    ValidIssuer = configuracion["JWTConfiguraciones:Emisor"],
-                    ValidAudience = configuracion["JWTConfiguraciones:Audiencia"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuracion["JWTConfiguraciones:Clave"]))
+                    ValidIssuer = configuracion["JwtConfiguraciones:Emisor"],
+                    ValidAudience = configuracion["JwtConfiguraciones:Audiencia"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuracion["JwtConfiguraciones:Clave"]))
                 };
                 options.Events = new JwtBearerEvents()
                 {
