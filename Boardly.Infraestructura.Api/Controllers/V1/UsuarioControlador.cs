@@ -1,6 +1,10 @@
 using Asp.Versioning;
+using Boardly.Aplicacion.DTOs.Ceo;
+using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Usuario;
+using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
+using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Utilidades;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +29,7 @@ public class UsuarioControlador(
 
         return BadRequest(resultado.Error);
     }
+    
 
     [HttpPost("confirm-account")]
     public async Task<IActionResult> ConfirmarCuentaAsync(
