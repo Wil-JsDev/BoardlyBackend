@@ -16,8 +16,6 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/user")]
 public class UsuarioControlador(
     ICrearUsuario<CrearUsuarioDto, UsuarioDto> crearUsuario,
-    ICrearCeo<CrearCeoDto, CeoDto> crearCeo,
-    ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
     IConfirmarCuenta<Resultado> confirmarCuenta
 ) : ControllerBase
 {
@@ -32,27 +30,6 @@ public class UsuarioControlador(
         return BadRequest(resultado.Error);
     }
     
-    [HttpPost("ceo")]
-    public async Task<IActionResult> RegistrarCeo([FromQuery] CrearCeoDto solicitud, CancellationToken cancellationToken)
-    {
-        var resultado = await crearCeo.CrearCeoAsync(solicitud, cancellationToken);
-        if (resultado.EsExitoso) 
-            return Ok(resultado.Valor);
-        
-        return BadRequest(resultado.Error);
-    }
-
-    [HttpPost("empleado")]
-    public async Task<IActionResult> CrearEmpleado([FromQuery] CrearEmpleadoDto solicitud,
-        CancellationToken cancellationToken)
-    {
-        var empleado = await crearEmpleado.CrearEmpleadoAsync(solicitud, cancellationToken);
-        if (empleado.EsExitoso)
-        {
-            return Ok(empleado.Valor);
-        }
-        return BadRequest(empleado.Error);
-    }
 
     [HttpPost("confirm-account")]
     public async Task<IActionResult> ConfirmarCuentaAsync(

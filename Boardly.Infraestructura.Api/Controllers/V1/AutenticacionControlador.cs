@@ -8,13 +8,13 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/autenticacion")]
+[Route("api/v{version:apiVersion}/auth")]
 public class AutenticacionControlador(
     IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud> autenticacion
 ) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Autenticarse([FromForm] AutenticacionSolicitud solicitud, CancellationToken cancellationToken)
+    public async Task<IActionResult> Autenticarse([FromBody] AutenticacionSolicitud solicitud, CancellationToken cancellationToken)
     {
      var resultado = await autenticacion.AutenticarAsync(solicitud, cancellationToken);
      if (resultado.EsExitoso)
