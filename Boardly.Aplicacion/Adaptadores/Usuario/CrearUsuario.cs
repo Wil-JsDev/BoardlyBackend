@@ -27,13 +27,20 @@ public class CrearUsuario(
             return ResultadoT<UsuarioDto>.Fallo(Error.Fallo("400", "La solicitud de creación de usuario no puede ser nula."));
         }
 
-        if (await repositorioUsuario.ExisteNombreUsuarioAsync(solicitud.NombreUsuario!, cancellationToken) ||
-            await repositorioUsuario.ExisteEmailAsync(solicitud.Correo!, cancellationToken))
-        {
-            logger.LogWarning("El nombre de usuario o el correo ya están registrados. Usuario: {NombreUsuario}, Correo: {Correo}",
-                solicitud.NombreUsuario, solicitud.Correo);
 
-            return ResultadoT<UsuarioDto>.Fallo(Error.Conflicto("409", "El nombre de usuario o el correo ya están registrados."));
+        if (await repositorioUsuario.ExisteEmailAsync(solicitud.Correo!, cancellationToken))
+        {
+            logger.LogWarning("El email esta registrado: {Email}", solicitud.Correo);
+            
+            return ResultadoT<UsuarioDto>.Fallo(Error.Conflicto("409", "El email ya esta registrado"));
+        }
+        
+        if (await repositorioUsuario.ExisteNombreUsuarioAsync(solicitud.NombreUsuario!, cancellationToken))
+        {
+            logger.LogWarning("El nombre de usuario esta registrado. Usuario: {NombreUsuario}",
+                solicitud.NombreUsuario);
+
+            return ResultadoT<UsuarioDto>.Fallo(Error.Conflicto("409", "El nombre de usuario ya esta registrado"));
         }
 
         string imageUrl = "";

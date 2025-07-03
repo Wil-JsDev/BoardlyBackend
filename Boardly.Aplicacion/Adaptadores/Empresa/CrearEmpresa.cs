@@ -32,7 +32,7 @@ public sealed class CrearEmpresa(
             CeoId = solicitud.CeoId,
             Nombre = solicitud.Nombre,
             Descripcion = solicitud.Descripcion,
-            Estado = nameof(EstadoEmpresa.Activo),
+            Estado = nameof(EstadoEmpresa.Activo)
         };
 
         await empresaRepositorio.CrearAsync(empresaEntidad, cancellationToken);
