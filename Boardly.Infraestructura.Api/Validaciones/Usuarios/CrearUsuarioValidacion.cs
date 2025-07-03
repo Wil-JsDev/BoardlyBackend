@@ -1,7 +1,7 @@
 using Boardly.Aplicacion.DTOs.Usuario;
 using FluentValidation;
 
-namespace Boardly.Infraestructura.Api.Validaciones;
+namespace Boardly.Infraestructura.Api.Validaciones.Usuarios;
 public class CrearUsuarioValidacion : AbstractValidator<CrearUsuarioDto>
 {
     public CrearUsuarioValidacion()
@@ -24,7 +24,7 @@ public class CrearUsuarioValidacion : AbstractValidator<CrearUsuarioDto>
             .When(x => !string.IsNullOrWhiteSpace(x.NombreUsuario));
 
         RuleFor(x => x.Contrasena)
-            .MaximumLength(6).WithMessage("La contraseña debe tener al menos 6 caracteres.")
+            .MinimumLength(6).WithMessage("La contraseña debe tener al menos 6 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Contrasena));
 
         RuleFor(x => x.FotoPerfil)
