@@ -23,6 +23,7 @@ try
     
     builder.Services.AgregarVersionado();
     builder.Services.AgregarValidaciones();
+    builder.Services.AgregarExcepciones();
     builder.Services.AgregarPersistencia(configuracion);
     builder.Services.AgregarAplicacion();
     builder.Services.AgregarCompartido(configuracion);
