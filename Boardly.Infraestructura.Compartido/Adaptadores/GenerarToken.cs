@@ -3,27 +3,29 @@ using System.Security.Claims;
 using System.Text;
 using Boardly.Dominio.Configuraciones;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
+using Boardly.Dominio.Puertos.Servicios;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Boardly.Infraestructura.Compartido.Adaptadores;
 
-public class GenerarToken(IOptions<JwtConfiguraciones> jwtConfiguraciones) : IGenerarToken<Dominio.Modelos.Usuario>
+public class GenerarToken(IOptions<JwtConfiguraciones> jwtConfiguraciones, IObtenerRoles obtenerRoles) : IGenerarToken<Dominio.Modelos.Usuario>
 {
     
     private readonly JwtConfiguraciones _jwtConfiguraciones = jwtConfiguraciones.Value;
 
-    public string GenerarTokenJwt(Dominio.Modelos.Usuario usuario)
+    public async Task<string> GenerarTokenJwt(Dominio.Modelos.Usuario usuario, CancellationToken cancellationToken)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, usuario.UsuarioId.ToString()!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, usuario.Correo!),
             new Claim("nombreUsuario", usuario.NombreUsuario!)
         };
+
+        var roles = await obtenerRoles.ObtenerRolesAsync(usuario.UsuarioId, cancellationToken);
         
-        
+        claims.AddRange(roles.Select(rol => new Claim("roles", rol)));
         
         var clave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguraciones.Clave!));
         var credenciales = new SigningCredentials(clave, SecurityAlgorithms.HmacSha256);
