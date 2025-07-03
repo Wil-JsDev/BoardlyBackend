@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Autenticacion;
+using Boardly.Aplicacion.DTOs.JWT;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
@@ -9,10 +10,13 @@ namespace Boardly.Aplicacion.Adaptadores.Autenticacion;
 public class Autenticacion(
     Logger<Autenticacion> logger,
     IUsuarioRepositorio usuarioRepositorio,
-    IGenerarToken<Dominio.Modelos.Usuario> token): IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud>
+    IGenerarToken<Dominio.Modelos.Usuario> token,
+    ITokenRefrescado<TokenRefrescadoDto> tokenRefrescado
+    ): IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud>
 {
     public async Task<ResultadoT<AutenticacionRespuesta>> AutenticarAsync(AutenticacionSolicitud solicitud, CancellationToken cancellationToken)
     {
+        
         AutenticacionRespuesta respuesta = new();
         
         var usuario = await usuarioRepositorio.BuscarPorEmailUsuarioAsync(solicitud.Correo, cancellationToken);
@@ -24,26 +28,21 @@ public class Autenticacion(
         var esValido = BCrypt.Net.BCrypt.Verify(solicitud.Contrasena, usuario.Contrasena);
         if (!esValido)
         {
-            return ResultadoT<AutenticacionRespuesta>.Fallo(Error.Fallo("401", "El correo o la contraseña son incorrectos"));
+            return ResultadoT<AutenticacionRespuesta>.Fallo(Error.Fallo("401", "La contraseña es incorrecta"));
 
         }
 
         if (!usuario.CuentaConfirmada)
         {
+            logger.LogWarning("La cuenta no esta confirmada. Usuario: {UsuarioId}", usuario.UsuarioId);
+            
             return ResultadoT<AutenticacionRespuesta>.Fallo(Error.Fallo("402", "Tu cuenta aún no ha sido confirmada"));
-
         }
-        
-        //token 
-        var tokenGenerado = token.GenerarTokenJwt(usuario);
 
-        respuesta.Id = usuario.UsuarioId;
-        respuesta.NombreUsuario = usuario.NombreUsuario;
-        respuesta.Nombre = usuario.Nombre;
-        respuesta.Apellido = usuario.Apellido;
-        respuesta.Correo = usuario.Correo;
+        var refrescado = tokenRefrescado.GenerarTokenRefrescado();
         
-        //roles
+        respuesta.JwtToken = await token.GenerarTokenJwt(usuario);
+        respuesta.RefreshToken = refrescado.Token;
         
         return ResultadoT<AutenticacionRespuesta>.Exito(respuesta);
     }
