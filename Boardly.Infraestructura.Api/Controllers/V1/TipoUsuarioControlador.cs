@@ -15,7 +15,7 @@ public class TipoUsuarioControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado
     ) : ControllerBase
 {
-    [HttpPost("ceo/{usuarioId:guid}")]
+    [HttpPost("ceo/{usuarioId}")]
     public async Task<IActionResult> RegistrarCeo([FromRoute] Guid usuarioId, CancellationToken cancellationToken)
     {
         CrearCeoDto ceoDto = new CrearCeoDto(UsuarioId: usuarioId);
@@ -27,16 +27,15 @@ public class TipoUsuarioControlador(
         return BadRequest(resultado.Error);
     }
 
-    [HttpPost("employee/{usuarioId:guid}")]
-    public async Task<IActionResult> CrearEmpleado([FromQuery] Guid usuarioId, CancellationToken cancellationToken)
+    [HttpPost("employee/{usuarioId}")]
+    public async Task<IActionResult> CrearEmpleado([FromRoute] Guid usuarioId, CancellationToken cancellationToken)
     {
         CrearEmpleadoDto empleadoDto = new(UsuarioId: usuarioId);
         
         var empleado = await crearEmpleado.CrearEmpleadoAsync(empleadoDto, cancellationToken);
         if (empleado.EsExitoso)
-        {
             return Ok(empleado.Valor);
-        }
+             
         return BadRequest(empleado.Error);
     }
 }
