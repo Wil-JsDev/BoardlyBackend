@@ -3,15 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Boardly.Infraestructura.Api.ManejadorDeExcepciones;
 
-public class ManejadorExcepcionesGlobal : IExceptionHandler
+public class ManejadorExcepcionesGlobal(ILogger<ManejadorExcepcionesGlobal> logger) : IExceptionHandler
 {
-    private readonly ILogger<ManejadorExcepcionesGlobal> _logger;
-
-    public ManejadorExcepcionesGlobal(ILogger<ManejadorExcepcionesGlobal> logger)
-    {
-        _logger = logger;
-    }
-
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
@@ -41,9 +34,10 @@ public class ManejadorExcepcionesGlobal : IExceptionHandler
         {
             detallesProblema.Title = "Ha ocurrido un error inesperado. Intenta más tarde.";
             detallesProblema.Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1";
+            detallesProblema.Detail = exception.Message;
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            _logger.LogError(exception, "Excepción no controlada: {Message}", exception.Message);
+            logger.LogError(exception, "Excepción no controlada: {Message}", exception.Message);
         }
 
         detallesProblema.Status = httpContext.Response.StatusCode;
