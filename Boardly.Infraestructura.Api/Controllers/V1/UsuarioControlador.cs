@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Boardly.Aplicacion.DTOs.Ceo;
+using Boardly.Aplicacion.DTOs.Contrasena;
 using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
@@ -16,7 +17,10 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/user")]
 public class UsuarioControlador(
     ICrearUsuario<CrearUsuarioDto, UsuarioDto> crearUsuario,
-    IConfirmarCuenta<Resultado> confirmarCuenta
+    IConfirmarCuenta<Resultado> confirmarCuenta,
+    IObtenerIdUsuario<UsuarioDto> obtenerUsuario,
+    IOlvidarContrasenaUsuario olvidarContrasena,
+    IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto> modificarContrasena
 ) : ControllerBase
 {
 
@@ -33,15 +37,52 @@ public class UsuarioControlador(
 
     [HttpPost("confirm-account")]
     public async Task<IActionResult> ConfirmarCuentaAsync(
-        [FromQuery] Guid usuarioId,
-        [FromQuery] string codigo,
+        [FromQuery] Guid userId,
+        [FromQuery] string code,
         CancellationToken cancellationToken
         )
     {
-        var resultado = await confirmarCuenta.ConfirmarCuentaAsync(usuarioId, codigo, cancellationToken);
+        var resultado = await confirmarCuenta.ConfirmarCuentaAsync(userId, code, cancellationToken);
         if (resultado.EsExitoso)
             return Ok("Se ha confirmado su cuenta");
         
+        return BadRequest(resultado.Error);
+    }
+    
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> ObtenerUsuarioAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var resultado = await obtenerUsuario.ObtenerIdUsarioAsync(userId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
+        return NotFound(resultado.Error);
+    }
+
+    [HttpPost("forgot-password/{userId}")]
+    public async Task<IActionResult> OlvidarContrasenaAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var resultado = await olvidarContrasena.OlvidarContrasena(userId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
+        return NotFound(resultado.Error);
+    }
+
+    [HttpPost("modify-password/{userId}")]
+    public async Task<IActionResult> ModificarContrasenaAsync(
+        [FromQuery] Guid userId,
+        [FromBody] ParametroModificarContrasenaDto parametro,
+        CancellationToken cancellationToken)
+    {
+
+        ModificarContrasenaUsuarioDto usuario = new(userId, parametro.Codigo!, parametro.Contrasena!,
+            parametro.ConfirmacionDeContrsena!);
+        
+        var resultado = await modificarContrasena.ModificarContasenaAsync(usuario, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
         return BadRequest(resultado.Error);
     }
     
