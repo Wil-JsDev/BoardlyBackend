@@ -41,7 +41,7 @@ public class Autenticacion(
 
         var refrescado = tokenRefrescado.GenerarTokenRefrescado();
         
-        respuesta.JwtToken = await token.GenerarTokenJwt(usuario);
+        respuesta.JwtToken = await token.GenerarTokenJwt(usuario, cancellationToken);
         respuesta.RefreshToken = refrescado.Token;
         
         return ResultadoT<AutenticacionRespuesta>.Exito(respuesta);
