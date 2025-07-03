@@ -3,5 +3,5 @@ namespace Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
 public interface IGenerarToken<TEntidad> 
 where TEntidad : class
 {
-    string GenerarTokenJwt(TEntidad entidad);
+    Task<string> GenerarTokenJwt(TEntidad entidad, CancellationToken cancellationToken);
 }
