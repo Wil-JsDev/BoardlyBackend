@@ -1,7 +1,9 @@
 ﻿using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
+using Boardly.Dominio.Puertos.Servicios;
 using Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios;
 using Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios.Cuentas;
+using Boardly.Infraestructura.Persistencia.Adaptadores.Servicios;
 using Boardly.Infraestructura.Persistencia.Contexto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +47,7 @@ public static class InyeccionDeDependencia
             servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
             servicio.AddTransient<IEmpresaRepositorio, EmpresaRepositorio>();
             servicio.AddTransient<ICodigoRepositorio, CodigoRepositorio>();
+            servicio.AddScoped<IObtenerRoles, ObtenerRoles>();
             
         #endregion
 

@@ -36,7 +36,7 @@ public class CodigoRepositorio(BoardlyContexto contexto): GenericoRepositorio<Co
     public async Task<bool> ElCodigoEsValidoAsync(string codigo, CancellationToken cancellationToken) =>
         await ValidarAsync(c => c.Valor == codigo &&
                                 c.Expiracion > DateTime.UtcNow &&
-                                !c.Usado!.Value, cancellationToken);
+                                !c.Usado!, cancellationToken);
 
     public async Task MarcarCodigoComoUsado(string codigo, CancellationToken cancellationToken)
     {
@@ -51,6 +51,6 @@ public class CodigoRepositorio(BoardlyContexto contexto): GenericoRepositorio<Co
     }
 
     public async Task<bool> CodigoNoUsadoAsync(string codigo, CancellationToken cancellationToken) =>
-        await ValidarAsync(c => c.Valor == codigo && c.Usado!.Value, cancellationToken);
+        await ValidarAsync(c => c.Valor == codigo && c.Usado!, cancellationToken);
 
 }

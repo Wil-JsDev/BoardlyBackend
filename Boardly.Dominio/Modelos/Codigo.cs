@@ -7,7 +7,7 @@ public sealed class Codigo
     public string Valor { get; set; }
     public DateTime Expiracion { get; set; }
     public DateTime Creado { get; set; } = DateTime.UtcNow;
-    public bool? Usado { get; set; }
+    public bool Usado { get; set; } = false;
     public bool Revocado { get; set; }
 
     public Usuario Usuario { get; set; }
