@@ -14,6 +14,6 @@ public class AutenticacionSolicitudValidacion : AbstractValidator<AutenticacionS
 
         RuleFor(x => x.Contrasena)
             .NotEmpty().WithMessage("La contraseña es obligatoria.")
-            .MinimumLength(15).WithMessage("La contraseña debe tener al menos 15 caracteres.");
+            .MinimumLength(6).WithMessage("La contraseña debe tener al menos 6 caracteres.");
     }
 }
