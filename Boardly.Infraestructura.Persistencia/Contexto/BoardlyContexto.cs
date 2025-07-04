@@ -439,6 +439,10 @@ public class BoardlyContexto: DbContext
                 entity.Property(e => e.Valor)
                     .IsRequired()
                     .HasColumnType("text");
+                
+                entity.Property(e => e.TipoCodigo)
+                    .IsRequired()
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.Expiracion)
                     .IsRequired();

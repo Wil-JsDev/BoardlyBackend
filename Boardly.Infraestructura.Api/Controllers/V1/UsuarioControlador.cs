@@ -50,7 +50,7 @@ public class UsuarioControlador(
     }
     
     [HttpGet("{userId}")]
-    public async Task<IActionResult> ObtenerUsuarioAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> ObtenerUsuarioAsync( [FromRoute] Guid userId, CancellationToken cancellationToken)
     {
         var resultado = await obtenerUsuario.ObtenerIdUsarioAsync(userId, cancellationToken);
         if (resultado.EsExitoso)
@@ -59,8 +59,8 @@ public class UsuarioControlador(
         return NotFound(resultado.Error);
     }
 
-    [HttpPost("forgot-password/{userId}")]
-    public async Task<IActionResult> OlvidarContrasenaAsync(Guid userId, CancellationToken cancellationToken)
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> OlvidarContrasenaAsync( [FromQuery] Guid userId, CancellationToken cancellationToken)
     {
         var resultado = await olvidarContrasena.OlvidarContrasena(userId, cancellationToken);
         if (resultado.EsExitoso)
@@ -69,7 +69,7 @@ public class UsuarioControlador(
         return NotFound(resultado.Error);
     }
 
-    [HttpPost("modify-password/{userId}")]
+    [HttpPost("modify-password")]
     public async Task<IActionResult> ModificarContrasenaAsync(
         [FromQuery] Guid userId,
         [FromBody] ParametroModificarContrasenaDto parametro,

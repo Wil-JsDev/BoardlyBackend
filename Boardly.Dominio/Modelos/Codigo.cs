@@ -10,5 +10,7 @@ public sealed class Codigo
     public bool Usado { get; set; } = false;
     public bool Revocado { get; set; }
 
+    public string? TipoCodigo { get; set; }
+    
     public Usuario Usuario { get; set; }
 }

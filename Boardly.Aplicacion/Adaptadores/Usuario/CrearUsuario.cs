@@ -70,7 +70,7 @@ public class CrearUsuario(
         await repositorioUsuario.CrearAsync(usuarioEntidad, cancellationToken);
         logger.LogInformation("Usuario creado exitosamente en la base de datos. UsuarioId: {UsuarioId}", usuarioEntidad.UsuarioId);
 
-        var codigoValor = await codigo.CrearCodigoAsync(usuarioEntidad.UsuarioId, cancellationToken);
+        var codigoValor = await codigo.CrearCodigoAsync(usuarioEntidad.UsuarioId, TipoCodigo.ConfirmacionCuenta, cancellationToken);
         
         logger.LogInformation("Código de confirmación generado para el usuario: {UsuarioId}", usuarioEntidad.UsuarioId);
 
