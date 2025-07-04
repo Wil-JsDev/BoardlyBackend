@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Boardly.Aplicacion.Adaptadores.Autenticacion;
 
 public class Autenticacion(
-    Logger<Autenticacion> logger,
+    ILogger<Autenticacion> logger,
     IUsuarioRepositorio usuarioRepositorio,
     IGenerarToken<Dominio.Modelos.Usuario> token,
     ITokenRefrescado<TokenRefrescadoDto> tokenRefrescado

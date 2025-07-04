@@ -1,8 +1,10 @@
-﻿using Boardly.Aplicacion.Adaptadores.Ceo;
+﻿using Boardly.Aplicacion.Adaptadores.Autenticacion;
+using Boardly.Aplicacion.Adaptadores.Ceo;
 using Boardly.Aplicacion.Adaptadores.Codigo;
 using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.Adaptadores.Empresa;
 using Boardly.Aplicacion.Adaptadores.Usuario;
+using Boardly.Aplicacion.DTOs.Autenticacion;
 using Boardly.Aplicacion.DTOs.Ceo;
 using Boardly.Aplicacion.DTOs.Codigo;
 using Boardly.Aplicacion.DTOs.Contrasena;
@@ -10,6 +12,7 @@ using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Empresa;
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Aplicacion.DTOs.Usuario;
+using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
@@ -72,6 +75,12 @@ public static class InyeccionDeDependencia
         servicios.AddScoped<IEliminarCodigo<Resultado>, EliminarCodigo>();
         servicios.AddScoped<IBuscarCodigo<CodigoDto>, BuscarCodigo>();
         
+        #endregion
+
+        #region  Autenticacion
+
+        servicios.AddScoped<IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud>, Autenticacion>();
+
         #endregion
     }
 }
