@@ -14,7 +14,7 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/user")]
+[Route("api/v{version:apiVersion}/users")]
 public class UsuarioControlador(
     ICrearUsuario<CrearUsuarioDto, UsuarioDto> crearUsuario,
     IConfirmarCuenta<Resultado> confirmarCuenta,
