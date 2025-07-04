@@ -16,7 +16,8 @@ public static class ServicioExtensiones
     
     public static void AgregarExcepciones(this IServiceCollection servicio)
     {
-        servicio.AddExceptionHandler<ManejadorExcepcionesGlobal>();
+        servicio.AddExceptionHandler<ManejadorDeExcepcionesGlobales>();
+        servicio.AddExceptionHandler<ManejadorExcepcionesFluentValidation>();
     }
 
     public static void AgregarValidaciones(this IServiceCollection servicio)
