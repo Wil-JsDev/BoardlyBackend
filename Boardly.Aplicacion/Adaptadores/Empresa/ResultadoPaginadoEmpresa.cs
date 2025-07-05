@@ -45,6 +45,7 @@ public class ResultadoPaginadoEmpresa(
         (
             EmpresaId: empresaEntidad.EmpresaId, 
             CeoId: empresaEntidad.CeoId,
+            EmpleadoId: empresaEntidad.EmpleadoId,
             Nombre: empresaEntidad.Nombre,
             Descripcion: empresaEntidad.Descripcion,
             FechaCreacion: empresaEntidad.FechaCreacion,

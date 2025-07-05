@@ -16,5 +16,8 @@ public class CrerEmpresaValidacion : AbstractValidator<CrearEmpresaDto>
 
         RuleFor(x => x.CeoId)
             .NotEmpty().WithMessage("Debe proporcionarse el ID del CEO."); 
+    
+        RuleFor(x => x.EmpleadoId)
+            .NotEmpty().WithMessage("Debe proporcionarse el ID del empleado"); 
     }
 }
