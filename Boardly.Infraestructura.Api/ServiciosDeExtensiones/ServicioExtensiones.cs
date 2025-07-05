@@ -1,6 +1,5 @@
 using Asp.Versioning;
-using Boardly.Infraestructura.Api.ManejadorDeExcepciones;
-using Boardly.Infraestructura.Api.Validaciones;
+using Boardly.Infraestructura.Api.Middleware;
 using Boardly.Infraestructura.Api.Validaciones.Autenticaciones;
 using Boardly.Infraestructura.Api.Validaciones.Ceos;
 using Boardly.Infraestructura.Api.Validaciones.Empleados;
@@ -13,11 +12,9 @@ namespace Boardly.Infraestructura.Api.ServiciosDeExtensiones;
 
 public static class ServicioExtensiones
 {
-    
-    public static void AgregarExcepciones(this IServiceCollection servicio)
+    public static void AgregarMiddlewares(this IApplicationBuilder app)
     {
-        servicio.AddExceptionHandler<ManejadorDeExcepcionesGlobales>();
-        servicio.AddExceptionHandler<ManejadorExcepcionesFluentValidation>();
+        app.UseMiddleware<MiddlewareCapturaExcepciones>();
     }
 
     public static void AgregarValidaciones(this IServiceCollection servicio)
