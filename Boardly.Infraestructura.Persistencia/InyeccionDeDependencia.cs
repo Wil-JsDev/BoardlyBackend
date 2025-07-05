@@ -47,6 +47,8 @@ public static class InyeccionDeDependencia
             servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
             servicio.AddTransient<IEmpresaRepositorio, EmpresaRepositorio>();
             servicio.AddTransient<ICodigoRepositorio, CodigoRepositorio>();
+            servicio.AddTransient<IProyectoRepositorio,ProyetoRepositorio>();
+            servicio.AddTransient<ITareaRepositorio, TareaRepositorio>();
             servicio.AddScoped<IObtenerRoles, ObtenerRoles>();
             
         #endregion
