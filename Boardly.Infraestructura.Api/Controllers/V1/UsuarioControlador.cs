@@ -17,7 +17,7 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/users")]
 public class UsuarioControlador(
     ICrearUsuario<CrearUsuarioDto, UsuarioDto> crearUsuario,
-    IConfirmarCuenta<Resultado> confirmarCuenta,
+    IConfirmarCuenta<Resultado, CodigoConfirmarCuentaDto> confirmarCuenta,
     IObtenerIdUsuario<UsuarioDto> obtenerUsuario,
     IOlvidarContrasenaUsuario olvidarContrasena,
     IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto> modificarContrasena
@@ -38,11 +38,12 @@ public class UsuarioControlador(
     [HttpPost("confirm-account")]
     public async Task<IActionResult> ConfirmarCuentaAsync(
         [FromQuery] Guid userId,
-        [FromQuery] string code,
+        [FromBody] CodigoConfirmarCuentaDto code,
         CancellationToken cancellationToken
         )
     {
-        var resultado = await confirmarCuenta.ConfirmarCuentaAsync(userId, code, cancellationToken);
+        
+        var resultado = await confirmarCuenta.ConfirmarCuentaAsync(userId,code, cancellationToken);
         if (resultado.EsExitoso)
             return Ok("Se ha confirmado su cuenta");
         
