@@ -1,3 +1,6 @@
 namespace Boardly.Dominio.Configuraciones;
 
-public sealed record CloudinaryConfiguraciones(string CloudinaryUrl);
+public class CloudinaryConfiguraciones
+{
+    public string? CloudinaryUrl { get; set; }
+}

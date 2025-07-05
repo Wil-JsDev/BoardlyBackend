@@ -142,8 +142,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 columns: table => new
                 {
                     PkEmpleadoId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FkUsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Roles = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    FkUsuarioId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {

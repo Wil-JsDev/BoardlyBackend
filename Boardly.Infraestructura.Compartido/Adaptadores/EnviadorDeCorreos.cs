@@ -18,22 +18,31 @@ public class EnviadorDeCorreos: ICorreoServicio<SolicitudCorreo>
 
     public async Task Execute(SolicitudCorreo dto)
     {
-        MimeMessage email = new ();
 
-        email.Sender = MailboxAddress.Parse(_correoConfiguraciones.EmailFrom);
-        email.To.Add(MailboxAddress.Parse(dto.Destinatario)); //This send email
-        email.Subject = dto.Cuerpo;
-            
-        BodyBuilder bodyBuilder = new ();
-        bodyBuilder.HtmlBody = dto.Cuerpo;
-        email.Body = bodyBuilder.ToMessageBody();
+        try
+        {
 
-        //SMTP configuration
-        using MailKit.Net.Smtp.SmtpClient smtp = new();
-        smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
-        await smtp.ConnectAsync(_correoConfiguraciones.SmtpHost, _correoConfiguraciones.SmtpPort,SecureSocketOptions.StartTls);
-        await smtp.AuthenticateAsync(_correoConfiguraciones.SmtpUser,_correoConfiguraciones.SmtpPass);
-        await smtp.SendAsync(email);
-        await smtp.DisconnectAsync(true);
+            MimeMessage email = new ();
+
+            email.Sender = MailboxAddress.Parse(_correoConfiguraciones.EmailFrom);
+            email.To.Add(MailboxAddress.Parse(dto.Destinatario)); //This send email
+            email.Subject = dto.Asunto;
+                
+            BodyBuilder bodyBuilder = new ();
+            bodyBuilder.HtmlBody = dto.Cuerpo;
+            email.Body = bodyBuilder.ToMessageBody();
+
+            //SMTP configuration
+            using MailKit.Net.Smtp.SmtpClient smtp = new();
+            smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            await smtp.ConnectAsync(_correoConfiguraciones.SmtpHost, _correoConfiguraciones.SmtpPort,SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_correoConfiguraciones.SmtpUser,_correoConfiguraciones.SmtpPass);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
+        }
+        catch (Exception )
+        {
+            //Ignored
+        }
     }
 }

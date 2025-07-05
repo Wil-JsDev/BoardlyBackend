@@ -3,13 +3,15 @@ using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace Boardly.Aplicacion.Adaptadores.Usuario;
 
 public class ResultadoPaginadoUsuario(
     ILogger<ResultadoPaginadoUsuario> logger,
-    IUsuarioRepositorio repositorioUsuario
+    IUsuarioRepositorio repositorioUsuario,
+    IDistributedCache cache
     ) : IResultadoPaginaUsuario<PaginacionParametro, UsuarioDto>
 {
    public async Task<ResultadoT<ResultadoPaginado<UsuarioDto>>> ObtenerPaginacionUsuarioAsync(PaginacionParametro solicitud, CancellationToken cancellationToken)
@@ -23,10 +25,12 @@ public class ResultadoPaginadoUsuario(
                 Error.Fallo("400", "Los parámetros de paginación deben ser mayores a cero.")
             );
         }
-
-        var resultadoPagina = await repositorioUsuario.ObtenerPaginadoAsync(
-            solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken
-        );
+        
+        var resultadoPagina = await cache.ObtenerOCrearAsync($"obtener-paginacion-usuario-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}", 
+            async () => await repositorioUsuario.ObtenerPaginadoAsync(
+                solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken),
+            cancellationToken: cancellationToken
+            );     
 
         if (!resultadoPagina.Elementos!.Any())
         {

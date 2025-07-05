@@ -1,3 +1,6 @@
+using Boardly.Aplicacion;
+using Boardly.Infraestructura.Api.ServiciosDeExtensiones;
+using Boardly.Infraestructura.Compartido;
 using Boardly.Infraestructura.Persistencia;
 using Serilog;
 
@@ -15,12 +18,31 @@ try
     
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowLocalhost",
+            builder => builder.WithOrigins("http://localhost:4200")  
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Content-Disposition"));
+    });
+    
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    
+    builder.Services.AgregarVersionado();
+    builder.Services.AgregarValidaciones();
     builder.Services.AgregarPersistencia(configuracion);
+    builder.Services.AgregarAplicacion();
+    builder.Services.AgregarCompartido(configuracion);
 
     var app = builder.Build();
 
+    app.UseSerilogRequestLogging();
+    
+    app.AgregarMiddlewares();
+    
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -29,7 +51,7 @@ try
     }
 
     app.UseHttpsRedirection();
-
+    app.UseCors("AllowLocalhost");
     app.UseAuthorization();
 
     app.MapControllers();
@@ -40,6 +62,8 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex,"Ha ocurrido un error");
+    Console.WriteLine("ERROR al iniciar la app:");
+    Console.WriteLine(ex);
 }
 finally
 {

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     [DbContext(typeof(BoardlyContexto))]
-    [Migration("20250629190919_Initial")]
-    partial class Initial
+    [Migration("20250704025120_AddTypeCodeProperty")]
+    partial class AddTypeCodeProperty
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,12 +23,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "actividad_prioridad", new[] { "baja", "media", "alta" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "estado_actividad", new[] { "pendiente", "proceso", "revision", "completado" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "estado_empresa", new[] { "activo", "inactivo" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "estado_proyecto", new[] { "en_proceso", "finalizado" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "estado_tarea", new[] { "pendiente", "en_proceso", "en_revision", "finalizada" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "estado_usuario", new[] { "activo", "inactivo" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Actividad", b =>
@@ -122,7 +116,11 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Property<bool>("Revocado")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("Usado")
+                    b.Property<string>("TipoCodigo")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("Usado")
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("UsuarioId")
@@ -182,11 +180,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("PkEmpleadoId");
-
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")

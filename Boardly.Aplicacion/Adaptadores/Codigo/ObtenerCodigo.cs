@@ -21,7 +21,7 @@ public class ObtenerCodigo(ICodigoRepositorio codigoRepositorio) : IObtenerCodig
             CodigoId: Guid.NewGuid(), 
             UsuarioId: codigo.UsuarioId,
             Codigo: codigo.Valor!,
-            Usado: codigo.Usado!.Value,
+            Usado: codigo.Usado!,
             Expiracion: codigo.Expiracion
         );
 

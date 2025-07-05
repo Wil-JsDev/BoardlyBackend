@@ -3,13 +3,15 @@ using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace Boardly.Aplicacion.Adaptadores.Empresa;
 
 public class ResultadoPaginadoEmpresa(
     ILogger<ResultadoPaginadoEmpresa> logger,
-    IEmpresaRepositorio empresaRepositorio
+    IEmpresaRepositorio empresaRepositorio,
+    IDistributedCache cache
 ) : IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>
 {
     public async Task<ResultadoT<ResultadoPaginado<EmpresaDto>>> ObtenerPaginacionEmpresaAsync(PaginacionParametro solicitud, CancellationToken cancellationToken)
@@ -24,7 +26,11 @@ public class ResultadoPaginadoEmpresa(
             );
         }
         
-        var resultadoPagina = await empresaRepositorio.ObtenerPaginadoAsync(solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken);
+        var resultadoPagina = await cache.ObtenerOCrearAsync($"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}", 
+            async () => await empresaRepositorio.ObtenerPaginadoAsync(solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken),
+            cancellationToken: cancellationToken
+            );
+        
         if (resultadoPagina.Elementos is null || !resultadoPagina.Elementos.Any())
         {
             logger.LogWarning("No se encontraron empresas en la pagina {NumeroPagina} con tamano {TamanoPagina}.",
@@ -39,6 +45,7 @@ public class ResultadoPaginadoEmpresa(
         (
             EmpresaId: empresaEntidad.EmpresaId, 
             CeoId: empresaEntidad.CeoId,
+            EmpleadoId: empresaEntidad.EmpleadoId,
             Nombre: empresaEntidad.Nombre,
             Descripcion: empresaEntidad.Descripcion,
             FechaCreacion: empresaEntidad.FechaCreacion,

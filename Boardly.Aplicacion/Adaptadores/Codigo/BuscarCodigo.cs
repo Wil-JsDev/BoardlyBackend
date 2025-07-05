@@ -34,7 +34,7 @@ public class BuscarCodigo(
             CodigoId: codigoValor.CodigoId,
             UsuarioId: codigoValor.UsuarioId,
             Codigo: codigoValor.Valor,
-            Usado: codigoValor.Usado!.Value,
+            Usado: codigoValor.Usado!,
             Expiracion: codigoValor.Expiracion
         );
 

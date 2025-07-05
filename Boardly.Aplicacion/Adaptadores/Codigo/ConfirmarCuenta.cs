@@ -1,3 +1,4 @@
+using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Puertos.CasosDeUso;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.Repositorios;
@@ -7,9 +8,9 @@ using Boardly.Dominio.Utilidades;
 namespace Boardly.Aplicacion.Adaptadores.Codigo;
 
 public class ConfirmarCuenta(ICodigoRepositorio codigoRepositorio, IUsuarioRepositorio usuarioRepositorio)
-    : IConfirmarCuenta<Resultado>
+    : IConfirmarCuenta<Resultado, CodigoConfirmarCuentaDto>
 {
-    public async Task<Resultado> ConfirmarCuentaAsync(Guid usuarioId, string codigo, CancellationToken cancellationToken)
+    public async Task<Resultado> ConfirmarCuentaAsync(Guid usuarioId, CodigoConfirmarCuentaDto dto , CancellationToken cancellationToken)
     {
         var usuario = await usuarioRepositorio.ObtenerByIdAsync(usuarioId, cancellationToken);
         if (usuario == null)
@@ -18,7 +19,7 @@ public class ConfirmarCuenta(ICodigoRepositorio codigoRepositorio, IUsuarioRepos
             return Resultado.Fallo(Error.NoEncontrado("404", "Usuario no encontrado"));
         }
 
-        var codigoEntidad = await codigoRepositorio.BuscarCodigoAsync(codigo, cancellationToken);
+        var codigoEntidad = await codigoRepositorio.BuscarCodigoAsync(dto.codigo, cancellationToken);
         if (codigoEntidad == null)
         {
             
@@ -37,7 +38,7 @@ public class ConfirmarCuenta(ICodigoRepositorio codigoRepositorio, IUsuarioRepos
             return Resultado.Fallo(Error.NoEncontrado("400", "Este código ya ha sido usado"));
         }
 
-        var esValido = await codigoRepositorio.ElCodigoEsValidoAsync(codigo, cancellationToken);
+        var esValido = await codigoRepositorio.ElCodigoEsValidoAsync(dto.codigo, cancellationToken);
         if (!esValido)
         {
             return Resultado.Fallo(Error.Fallo("400", "El código ha expirado o no es válido"));
@@ -51,4 +52,5 @@ public class ConfirmarCuenta(ICodigoRepositorio codigoRepositorio, IUsuarioRepos
         
         return Resultado.Exito();
     }
+    
 }

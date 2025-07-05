@@ -9,8 +9,5 @@ public record CrearUsuarioDto(
     string Correo,
     string? NombreUsuario,
     string? Contrasena,
-    DateTime FechaCreacion,
-    string Estado,
-    IFormFile? FotoPerfil,
-    DateTime? FechaRegistro
+    IFormFile? FotoPerfil
 );

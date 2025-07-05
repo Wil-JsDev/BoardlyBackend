@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Email;
+using Boardly.Dominio.Enum;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Puertos.Email;
@@ -35,12 +36,20 @@ public class OlvidarContrasenaUsuario(
             );
         }
 
-        var codigoValor = await codigo.CrearCodigoAsync(usuarioId, cancellationToken);
-
+        var codigoValor = await codigo.CrearCodigoAsync(usuarioId, TipoCodigo.RecuperacionContrasena,cancellationToken);
+        
+        if (!codigoValor.EsExitoso)
+        {
+            logger.LogError("Falló la generación del código para el usuario '{UsuarioId}'. Error: {Error}",
+                usuarioId, codigoValor.Error);
+        
+            return ResultadoT<string>.Fallo(codigoValor.Error!);
+        } 
+        
         await emailServicio.Execute(
             new SolicitudCorreo(
                 Destinatario: usuario.Correo!,
-                Cuerpo: EmailTemas.ConfirmarCuenta(codigoValor.Valor, usuario.UsuarioId),
+                Cuerpo: EmailTemas.OlvidarContrasena(codigoValor.Valor, usuario.UsuarioId),
                 Asunto: "Recuperación de contraseña"
             )
         );

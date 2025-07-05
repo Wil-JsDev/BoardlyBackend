@@ -384,18 +384,6 @@ public class BoardlyContexto: DbContext
 
 
             #endregion
-
-            #region Enumeraciones
-
-            modelBuilder.HasPostgresEnum<EstadoUsuario>();
-            modelBuilder.HasPostgresEnum<EstadoTarea>();
-            modelBuilder.HasPostgresEnum<EstadoProyecto>();
-            modelBuilder.HasPostgresEnum<EstadoEmpresa>();
-            modelBuilder.HasPostgresEnum<EstadoActividad>();
-            modelBuilder.HasPostgresEnum<ActividadPrioridad>();
-
-
-            #endregion
             
             #region Usuario
 
@@ -451,6 +439,10 @@ public class BoardlyContexto: DbContext
                 entity.Property(e => e.Valor)
                     .IsRequired()
                     .HasColumnType("text");
+                
+                entity.Property(e => e.TipoCodigo)
+                    .IsRequired()
+                    .HasColumnType("varchar(50)");
 
                 entity.Property(e => e.Expiracion)
                     .IsRequired();
@@ -474,10 +466,6 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(e => e.UsuarioId)
                     .IsRequired();
-
-                entity.Property(e => e.Roles)
-                    .IsRequired()
-                    .HasMaxLength(50);
             });
 
             #endregion
