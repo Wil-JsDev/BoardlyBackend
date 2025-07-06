@@ -36,7 +36,8 @@ public class ResultadoPaginadoEmpleado(
         var dtoList = resultadoPagina.Elementos!.Select(x => new EmpleadoDto
         (
             EmpleadoId: x.EmpleadoId,
-            UsuarioId: x.UsuarioId
+            UsuarioId: x.UsuarioId,
+            EmpresaId: x.EmpresaId
         ));
 
         IEnumerable<EmpleadoDto> empleadoDtos = dtoList.ToList();

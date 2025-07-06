@@ -24,7 +24,8 @@ public class ObtenerIdEmpleado(
         EmpleadoDto empleadoDto = new
         (
             EmpleadoId: id, 
-            UsuarioId:  empleado.UsuarioId
+            UsuarioId:  empleado.UsuarioId,
+            EmpresaId: empleado.EmpresaId
         );
 
         logger.LogInformation("Empleado encontrado exitosamente. ID: {EmpleadoId}, UsuarioID: {UsuarioId}", 
