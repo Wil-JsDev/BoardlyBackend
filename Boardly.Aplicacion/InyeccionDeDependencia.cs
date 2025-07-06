@@ -74,6 +74,7 @@ public static class InyeccionDeDependencia
         servicios.AddScoped<IConfirmarCuenta<Resultado, CodigoConfirmarCuentaDto>, ConfirmarCuenta>();
         servicios.AddScoped<IEliminarCodigo<Resultado>, EliminarCodigo>();
         servicios.AddScoped<IBuscarCodigo<CodigoDto>, BuscarCodigo>();
+        servicios.AddScoped<IObtenerIdCeo, ObtenerIdCeo>();
         
         #endregion
 
