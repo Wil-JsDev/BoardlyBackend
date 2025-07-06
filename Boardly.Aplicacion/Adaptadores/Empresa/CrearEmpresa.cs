@@ -28,20 +28,11 @@ public sealed class CrearEmpresa(
             
             return ResultadoT<EmpresaDto>.Fallo(Error.Conflicto("409", $"El nombre '{solicitud.Nombre}' ya está en uso."));
         }
-        
-        var empleado = await empleadoRepositorio.ObtenerByIdAsync(solicitud.EmpleadoId, cancellationToken);
-        if (empleado is null)
-        {
-            logger.LogWarning("No se encontró el empleado con ID {EmpleadoId} al intentar asociarlo a la empresa.", solicitud.EmpleadoId);
-            
-            return ResultadoT<EmpresaDto>.Fallo(Error.NoEncontrado("404", $"El empleado con ID {solicitud.EmpleadoId} no existe."));
-        }
 
         Dominio.Modelos.Empresa empresaEntidad = new()
         {
             EmpresaId = Guid.NewGuid(),
             CeoId = solicitud.CeoId,
-            EmpleadoId = solicitud.EmpleadoId,
             Nombre = solicitud.Nombre,
             Descripcion = solicitud.Descripcion,
             Estado = nameof(EstadoEmpresa.Activo)
@@ -54,7 +45,6 @@ public sealed class CrearEmpresa(
         EmpresaDto empresaDto = new(
             EmpresaId: empresaEntidad.EmpresaId,
             CeoId: empresaEntidad.CeoId,
-            EmpleadoId: empresaEntidad.EmpleadoId,
             Nombre: empresaEntidad.Nombre,
             Descripcion: empresaEntidad.Descripcion,
             FechaCreacion: empresaEntidad.FechaCreacion,

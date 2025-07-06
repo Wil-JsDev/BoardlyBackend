@@ -150,6 +150,10 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<Codigo>()
                 .Property(c => c.UsuarioId)
                 .HasColumnName("FkUsuarioId");
+            
+            modelBuilder.Entity<Empleado>()
+                .Property(e => e.EmpresaId)
+                .HasColumnName("FkEmpresaId");
 
             modelBuilder.Entity<Notificacion>()
                 .Property(n => n.UsuarioId)
@@ -166,10 +170,6 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<Ceo>()
                 .Property(c => c.UsuarioId)
                 .HasColumnName("FkUsuarioId");
-
-            modelBuilder.Entity<Empresa>()
-                .Property(e => e.EmpleadoId)
-                .HasColumnName("FkEmpleadoId");
 
             modelBuilder.Entity<Empresa>()
                 .Property(e => e.CeoId)
@@ -318,11 +318,11 @@ public class BoardlyContexto: DbContext
                 .IsRequired();
             
             // Empleado → Empresa
-            modelBuilder.Entity<Empresa>()
-                .HasOne(e => e.Empleado)
-                .WithMany()
-                .HasForeignKey(e => e.EmpleadoId)
-                .IsRequired();
+            modelBuilder.Entity<Empleado>()
+                .HasOne(e => e.Empresa)               
+                .WithMany(emp => emp.Empleados)        
+                .HasForeignKey(e => e.EmpresaId)     
+                .IsRequired();  
             
             // Ceo → Empresa
             modelBuilder.Entity<Empresa>()
@@ -490,9 +490,6 @@ public class BoardlyContexto: DbContext
             {
                 entity.Property(e => e.EmpresaId)
                     .HasColumnName("PkEmpresaId")
-                    .IsRequired();
-
-                entity.Property(e => e.EmpleadoId)
                     .IsRequired();
 
                 entity.Property(e => e.CeoId);

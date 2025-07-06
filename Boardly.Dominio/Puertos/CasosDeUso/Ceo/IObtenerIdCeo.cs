@@ -2,7 +2,7 @@ using Boardly.Dominio.Utilidades;
 
 namespace Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 
-public interface IObtenerIdCeo<TRespuesta>
+public interface IObtenerIdCeo
 {
-    Task<ResultadoT<TRespuesta>> ObtenerIdCeoAsync(Guid id, CancellationToken cancellationToken);
+    Task<ResultadoT<Guid>> ObtenerIdCeoAsync(Guid id, CancellationToken cancellationToken);
 }

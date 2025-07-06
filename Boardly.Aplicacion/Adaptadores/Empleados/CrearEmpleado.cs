@@ -10,6 +10,7 @@ namespace Boardly.Aplicacion.Adaptadores.Empleados;
 public class CrearEmpleado(
     ILogger<CrearEmpleado> logger,
     IEmpleadoRepositorio empleadoRepositorio,
+    IEmpresaRepositorio empresaRepositorio,
     IUsuarioRepositorio usuarioRepositorio
     ) : ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto>
 {
@@ -29,11 +30,20 @@ public class CrearEmpleado(
             
             return ResultadoT<EmpleadoDto>.Fallo(Error.NoEncontrado("404", "Usuario no encontrado."));
         }
+        
+        var empresa = await empresaRepositorio.ObtenerByIdAsync(solicitud.EmpresaId, cancellationToken);
+        if (empresa is null)
+        {
+            logger.LogWarning("No se encontró la empresa con el ID proporcionado: {EmpresaId}", solicitud.EmpresaId);
+            
+            return ResultadoT<EmpleadoDto>.Fallo(Error.NoEncontrado("404", "Empresa no encontrada."));
+        }
 
         Empleado empleadoEntidad = new()
         {
             EmpleadoId = Guid.NewGuid(),
-            UsuarioId = solicitud.UsuarioId
+            UsuarioId = solicitud.UsuarioId,
+            EmpresaId = solicitud.EmpresaId
         };
 
         await empleadoRepositorio.CrearAsync(empleadoEntidad, cancellationToken);
@@ -43,7 +53,8 @@ public class CrearEmpleado(
         EmpleadoDto empleadoDto = new
         (
             EmpleadoId: empleadoEntidad.EmpleadoId,
-            UsuarioId: empleadoEntidad.UsuarioId
+            UsuarioId: empleadoEntidad.UsuarioId,
+            EmpresaId: empleadoEntidad.EmpresaId
         );
     
         return ResultadoT<EmpleadoDto>.Exito(empleadoDto);
