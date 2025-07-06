@@ -52,6 +52,7 @@ try
 
     app.UseHttpsRedirection();
     app.UseCors("AllowLocalhost");
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
@@ -62,7 +63,6 @@ try
 catch (Exception ex)
 {
     Log.Fatal(ex,"Ha ocurrido un error");
-    Console.WriteLine("ERROR al iniciar la app:");
     Console.WriteLine(ex);
 }
 finally

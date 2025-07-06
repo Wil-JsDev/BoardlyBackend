@@ -1,21 +1,19 @@
 using Asp.Versioning;
 using Boardly.Aplicacion.DTOs.Ceo;
-using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
-using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Boardly.Infraestructura.Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/user-type")]
-public class TipoUsuarioControlador(
+[Route("api/v{version:apiVersion}/ceos")]
+public class CeoControlador(
     ICrearCeo<CrearCeoDto, CeoDto> crearCeo,
-    ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado
+    IObtenerIdCeo obtenerCeo
     ) : ControllerBase
 {
-    [HttpPost("ceo/{userId}")]
+    [HttpPost("{userId}")]
     public async Task<IActionResult> RegistrarCeo([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
         CrearCeoDto ceoDto = new(UsuarioId: userId);
@@ -26,16 +24,14 @@ public class TipoUsuarioControlador(
         
         return BadRequest(resultado.Error);
     }
-
-    [HttpPost("employee/{userId}")]
-    public async Task<IActionResult> CrearEmpleado([FromRoute] Guid userId, CancellationToken cancellationToken)
+    
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> ObtenerIdCeo([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
-        CrearEmpleadoDto empleadoDto = new(UsuarioId: userId);
+        var ceoId = await obtenerCeo.ObtenerIdCeoAsync(userId, cancellationToken);
+        if(ceoId.EsExitoso)
+            return Ok(ceoId.Valor);
         
-        var empleado = await crearEmpleado.CrearEmpleadoAsync(empleadoDto, cancellationToken);
-        if (empleado.EsExitoso)
-            return Ok(empleado.Valor);
-             
-        return BadRequest(empleado.Error);
+        return BadRequest(ceoId.Error);
     }
 }
