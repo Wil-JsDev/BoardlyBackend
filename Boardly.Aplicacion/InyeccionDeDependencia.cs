@@ -3,6 +3,7 @@ using Boardly.Aplicacion.Adaptadores.Ceo;
 using Boardly.Aplicacion.Adaptadores.Codigo;
 using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.Adaptadores.Empresa;
+using Boardly.Aplicacion.Adaptadores.Proyecto;
 using Boardly.Aplicacion.Adaptadores.Usuario;
 using Boardly.Aplicacion.DTOs.Autenticacion;
 using Boardly.Aplicacion.DTOs.Ceo;
@@ -11,12 +12,14 @@ using Boardly.Aplicacion.DTOs.Contrasena;
 using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Empresa;
 using Boardly.Aplicacion.DTOs.Paginacion;
+using Boardly.Aplicacion.DTOs.Proyecto;
 using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
+using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Utilidades;
 using Microsoft.Extensions.Configuration;
@@ -81,6 +84,16 @@ public static class InyeccionDeDependencia
         #region  Autenticacion
 
         servicios.AddScoped<IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud>, Autenticacion>();
+
+        #endregion
+        
+        #region Proyecto
+
+            servicios.AddScoped<ICrearProyecto<CrearProyectoDto, ProyectoDto>, CrearProyecto>();
+            servicios.AddScoped<IActualizarProyecto<ActualizarProyectoDto, ActualizarProyectoDto>, ActualizarProyecto>();
+            servicios.AddScoped<IBorrarProyecto, BorrarProyecto>();
+            servicios.AddScoped<IObtenerIdProyecto<ProyectoDto>, ObtenerIdProyecto>();
+            servicios.AddScoped<IResultadoPaginaProyecto<PaginacionParametro, ProyectoDto>, ResultadoPaginaProyecto>();
 
         #endregion
     }
