@@ -17,7 +17,7 @@ public class ActualizarActividad(
 
         if (actividad is null)
         {
-            logger.LogWarning("No se encontró la actividad con ID: {ActividadId} al intentar eliminarla.", id);
+            logger.LogWarning("No se encontró la actividad con ID: {ActividadId}", id);
 
             return ResultadoT<ActividadDto>.Fallo(
                 Error.NoEncontrado("404", "La actividad especificada no fue encontrada."));
