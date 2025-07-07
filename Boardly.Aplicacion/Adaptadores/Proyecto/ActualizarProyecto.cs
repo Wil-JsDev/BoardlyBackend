@@ -40,7 +40,6 @@ public class ActualizarProyecto(
 
         ActualizarProyectoDto proyectoDto = new
         (
-            ProyectoId: proyecto.ProyectoId,
             Nombre: proyecto.Nombre,
             Descripcion: proyecto.Descripcion
         );

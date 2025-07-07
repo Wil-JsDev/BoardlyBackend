@@ -7,8 +7,6 @@ public class ActualizarProyectoValidacion : AbstractValidator<ActualizarProyecto
 {
     public ActualizarProyectoValidacion()
     {
-        RuleFor(x => x.ProyectoId)
-            .NotEmpty().WithMessage("El ID del proyecto es obligatorio.");
 
         RuleFor(x => x.Nombre)
             .NotEmpty().WithMessage("El nombre del proyecto es obligatorio.")
