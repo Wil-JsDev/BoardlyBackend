@@ -48,6 +48,7 @@ public class ActualizarUsuario(
         
         usuario.NombreUsuario = solicitud.NombreUsuario;
         usuario.Correo = solicitud.Correo;
+        usuario.FechaActualizacion = DateTime.UtcNow;
 
         await repositorioUsuario.ActualizarAsync(usuario, cancellationToken);
 
