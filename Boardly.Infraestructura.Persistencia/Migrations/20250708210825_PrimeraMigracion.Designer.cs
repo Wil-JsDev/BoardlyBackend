@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     [DbContext(typeof(BoardlyContexto))]
-    [Migration("20250704025120_AddTypeCodeProperty")]
-    partial class AddTypeCodeProperty
+    [Migration("20250708210825_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,12 +181,18 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("PkEmpleadoId");
 
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkEmpresaId");
+
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")
                         .HasColumnName("FkUsuarioId");
 
                     b.HasKey("EmpleadoId")
                         .HasName("PKEmpleadoId");
+
+                    b.HasIndex("EmpresaId");
 
                     b.HasIndex("UsuarioId")
                         .IsUnique();
@@ -231,10 +237,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("EmpleadoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("FkEmpleadoId");
-
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -251,8 +253,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasName("PKEmpresaId");
 
                     b.HasIndex("CeoId");
-
-                    b.HasIndex("EmpleadoId");
 
                     b.ToTable("Empresa", (string)null);
                 });
@@ -561,11 +561,19 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Empleado", b =>
                 {
+                    b.HasOne("Boardly.Dominio.Modelos.Empresa", "Empresa")
+                        .WithMany("Empleados")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Boardly.Dominio.Modelos.Usuario", "Usuario")
                         .WithOne("Empleado")
                         .HasForeignKey("Boardly.Dominio.Modelos.Empleado", "UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Empresa");
 
                     b.Navigation("Usuario");
                 });
@@ -603,15 +611,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .WithMany("Empresas")
                         .HasForeignKey("CeoId");
 
-                    b.HasOne("Boardly.Dominio.Modelos.Empleado", "Empleado")
-                        .WithMany()
-                        .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Ceo");
-
-                    b.Navigation("Empleado");
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Notificacion", b =>
@@ -720,6 +720,8 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Empresa", b =>
                 {
+                    b.Navigation("Empleados");
+
                     b.Navigation("Proyectos");
                 });
 

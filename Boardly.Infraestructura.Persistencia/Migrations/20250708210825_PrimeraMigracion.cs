@@ -6,19 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Boardly.Infraestructura.Persistencia.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class PrimeraMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:actividad_prioridad", "baja,media,alta")
-                .Annotation("Npgsql:Enum:estado_actividad", "pendiente,proceso,revision,completado")
-                .Annotation("Npgsql:Enum:estado_empresa", "activo,inactivo")
-                .Annotation("Npgsql:Enum:estado_proyecto", "en_proceso,finalizado")
-                .Annotation("Npgsql:Enum:estado_tarea", "pendiente,en_proceso,en_revision,finalizada")
-                .Annotation("Npgsql:Enum:estado_usuario", "activo,inactivo");
-
             migrationBuilder.CreateTable(
                 name: "Actividad",
                 columns: table => new
@@ -123,8 +115,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     Valor = table.Column<string>(type: "text", nullable: false),
                     Expiracion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Creado = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Usado = table.Column<bool>(type: "boolean", nullable: true),
-                    Revocado = table.Column<bool>(type: "boolean", nullable: false)
+                    Usado = table.Column<bool>(type: "boolean", nullable: false),
+                    Revocado = table.Column<bool>(type: "boolean", nullable: false),
+                    TipoCodigo = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,29 +131,10 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Empleado",
-                columns: table => new
-                {
-                    PkEmpleadoId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FkUsuarioId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PKEmpleadoId", x => x.PkEmpleadoId);
-                    table.ForeignKey(
-                        name: "FK_Empleado_Usuario_FkUsuarioId",
-                        column: x => x.FkUsuarioId,
-                        principalTable: "Usuario",
-                        principalColumn: "PkUsuarioId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Empresa",
                 columns: table => new
                 {
                     PkEmpresaId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FkEmpleadoId = table.Column<Guid>(type: "uuid", nullable: false),
                     FkCeoId = table.Column<Guid>(type: "uuid", nullable: true),
                     Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "text", nullable: true),
@@ -175,11 +149,30 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         column: x => x.FkCeoId,
                         principalTable: "Ceo",
                         principalColumn: "PkCeoId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Empleado",
+                columns: table => new
+                {
+                    PkEmpleadoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FkUsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FkEmpresaId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PKEmpleadoId", x => x.PkEmpleadoId);
                     table.ForeignKey(
-                        name: "FK_Empresa_Empleado_FkEmpleadoId",
-                        column: x => x.FkEmpleadoId,
-                        principalTable: "Empleado",
-                        principalColumn: "PkEmpleadoId",
+                        name: "FK_Empleado_Empresa_FkEmpresaId",
+                        column: x => x.FkEmpresaId,
+                        principalTable: "Empresa",
+                        principalColumn: "PkEmpresaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Empleado_Usuario_FkUsuarioId",
+                        column: x => x.FkUsuarioId,
+                        principalTable: "Usuario",
+                        principalColumn: "PkUsuarioId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -402,6 +395,11 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 column: "FkUsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Empleado_FkEmpresaId",
+                table: "Empleado",
+                column: "FkEmpresaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Empleado_FkUsuarioId",
                 table: "Empleado",
                 column: "FkUsuarioId",
@@ -421,11 +419,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 name: "IX_Empresa_FkCeoId",
                 table: "Empresa",
                 column: "FkCeoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Empresa_FkEmpleadoId",
-                table: "Empresa",
-                column: "FkEmpleadoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificacion_FkTareaId",
@@ -488,6 +481,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                 name: "TareaUsuario");
 
             migrationBuilder.DropTable(
+                name: "Empleado");
+
+            migrationBuilder.DropTable(
                 name: "RolProyecto");
 
             migrationBuilder.DropTable(
@@ -504,9 +500,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ceo");
-
-            migrationBuilder.DropTable(
-                name: "Empleado");
 
             migrationBuilder.DropTable(
                 name: "Usuario");
