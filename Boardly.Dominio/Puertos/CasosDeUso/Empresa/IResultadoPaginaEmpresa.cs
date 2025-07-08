@@ -6,5 +6,5 @@ public interface IResultadoPaginaEmpresa<in TSolicitud, TRespuesta>
     where TSolicitud : class
     where TRespuesta : class
 {
-    Task<ResultadoT<ResultadoPaginado<TRespuesta>>> ObtenerPaginacionEmpresaAsync(TSolicitud solicitud, CancellationToken cancellationToken);
+    Task<ResultadoT<ResultadoPaginado<TRespuesta>>> ObtenerPaginacionEmpresaAsync(Guid ceoId,TSolicitud solicitud, CancellationToken cancellationToken);
 }

@@ -48,14 +48,15 @@ public class EmpresaControlador(
         return NotFound(resultado.Error);
     }
 
-    [HttpGet("pagination")]
+    [HttpGet("{ceoId}/pagination")]
     public async Task<IActionResult> ResultadoPaginaEmpresa(
+        [FromRoute] Guid ceoId,
         [FromQuery] int numeroPagina,
         [FromQuery] int tamanoPagina,
         CancellationToken cancellationToken)
     {
         PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
-        var resultado = await resultadoPaginaEmpresa.ObtenerPaginacionEmpresaAsync(parametros, cancellationToken);
+        var resultado = await resultadoPaginaEmpresa.ObtenerPaginacionEmpresaAsync(ceoId,parametros, cancellationToken);
         if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         
