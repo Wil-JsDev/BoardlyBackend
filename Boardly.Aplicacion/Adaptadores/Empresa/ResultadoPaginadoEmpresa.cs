@@ -14,7 +14,7 @@ public class ResultadoPaginadoEmpresa(
     IDistributedCache cache
 ) : IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>
 {
-    public async Task<ResultadoT<ResultadoPaginado<EmpresaDto>>> ObtenerPaginacionEmpresaAsync(PaginacionParametro solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<ResultadoPaginado<EmpresaDto>>> ObtenerPaginacionEmpresaAsync(Guid ceoId,PaginacionParametro solicitud, CancellationToken cancellationToken)
     {
         if (solicitud.TamanoPagina <= 0 || solicitud.NumeroPagina <= 0)
         {
@@ -27,7 +27,7 @@ public class ResultadoPaginadoEmpresa(
         }
         
         var resultadoPagina = await cache.ObtenerOCrearAsync($"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}", 
-            async () => await empresaRepositorio.ObtenerPaginadoAsync(solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken),
+            async () => await empresaRepositorio.ObtenerPaginasEmpresaAsync(ceoId,solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken),
             cancellationToken: cancellationToken
             );
         
