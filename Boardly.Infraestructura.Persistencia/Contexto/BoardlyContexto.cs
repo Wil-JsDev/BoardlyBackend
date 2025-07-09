@@ -235,6 +235,9 @@ public class BoardlyContexto: DbContext
                 .Property(rp => rp.RolProyectoId)
                 .HasColumnName("PkRolProyectoId");
 
+            modelBuilder.Entity<Actividad>()
+                .Property(a => a.ProyectoId)
+                .HasColumnName("FkProyectoId");
             
             #endregion
 
@@ -381,7 +384,11 @@ public class BoardlyContexto: DbContext
                 .HasForeignKey(epr => epr.RolProyectoId)
                 .IsRequired();
 
-
+            modelBuilder.Entity<Proyecto>()
+                .HasMany(p => p.Actividades)
+                .WithOne(a => a.Proyecto)
+                .HasForeignKey(p => p.ProyectoId)
+                .IsRequired();
 
             #endregion
             
