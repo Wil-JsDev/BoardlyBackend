@@ -66,7 +66,8 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IBorrarEmpleado, BorrarEmpleado>();
             servicios.AddScoped<IObtenerIdEmpleado<EmpleadoDto>, ObtenerIdEmpleado>(); 
             servicios.AddScoped<IResultadoPaginadoEmpleado<PaginacionParametro,EmpleadoDto>, ResultadoPaginadoEmpleado>(); 
-
+            servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>(); 
+            
         #endregion
         
         #region Codigo
