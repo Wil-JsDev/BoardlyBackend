@@ -25,7 +25,7 @@ public class CrearActividad(
         var proyecto = await proyectoRepositorio.ObtenerByIdAsync(solicitud.ProyectoId, cancellationToken);
         if (proyecto is null)
         {
-            logger.LogWarning("");
+            logger.LogWarning("El id del proyecto {ProyectoId} no fue encontrado", proyecto!.ProyectoId);
             
             return ResultadoT<ActividadDto>.Fallo(Error.NoEncontrado("404", "El proyecto especificado no fue encontrado."));
         }
