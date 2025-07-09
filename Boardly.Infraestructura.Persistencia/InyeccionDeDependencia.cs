@@ -50,8 +50,10 @@ public static class InyeccionDeDependencia
             servicio.AddTransient<IProyectoRepositorio,ProyectoRepositorio>();
             servicio.AddTransient<ITareaRepositorio, TareaRepositorio>();
             servicio.AddScoped<IObtenerRoles, ObtenerRoles>();
-            
-        #endregion
+            servicio.AddScoped<IObtenerCeoId, ObtenerCeoId>();
+            servicio.AddScoped<IObtenerEmpleadoId, ObtenerEmpleadoId>();
+
+            #endregion
 
     }
     
