@@ -2,900 +2,327 @@ namespace Boardly.Dominio.Utilidades;
 
 public static class EmailTemas
 {
-    public static string ConfirmarCuenta(string codigo, Guid usuarioId)
-    {
-        return $@"<!DOCTYPE html>
+public static string ConfirmarCuenta(string codigo, Guid usuarioId)
+{
+    return $@"<!DOCTYPE html>
 <html lang=""es"">
-
 <head>
-	<meta charset=""UTF-8"">
-	<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-	<title>Confirma tu cuenta - Boardly</title>
-	<link href=""https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap""
-		rel=""stylesheet"">
-	<style>
-		/* Reset */
-		* {{
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}}
-
-		body {{
-			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-			line-height: 1.6;
-			color: #ffffff;
-			background: linear-gradient(135deg, #0A0A0A 0%, #171717 50%, #0A0A0A 100%);
-			margin: 0;
-			padding: 0;
-			-webkit-font-smoothing: antialiased;
-			-moz-osx-font-smoothing: grayscale;
-		}}
-
-		.email-container {{
-			background: linear-gradient(135deg, #0A0A0A 0%, #171717 50%, #0A0A0A 100%);
-			min-height: 100vh;
-			padding: 40px 20px;
-		}}
-
-		.container {{
-			max-width: 600px;
-			margin: 0 auto;
-			background: rgba(38, 38, 38, 0.6);
-			backdrop-filter: blur(20px);
-			border: 1px solid rgba(82, 82, 82, 0.5);
-			border-radius: 24px;
-			overflow: hidden;
-			box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-		}}
-
-		.header {{
-			background: linear-gradient(135deg, #6366F1 0%, #06B6D4 50%, #10B981 100%);
-			padding: 48px 32px;
-			text-align: center;
-			position: relative;
-			overflow: hidden;
-		}}
-
-		.header::before {{
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(255, 255, 255, 0.1);
-			backdrop-filter: blur(10px);
-			z-index: 1;
-		}}
-
-		.header-content {{
-			position: relative;
-			z-index: 2;
-		}}
-
-		.logo {{
-			width: 80px;
-			height: 80px;
-			background: rgba(255, 255, 255, 0.2);
-			border-radius: 20px;
-			margin: 0 auto 24px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}}
-
-		.logo-text {{
-			font-size: 32px;
-			font-weight: 800;
-			color: white;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		}}
-
-		.brand-name {{
-			font-size: 36px;
-			font-weight: 800;
-			margin-bottom: 8px;
-			background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}}
-
-		.brand-tagline {{
-			font-size: 16px;
-			opacity: 0.9;
-			font-weight: 500;
-			color: rgba(255, 255, 255, 0.9);
-		}}
-
-		.content {{
-			padding: 48px 32px;
-			background: rgba(23, 23, 23, 0.6);
-			backdrop-filter: blur(20px);
-		}}
-
-		.welcome-section {{
-			text-align: center;
-			margin-bottom: 40px;
-		}}
-
-		.welcome-title {{
-			font-size: 28px;
-			font-weight: 700;
-			margin-bottom: 16px;
-			background: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-		}}
-
-		.welcome-text {{
-			color: #a3a3a3;
-			font-size: 16px;
-			line-height: 1.6;
-			max-width: 480px;
-			margin: 0 auto;
-		}}
-
-		.verification-container {{
-			background: rgba(38, 38, 38, 0.8);
-			border: 1px solid rgba(82, 82, 82, 0.5);
-			border-radius: 24px;
-			padding: 40px 32px;
-			text-align: center;
-			margin: 40px 0;
-			position: relative;
-			overflow: hidden;
-		}}
-
-		.verification-container::before {{
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 2px;
-			background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), rgba(6, 182, 212, 0.8), rgba(16, 185, 129, 0.8), transparent);
-		}}
-
-		.verification-label {{
-			font-size: 14px;
-			color: #a3a3a3;
-			font-weight: 600;
-			margin-bottom: 20px;
-			text-transform: uppercase;
-			letter-spacing: 2px;
-		}}
-
-		.verification-code {{
-			font-size: 56px;
-			font-weight: 800;
-			letter-spacing: 12px;
-			margin: 24px 0 32px;
-			background: linear-gradient(135deg, #6366F1 0%, #06B6D4 50%, #10B981 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			font-family: 'Inter', monospace;
-			text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-		}}
-
-		.verification-note {{
-			font-size: 14px;
-			color: #737373;
-			background: rgba(99, 102, 241, 0.1);
-			border: 1px solid rgba(99, 102, 241, 0.2);
-			border-radius: 16px;
-			padding: 20px;
-			margin-top: 20px;
-			line-height: 1.5;
-		}}
-
-		.instructions {{
-			background: rgba(38, 38, 38, 0.6);
-			border: 1px solid rgba(82, 82, 82, 0.3);
-			border-radius: 20px;
-			padding: 32px;
-			margin: 40px 0;
-		}}
-
-		.instructions-title {{
-			font-size: 20px;
-			font-weight: 700;
-			margin-bottom: 20px;
-			color: #ffffff;
-		}}
-
-		.instructions ol {{
-			color: #d4d4d4;
-			font-size: 15px;
-			line-height: 1.8;
-			padding-left: 24px;
-		}}
-
-		.instructions li {{
-			margin-bottom: 12px;
-			font-weight: 500;
-		}}
-
-		.security-notice {{
-			background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-			border: 1px solid rgba(239, 68, 68, 0.2);
-			border-radius: 20px;
-			padding: 32px;
-			margin: 40px 0;
-			text-align: center;
-		}}
-
-		.security-icon {{
-			width: 56px;
-			height: 56px;
-			background: rgba(239, 68, 68, 0.2);
-			border-radius: 16px;
-			margin: 0 auto 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}}
-
-		.security-title {{
-			font-size: 18px;
-			font-weight: 700;
-			color: #EF4444;
-			margin-bottom: 12px;
-		}}
-
-		.security-text {{
-			font-size: 14px;
-			color: #a3a3a3;
-			line-height: 1.6;
-		}}
-
-		.footer {{
-			background: rgba(10, 10, 10, 0.8);
-			padding: 40px 32px;
-			text-align: center;
-			border-top: 1px solid rgba(82, 82, 82, 0.3);
-		}}
-
-		.footer-content {{
-			margin-bottom: 32px;
-		}}
-
-		.footer-title {{
-			font-size: 18px;
-			font-weight: 700;
-			margin-bottom: 12px;
-			color: #ffffff;
-		}}
-
-		.footer-text {{
-			font-size: 14px;
-			color: #737373;
-			line-height: 1.6;
-			max-width: 400px;
-			margin: 0 auto;
-		}}
-
-		.footer-links {{
-			display: flex;
-			justify-content: center;
-			gap: 32px;
-			margin: 32px 0;
-			flex-wrap: wrap;
-		}}
-
-		.footer-links a {{
-			color: #6366F1;
-			text-decoration: none;
-			font-size: 14px;
-			font-weight: 600;
-			transition: color 0.3s ease;
-		}}
-
-		.footer-links a:hover {{
-			color: #10B981;
-		}}
-
-		.footer-bottom {{
-			border-top: 1px solid rgba(82, 82, 82, 0.3);
-			padding-top: 32px;
-			font-size: 12px;
-			color: #525252;
-			line-height: 1.5;
-		}}
-
-		.footer-bottom p {{
-			margin-bottom: 8px;
-		}}
-
-		/* Responsive */
-		@media (max-width: 640px) {{
-			.email-container {{
-				padding: 20px 16px;
-			}}
-
-			.container {{
-				border-radius: 16px;
-			}}
-
-			.header {{
-				padding: 40px 24px;
-			}}
-
-			.content {{
-				padding: 40px 24px;
-			}}
-
-			.verification-code {{
-				font-size: 42px;
-				letter-spacing: 8px;
-			}}
-
-			.brand-name {{
-				font-size: 28px;
-			}}
-
-			.welcome-title {{
-				font-size: 24px;
-			}}
-
-			.footer {{
-				padding: 32px 24px;
-			}}
-
-			.footer-links {{
-				gap: 20px;
-				flex-direction: column;
-				align-items: center;
-			}}
-		}}
-	</style>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>✨ Confirma tu cuenta - Boardly</title>
+    <link href=""https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@600&display=swap"" rel=""stylesheet"">
+    <style>
+        @keyframes fadeIn {{
+            0% {{ opacity: 0; transform: translateY(20px) scale(0.95); }}
+            100% {{ opacity: 1; transform: translateY(0) scale(1); }}
+        }}
+        @keyframes float {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-10px); }}
+        }}
+        @keyframes pulse {{
+            0%, 100% {{ box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }}
+            70% {{ box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }}
+        }}
+        @keyframes gradientFlow {{
+            0% {{ background-position: 0% 50%; }}
+            50% {{ background-position: 100% 50%; }}
+            100% {{ background-position: 0% 50%; }}
+        }}
+        .email-container {{
+            animation: fadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }}
+        .verification-card {{
+            animation: float 6s ease-in-out infinite;
+        }}
+        .verification-code {{
+            animation: pulse 2s infinite;
+        }}
+        .gradient-header {{
+            background: linear-gradient(90deg, #6366F1, #06B6D4, #10B981);
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite;
+            height: 8px;
+        }}
+        .gradient-border {{
+            position: relative;
+            z-index: 1;
+        }}
+        .gradient-border::before {{
+            content: '';
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            padding: 2px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #6366F1, #06B6D4, #10B981, #6366F1);
+            background-size: 300% 300%;
+            animation: gradientFlow 8s ease infinite;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }}
+    </style>
 </head>
-
-<body>
-	<div class=""email-container"">
-		<div class=""container"">
-			<!-- Header -->
-			<div class=""header"">
-				<div class=""header-content"">
-					<div class=""logo"">
-						<div class=""logo-text"">B</div>
-					</div>
-					<h1 class=""brand-name"">Boardly</h1>
-					<p class=""brand-tagline"">Organiza tus proyectos fácilmente</p>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div class=""content"">
-				<div class=""welcome-section"">
-					<h2 class=""welcome-title"">¡Bienvenido a Boardly!</h2>
-					<p class=""welcome-text"">
-						Estás a un paso de comenzar a organizar tus proyectos de manera simple y efectiva.
-						Usa el código de verificación a continuación para confirmar tu dirección de email y
-						acceder a todas las funcionalidades de la plataforma.
-					</p>
-				</div>
-
-				<!-- Verification Code Container -->
-				<div class=""verification-container"">
-					<div class=""verification-label"">Código de Verificación</div>
-					<div class=""verification-code"">{codigo}</div>
-					<div class=""verification-note"">
-						<strong>Este código expira en 15 minutos</strong><br>
-						Por tu seguridad, no compartas este código con nadie más.
-					</div>
-				</div>
-
-				<!-- Instructions -->
-				<div class=""instructions"">
-					<h3 class=""instructions-title"">Cómo confirmar tu cuenta:</h3>
-					<ol>
-						<li>Regresa a la aplicación Boardly en tu navegador</li>
-						<li>Ingresa el código de 6 dígitos mostrado arriba en el campo correspondiente</li>
-						<li>Haz clic en ""Verificar Código"" para completar el proceso</li>
-						<li>¡Listo! Tu cuenta estará confirmada y podrás comenzar a crear proyectos</li>
-					</ol>
-				</div>
-
-				<!-- Security Notice -->
-				<div class=""security-notice"">
-					<div class=""security-icon"">
-						<svg width=""28"" height=""28"" viewBox=""0 0 24 24"" fill=""none"" stroke=""currentColor"" stroke-width=""2""
-							stroke-linecap=""round"" stroke-linejoin=""round"" style=""color: #EF4444;"">
-							<path d=""M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"" />
-							<path d=""M9 12l2 2 4-4"" />
-						</svg>
-					</div>
-					<h4 class=""security-title"">Importante: Seguridad de tu cuenta</h4>
-					<p class=""security-text"">
-						Si no solicitaste este código de verificación, puedes ignorar este email de forma segura.
-						Tu cuenta permanecerá protegida. Este código es válido únicamente por 15 minutos.
-					</p>
-				</div>
-			</div>
-
-			<!-- Footer -->
-			<div class=""footer"">
-				<div class=""footer-content"">
-					<h4 class=""footer-title"">¿Necesitas ayuda?</h4>
-					<p class=""footer-text"">
-						Si tienes problemas para verificar tu cuenta o necesitas asistencia,
-						nuestro equipo de soporte está disponible para ayudarte.
-					</p>
-				</div>
-
-				<div class=""footer-links"">
-					<a href=""#"">Centro de Ayuda</a>
-					<a href=""#"">Contactar Soporte</a>
-					<a href=""#"">Tutoriales</a>
-					<a href=""#"">Estado del Servicio</a>
-				</div>
-
-				<div class=""footer-bottom"">
-					<p>© 2025 Boardly. Todos los derechos reservados.</p>
-					<p>Gestión de proyectos simplificada.</p>
-					<p>Este es un email automático, por favor no respondas a esta dirección.</p>
-				</div>
-			</div>
-		</div>
-	</div>
+<body style=""margin:0;padding:20px;background:#050505;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;"">
+    <table width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"">
+        <tr>
+            <td align=""center"">
+                <!-- Contenedor principal con efecto neón -->
+                <div class=""email-container gradient-border"" style=""max-width:520px;margin:0 auto;background:#0A0A0A;border-radius:24px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);"">
+                    
+                    <!-- Marco superior con degradado animado -->
+                    <div class=""gradient-header"" style=""width:100%;""></div>
+                    
+                    <!-- Encabezado futurista -->
+                    <div style=""padding:50px 30px 40px;text-align:center;background:#111111;position:relative;overflow:hidden;"">
+                        <div style=""position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 70% 30%,rgba(99,102,241,0.1) 0%,transparent 70%);""></div>
+                        <h1 style=""font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;color:transparent;background:linear-gradient(90deg,#FFFFFF,#6366F1);-webkit-background-clip:text;background-clip:text;margin-bottom:12px;"">CONFIRMACIÓN REQUERIDA</h1>
+                        <p style=""font-size:14px;color:#A1A1AA;letter-spacing:1px;margin:0;"">Tu acceso a Boardly está a un paso</p>
+                    </div>
+                    
+                    <!-- Contenido principal -->
+                    <div class=""content"" style=""padding:40px 30px;text-align:center;background:#0A0A0A;"">
+                        
+                        <!-- Tarjeta de verificación flotante -->
+                        <div class=""verification-card"" style=""margin-bottom:40px;"">
+                            <div style=""font-size:13px;color:#A1A1AA;margin-bottom:20px;letter-spacing:2px;text-transform:uppercase;"">CÓDIGO DE ACCESO</div>
+                            
+                            <!-- Código con efecto de pulso -->
+                            <div class=""verification-code"" style=""font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:#FFFFFF;letter-spacing:0.25em;padding:30px;margin:0 auto 25px;background:#111111;border-radius:16px;display:inline-block;position:relative;border:1px solid #252525;"">
+                                <div style=""position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6366F1,#06B6D4);""></div>
+                                {codigo}
+                                <div style=""position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6366F1,#06B6D4);""></div>
+                            </div>
+                            
+                            <!-- Tiempo de expiración -->
+                            <div style=""display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,0.1);color:#F59E0B;padding:10px 24px;border-radius:50px;font-size:14px;font-weight:600;border:1px solid rgba(245,158,11,0.2);"">
+                                <svg width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" xmlns=""http://www.w3.org/2000/svg"">
+                                    <path d=""M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"" stroke=""#F59E0B"" stroke-width=""1.5"" stroke-linecap=""round"" stroke-linejoin=""round""/>
+                                </svg>
+                                <span>EXPIRA EN 15 MINUTOS</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Instrucciones con efecto de aparición -->
+                        <div style=""max-width:400px;margin:0 auto 40px;animation:fadeIn 0.8s 0.2s both;"">
+                            <p style=""font-size:15px;color:#D4D4D4;line-height:1.7;margin-bottom:0;"">
+                                Ingresa este código único en la aplicación Boardly para activar tu cuenta y comenzar a organizar tus proyectos como un profesional.
+                            </p>
+                        </div>
+                        
+                        <!-- Separador dinámico -->
+                        <div style=""height:1px;background:linear-gradient(90deg,transparent,#6366F1,#06B6D4,transparent);margin:40px 0;opacity:0.3;""></div>
+                        
+                        <!-- Aviso de seguridad destacado -->
+                        <div style=""background:rgba(239,68,68,0.05);border-radius:16px;padding:24px;text-align:left;border:1px solid rgba(239,68,68,0.2);position:relative;overflow:hidden;"">
+                            <div style=""position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#EF4444,#DC2626);""></div>
+                            <div style=""display:flex;align-items:flex-start;gap:16px;"">
+                                <div style=""flex-shrink:0;width:24px;height:24px;background:#EF4444;border-radius:6px;display:flex;align-items:center;justify-content:center;"">
+                                    <svg width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" xmlns=""http://www.w3.org/2000/svg"">
+                                        <path d=""M12 9V11M12 15H12.01M10 4H14C16.2091 4 18 5.79086 18 8V18C18 20.2091 16.2091 22 14 22H10C7.79086 22 6 20.2091 6 18V8C6 5.79086 7.79086 4 10 4Z"" stroke=""white"" stroke-width=""1.5"" stroke-linecap=""round"" stroke-linejoin=""round""/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 style=""font-size:16px;font-weight:700;color:#EF4444;margin-bottom:8px;"">ADVERTENCIA DE SEGURIDAD</h3>
+                                    <p style=""font-size:14px;color:#A1A1AA;line-height:1.6;margin:0;"">
+                                        Este código es personal e intransferible. Por seguridad, nunca lo compartas con nadie. El equipo de Boardly nunca te lo pedirá por otros medios.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pie de página minimalista -->
+                    <div style=""padding:30px;text-align:center;border-top:1px solid #1F1F1F;background:#0A0A0A;"">
+                        <p style=""font-size:12px;color:#52525B;margin:0;"">© {DateTime.Now.Year} Boardly Technologies · Todos los derechos reservados</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
+</html>
+";
+}
 
-</html>";
-    }
-
-    public static string OlvidarContrasena(string codigo, Guid usuarioId)
-    {
-                return $@"<!DOCTYPE html>
+public static string OlvidarContrasena(string codigo, Guid usuarioId)
+{
+    return $@"<!DOCTYPE html>
 <html lang=""es"">
-
 <head>
-	<meta charset=""UTF-8"">
-	<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-	<title>Confirma tu cuenta - Boardly</title>
-	<link href=""https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap""
-		rel=""stylesheet"">
-	<style>
-		/* Reset */
-		* {{
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}}
-
-		body {{
-			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-			line-height: 1.6;
-			color: #ffffff;
-			background: linear-gradient(135deg, #0A0A0A 0%, #171717 50%, #0A0A0A 100%);
-			margin: 0;
-			padding: 0;
-			-webkit-font-smoothing: antialiased;
-			-moz-osx-font-smoothing: grayscale;
-		}}
-
-		.email-container {{
-			background: linear-gradient(135deg, #0A0A0A 0%, #171717 50%, #0A0A0A 100%);
-			min-height: 100vh;
-			padding: 40px 20px;
-		}}
-
-		.container {{
-			max-width: 600px;
-			margin: 0 auto;
-			background: rgba(38, 38, 38, 0.6);
-			backdrop-filter: blur(20px);
-			border: 1px solid rgba(82, 82, 82, 0.5);
-			border-radius: 24px;
-			overflow: hidden;
-			box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-		}}
-
-		.header {{
-			background: linear-gradient(135deg, #6366F1 0%, #06B6D4 50%, #10B981 100%);
-			padding: 48px 32px;
-			text-align: center;
-			position: relative;
-			overflow: hidden;
-		}}
-
-		.header::before {{
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(255, 255, 255, 0.1);
-			backdrop-filter: blur(10px);
-			z-index: 1;
-		}}
-
-		.header-content {{
-			position: relative;
-			z-index: 2;
-		}}
-
-		.logo {{
-			width: 80px;
-			height: 80px;
-			background: rgba(255, 255, 255, 0.2);
-			border-radius: 20px;
-			margin: 0 auto 24px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}}
-
-		.logo-text {{
-			font-size: 32px;
-			font-weight: 800;
-			color: white;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-		}}
-
-		.brand-name {{
-			font-size: 36px;
-			font-weight: 800;
-			margin-bottom: 8px;
-			background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}}
-
-		.brand-tagline {{
-			font-size: 16px;
-			opacity: 0.9;
-			font-weight: 500;
-			color: rgba(255, 255, 255, 0.9);
-		}}
-
-		.content {{
-			padding: 48px 32px;
-			background: rgba(23, 23, 23, 0.6);
-			backdrop-filter: blur(20px);
-		}}
-
-		.welcome-section {{
-			text-align: center;
-			margin-bottom: 40px;
-		}}
-
-		.welcome-title {{
-			font-size: 28px;
-			font-weight: 700;
-			margin-bottom: 16px;
-			background: linear-gradient(135deg, #ffffff 0%, #d4d4d4 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-		}}
-
-		.welcome-text {{
-			color: #a3a3a3;
-			font-size: 16px;
-			line-height: 1.6;
-			max-width: 480px;
-			margin: 0 auto;
-		}}
-
-		.verification-container {{
-			background: rgba(38, 38, 38, 0.8);
-			border: 1px solid rgba(82, 82, 82, 0.5);
-			border-radius: 24px;
-			padding: 40px 32px;
-			text-align: center;
-			margin: 40px 0;
-			position: relative;
-			overflow: hidden;
-		}}
-
-		.verification-container::before {{
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 2px;
-			background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), rgba(6, 182, 212, 0.8), rgba(16, 185, 129, 0.8), transparent);
-		}}
-
-		.verification-label {{
-			font-size: 14px;
-			color: #a3a3a3;
-			font-weight: 600;
-			margin-bottom: 20px;
-			text-transform: uppercase;
-			letter-spacing: 2px;
-		}}
-
-		.verification-code {{
-			font-size: 56px;
-			font-weight: 800;
-			letter-spacing: 12px;
-			margin: 24px 0 32px;
-			background: linear-gradient(135deg, #6366F1 0%, #06B6D4 50%, #10B981 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			font-family: 'Inter', monospace;
-			text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-		}}
-
-		.verification-note {{
-			font-size: 14px;
-			color: #737373;
-			background: rgba(99, 102, 241, 0.1);
-			border: 1px solid rgba(99, 102, 241, 0.2);
-			border-radius: 16px;
-			padding: 20px;
-			margin-top: 20px;
-			line-height: 1.5;
-		}}
-
-		.instructions {{
-			background: rgba(38, 38, 38, 0.6);
-			border: 1px solid rgba(82, 82, 82, 0.3);
-			border-radius: 20px;
-			padding: 32px;
-			margin: 40px 0;
-		}}
-
-		.instructions-title {{
-			font-size: 20px;
-			font-weight: 700;
-			margin-bottom: 20px;
-			color: #ffffff;
-		}}
-
-		.instructions ol {{
-			color: #d4d4d4;
-			font-size: 15px;
-			line-height: 1.8;
-			padding-left: 24px;
-		}}
-
-		.instructions li {{
-			margin-bottom: 12px;
-			font-weight: 500;
-		}}
-
-		.security-notice {{
-			background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-			border: 1px solid rgba(239, 68, 68, 0.2);
-			border-radius: 20px;
-			padding: 32px;
-			margin: 40px 0;
-			text-align: center;
-		}}
-
-		.security-icon {{
-			width: 56px;
-			height: 56px;
-			background: rgba(239, 68, 68, 0.2);
-			border-radius: 16px;
-			margin: 0 auto 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}}
-
-		.security-title {{
-			font-size: 18px;
-			font-weight: 700;
-			color: #EF4444;
-			margin-bottom: 12px;
-		}}
-
-		.security-text {{
-			font-size: 14px;
-			color: #a3a3a3;
-			line-height: 1.6;
-		}}
-
-		.footer {{
-			background: rgba(10, 10, 10, 0.8);
-			padding: 40px 32px;
-			text-align: center;
-			border-top: 1px solid rgba(82, 82, 82, 0.3);
-		}}
-
-		.footer-content {{
-			margin-bottom: 32px;
-		}}
-
-		.footer-title {{
-			font-size: 18px;
-			font-weight: 700;
-			margin-bottom: 12px;
-			color: #ffffff;
-		}}
-
-		.footer-text {{
-			font-size: 14px;
-			color: #737373;
-			line-height: 1.6;
-			max-width: 400px;
-			margin: 0 auto;
-		}}
-
-		.footer-links {{
-			display: flex;
-			justify-content: center;
-			gap: 32px;
-			margin: 32px 0;
-			flex-wrap: wrap;
-		}}
-
-		.footer-links a {{
-			color: #6366F1;
-			text-decoration: none;
-			font-size: 14px;
-			font-weight: 600;
-			transition: color 0.3s ease;
-		}}
-
-		.footer-links a:hover {{
-			color: #10B981;
-		}}
-
-		.footer-bottom {{
-			border-top: 1px solid rgba(82, 82, 82, 0.3);
-			padding-top: 32px;
-			font-size: 12px;
-			color: #525252;
-			line-height: 1.5;
-		}}
-
-		.footer-bottom p {{
-			margin-bottom: 8px;
-		}}
-
-		/* Responsive */
-		@media (max-width: 640px) {{
-			.email-container {{
-				padding: 20px 16px;
-			}}
-
-			.container {{
-				border-radius: 16px;
-			}}
-
-			.header {{
-				padding: 40px 24px;
-			}}
-
-			.content {{
-				padding: 40px 24px;
-			}}
-
-			.verification-code {{
-				font-size: 42px;
-				letter-spacing: 8px;
-			}}
-
-			.brand-name {{
-				font-size: 28px;
-			}}
-
-			.welcome-title {{
-				font-size: 24px;
-			}}
-
-			.footer {{
-				padding: 32px 24px;
-			}}
-
-			.footer-links {{
-				gap: 20px;
-				flex-direction: column;
-				align-items: center;
-			}}
-		}}
-	</style>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>🔑 Restablece tu contraseña - Boardly</title>
+    <link href=""https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@600&display=swap"" rel=""stylesheet"">
+    <style>
+        @keyframes fadeIn {{
+            0% {{ opacity: 0; transform: translateY(20px) scale(0.95); }}
+            100% {{ opacity: 1; transform: translateY(0) scale(1); }}
+        }}
+        @keyframes float {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-10px); }}
+        }}
+        @keyframes pulse {{
+            0%, 100% {{ box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }}
+            70% {{ box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }}
+        }}
+        @keyframes gradientFlow {{
+            0% {{ background-position: 0% 50%; }}
+            50% {{ background-position: 100% 50%; }}
+            100% {{ background-position: 0% 50%; }}
+        }}
+        .email-container {{
+            animation: fadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }}
+        .verification-card {{
+            animation: float 6s ease-in-out infinite;
+        }}
+        .verification-code {{
+            animation: pulse 2s infinite;
+        }}
+        .gradient-header {{
+            background: linear-gradient(90deg, #6366F1, #06B6D4, #10B981);
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite;
+            height: 8px;
+        }}
+        .gradient-border {{
+            position: relative;
+            z-index: 1;
+        }}
+        .gradient-border::before {{
+            content: '';
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            padding: 2px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #6366F1, #06B6D4, #10B981, #6366F1);
+            background-size: 300% 300%;
+            animation: gradientFlow 8s ease infinite;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }}
+        .btn-primary {{
+            background: linear-gradient(135deg, #6366F1, #06B6D4);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }}
+        .btn-primary:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+        }}
+    </style>
 </head>
-
-<body>
-	<div class=""email-container"">
-		<div class=""container"">
-			<!-- Header -->
-			<div class=""header"">
-				<div class=""header-content"">
-					<div class=""logo"">
-						<div class=""logo-text"">B</div>
-					</div>
-					<h1 class=""brand-name"">Boardly</h1>
-					<p class=""brand-tagline"">Organiza tus proyectos fácilmente</p>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div class=""content"">
-				<div class=""welcome-section"">
-					<h2 class=""welcome-title"">¡Bienvenido a Boardly!</h2>
-					<p class=""welcome-text"">
-						Estás a un paso de comenzar a organizar tus proyectos de manera simple y efectiva.
-						Usa el código de verificación a continuación para confirmar tu dirección de email y
-						acceder a todas las funcionalidades de la plataforma.
-					</p>
-				</div>
-
-				<!-- Verification Code Container -->
-				<div class=""verification-container"">
-					<div class=""verification-label"">Código de Verificación</div>
-					<div class=""verification-code"">{codigo}</div>
-					<div class=""verification-note"">
-						<strong>Este código expira en 15 minutos</strong><br>
-						Por tu seguridad, no compartas este código con nadie más.
-					</div>
-				</div>
-
-				<!-- Instructions -->
-				<div class=""instructions"">
-					<h3 class=""instructions-title"">Cómo confirmar tu cuenta:</h3>
-					<ol>
-						<li>Regresa a la aplicación Boardly en tu navegador</li>
-						<li>Ingresa el código de 6 dígitos mostrado arriba en el campo correspondiente</li>
-						<li>Haz clic en ""Verificar Código"" para completar el proceso</li>
-						<li>¡Listo! Tu cuenta estará confirmada y podrás comenzar a crear proyectos</li>
-					</ol>
-				</div>
-
-				<!-- Security Notice -->
-				<div class=""security-notice"">
-					<div class=""security-icon"">
-						<svg width=""28"" height=""28"" viewBox=""0 0 24 24"" fill=""none"" stroke=""currentColor"" stroke-width=""2""
-							stroke-linecap=""round"" stroke-linejoin=""round"" style=""color: #EF4444;"">
-							<path d=""M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"" />
-							<path d=""M9 12l2 2 4-4"" />
-						</svg>
-					</div>
-					<h4 class=""security-title"">Importante: Seguridad de tu cuenta</h4>
-					<p class=""security-text"">
-						Si no solicitaste este código de verificación, puedes ignorar este email de forma segura.
-						Tu cuenta permanecerá protegida. Este código es válido únicamente por 15 minutos.
-					</p>
-				</div>
-			</div>
-
-			<!-- Footer -->
-			<div class=""footer"">
-				<div class=""footer-content"">
-					<h4 class=""footer-title"">¿Necesitas ayuda?</h4>
-					<p class=""footer-text"">
-						Si tienes problemas para verificar tu cuenta o necesitas asistencia,
-						nuestro equipo de soporte está disponible para ayudarte.
-					</p>
-				</div>
-
-				<div class=""footer-links"">
-					<a href=""#"">Centro de Ayuda</a>
-					<a href=""#"">Contactar Soporte</a>
-					<a href=""#"">Tutoriales</a>
-					<a href=""#"">Estado del Servicio</a>
-				</div>
-
-				<div class=""footer-bottom"">
-					<p>© 2025 Boardly. Todos los derechos reservados.</p>
-					<p>Gestión de proyectos simplificada.</p>
-					<p>Este es un email automático, por favor no respondas a esta dirección.</p>
-				</div>
-			</div>
-		</div>
-	</div>
+<body style=""margin:0;padding:20px;background:#050505;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;"">
+    <table width=""100%"" cellspacing=""0"" cellpadding=""0"" border=""0"">
+        <tr>
+            <td align=""center"">
+                <!-- Contenedor principal con efecto neón -->
+                <div class=""email-container gradient-border"" style=""max-width:520px;margin:0 auto;background:#0A0A0A;border-radius:24px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);"">
+                    
+                    <!-- Marco superior con degradado animado -->
+                    <div class=""gradient-header"" style=""width:100%;""></div>
+                    
+                    <!-- Encabezado futurista -->
+                    <div style=""padding:50px 30px 40px;text-align:center;background:#111111;position:relative;overflow:hidden;"">
+                        <div style=""position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 70% 30%,rgba(99,102,241,0.1) 0%,transparent 70%);""></div>
+                        <h1 style=""font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;color:transparent;background:linear-gradient(90deg,#FFFFFF,#6366F1);-webkit-background-clip:text;background-clip:text;margin-bottom:12px;"">RESTABLECER CONTRASEÑA</h1>
+                        <p style=""font-size:14px;color:#A1A1AA;letter-spacing:1px;margin:0;"">Hemos recibido una solicitud para restablecer tu contraseña</p>
+                    </div>
+                    
+                    <!-- Contenido principal -->
+                    <div class=""content"" style=""padding:40px 30px;text-align:center;background:#0A0A0A;"">
+                        
+                        <!-- Mensaje introductorio -->
+                        <div style=""margin-bottom:30px;"">
+                            <p style=""font-size:15px;color:#D4D4D4;line-height:1.7;"">
+                                Usa el siguiente código para verificar tu identidad y crear una nueva contraseña segura.
+                            </p>
+                        </div>
+                        
+                        <!-- Tarjeta de verificación flotante -->
+                        <div class=""verification-card"" style=""margin-bottom:40px;"">
+                            <div style=""font-size:13px;color:#A1A1AA;margin-bottom:20px;letter-spacing:2px;text-transform:uppercase;"">CÓDIGO DE VERIFICACIÓN</div>
+                            
+                            <!-- Código con efecto de pulso -->
+                            <div class=""verification-code"" style=""font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;color:#FFFFFF;letter-spacing:0.25em;padding:30px;margin:0 auto 25px;background:#111111;border-radius:16px;display:inline-block;position:relative;border:1px solid #252525;"">
+                                <div style=""position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6366F1,#06B6D4);""></div>
+                                {codigo}
+                                <div style=""position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6366F1,#06B6D4);""></div>
+                            </div>
+                            
+                            <!-- Tiempo de expiración -->
+                            <div style=""display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,0.1);color:#F59E0B;padding:10px 24px;border-radius:50px;font-size:14px;font-weight:600;border:1px solid rgba(245,158,11,0.2);"">
+                                <svg width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" xmlns=""http://www.w3.org/2000/svg"">
+                                    <path d=""M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"" stroke=""#F59E0B"" stroke-width=""1.5"" stroke-linecap=""round"" stroke-linejoin=""round""/>
+                                </svg>
+                                <span>EXPIRA EN 15 MINUTOS</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de acción -->
+                        <a href=""https://boardly.com/reset-password?code={codigo}&userId={usuarioId}"" class=""btn-primary"" style=""color:white;text-decoration:none;"">
+                            RESTABLECER CONTRASEÑA
+                        </a>
+                        
+                        <!-- Instrucciones -->
+                        <div style=""max-width:400px;margin:0 auto 30px;animation:fadeIn 0.8s 0.2s both;"">
+                            <p style=""font-size:14px;color:#A1A1AA;line-height:1.7;"">
+                                O copia y pega este enlace en tu navegador:<br>
+                                <span style=""font-family:'Courier New',monospace;font-size:13px;color:#6366F1;word-break:break-all;"">
+                                    https://boardly.com/reset-password?code={codigo}&userId={usuarioId}
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <!-- Separador dinámico -->
+                        <div style=""height:1px;background:linear-gradient(90deg,transparent,#6366F1,#06B6D4,transparent);margin:40px 0;opacity:0.3;""></div>
+                        
+                        <!-- Aviso de seguridad destacado -->
+                        <div style=""background:rgba(239,68,68,0.05);border-radius:16px;padding:24px;text-align:left;border:1px solid rgba(239,68,68,0.2);position:relative;overflow:hidden;"">
+                            <div style=""position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#EF4444,#DC2626);""></div>
+                            <div style=""display:flex;align-items:flex-start;gap:16px;"">
+                                <div style=""flex-shrink:0;width:24px;height:24px;background:#EF4444;border-radius:6px;display:flex;align-items:center;justify-content:center;"">
+                                    <svg width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" xmlns=""http://www.w3.org/2000/svg"">
+                                        <path d=""M12 9V11M12 15H12.01M10 4H14C16.2091 4 18 5.79086 18 8V18C18 20.2091 16.2091 22 14 22H10C7.79086 22 6 20.2091 6 18V8C6 5.79086 7.79086 4 10 4Z"" stroke=""white"" stroke-width=""1.5"" stroke-linecap=""round"" stroke-linejoin=""round""/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 style=""font-size:16px;font-weight:700;color:#EF4444;margin-bottom:8px;"">IMPORTANTE</h3>
+                                    <p style=""font-size:14px;color:#A1A1AA;line-height:1.6;margin:0;"">
+                                        Si no solicitaste restablecer tu contraseña, ignora este email o contacta a nuestro equipo de soporte inmediatamente.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pie de página minimalista -->
+                    <div style=""padding:30px;text-align:center;border-top:1px solid #1F1F1F;background:#0A0A0A;"">
+                        <p style=""font-size:12px;color:#52525B;margin:0;"">© {DateTime.Now.Year} Boardly Technologies · Todos los derechos reservados</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
-
-</html>";
-    }
+</html>
+";
+}
     
 }
