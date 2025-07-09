@@ -8,7 +8,8 @@ namespace Boardly.Aplicacion.Adaptadores.Actividad;
 
 public class CrearActividad(
     ILogger<CrearActividad> logger,
-    IActividadRepositorio actividadRepositorio
+    IActividadRepositorio actividadRepositorio,
+    IProyectoRepositorio proyectoRepositorio
     ) : ICrearActividad<CrearActividaDto, ActividadDto>
 {
     public async Task<ResultadoT<ActividadDto>> CrearActividadAsync(CrearActividaDto solicitud, CancellationToken cancellationToken)
@@ -19,6 +20,14 @@ public class CrearActividad(
         
             return ResultadoT<ActividadDto>.Fallo(
                 Error.Fallo("400", "La solicitud no puede ser nula."));
+        }
+        
+        var proyecto = await proyectoRepositorio.ObtenerByIdAsync(solicitud.ProyectoId, cancellationToken);
+        if (proyecto is null)
+        {
+            logger.LogWarning("");
+            
+            return ResultadoT<ActividadDto>.Fallo(Error.NoEncontrado("404", "El proyecto especificado no fue encontrado."));
         }
 
         if (await actividadRepositorio.ExisteNombreActividadAsync(solicitud.Nombre, cancellationToken))
@@ -32,6 +41,7 @@ public class CrearActividad(
         Dominio.Modelos.Actividad actividadEntidad = new()
         {
             ActividadId = Guid.NewGuid(),
+            ProyectoId = solicitud.ProyectoId,
             Nombre = solicitud.Nombre,
             Prioridad = nameof(solicitud.Prioridad), 
             Descripcion = solicitud.Descripcion,
@@ -48,6 +58,7 @@ public class CrearActividad(
         ActividadDto actividadDto = new
         (
             actividadEntidad.ActividadId,
+            actividadEntidad.ProyectoId,
             actividadEntidad.Nombre!,
             actividadEntidad.Prioridad!,
             actividadEntidad.Descripcion!,

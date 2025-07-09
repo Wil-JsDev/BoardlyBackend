@@ -39,6 +39,7 @@ public class ResultadoPaginadoActividad(
         var actividades = resultadoPagina.Elementos!
             .Select(x => new ActividadDto(
                 ActividadId: x.ActividadId,
+                ProyectoId: x.ProyectoId,       
                 Nombre: x.Nombre!,
                 Prioridad: x.Prioridad!,
                 Descripcion: x.Descripcion!,

@@ -44,6 +44,7 @@ public class ActualizarActividad(
         ActividadDto actividadDto = new
         (
             actividad.ActividadId,
+            actividad.ProyectoId,       
             actividad.Nombre!,
             actividad.Prioridad!, 
             actividad.Descripcion!,

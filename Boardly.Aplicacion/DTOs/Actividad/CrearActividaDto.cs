@@ -4,6 +4,7 @@ namespace Boardly.Aplicacion.DTOs.Actividad;
 
 public sealed record CrearActividaDto
 (
+    Guid ProyectoId,   
     string Nombre,
     ActividadPrioridad Prioridad,
     string Descripcion,
