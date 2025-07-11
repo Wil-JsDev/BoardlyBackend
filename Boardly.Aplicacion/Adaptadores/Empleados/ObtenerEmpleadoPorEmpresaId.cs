@@ -26,8 +26,11 @@ public class ObtenerEmpleadoPorEmpresaId(
                 Error.NoEncontrado("404", "Empresa no encontrada."));
         }
 
-        var empleados = await empleadoRepositorio.ObtenerPorEmpresaIdAsync(empresaId, cancellationToken);
+        var empleados = await cache.ObtenerOCrearAsync($"obtener-empresas-por-id-{empresaId}", async
+            () => await empleadoRepositorio.ObtenerPorEmpresaIdAsync(empresaId, cancellationToken), 
+            cancellationToken: cancellationToken);
         if (!empleados.Any())
+            
         {
             logger.LogWarning("No se encontraron empleados para la empresa con ID: {EmpresaId}", empresaId);
         
