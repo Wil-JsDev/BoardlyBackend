@@ -52,8 +52,9 @@ public static class InyeccionDeDependencia
             servicio.AddScoped<IObtenerRoles, ObtenerRoles>();
             servicio.AddScoped<IObtenerCeoId, ObtenerCeoId>();
             servicio.AddScoped<IObtenerEmpleadoId, ObtenerEmpleadoId>();
-
-            #endregion
+            servicio.AddScoped<IRolProyectoRepositorio, RolProyectoRepositorio>();
+            
+        #endregion
 
     }
     
