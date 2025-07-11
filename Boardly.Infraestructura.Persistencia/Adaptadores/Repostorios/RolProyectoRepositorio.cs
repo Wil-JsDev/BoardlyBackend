@@ -26,6 +26,16 @@ public class RolProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoR
                 cancellationToken);
     }
 
+    public async Task<Guid> ObtenerIdPorNombreAsync(string nombre, CancellationToken cancellationToken)
+    {
+        var rol = await _boardlyContexto.Set<RolProyecto>()
+            .AsNoTracking()
+            .Where(r => r.Nombre.Equals(nombre, StringComparison.CurrentCultureIgnoreCase))
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return rol?.RolProyectoId ?? Guid.Empty;
+    }
+    
     public async Task<ResultadoPaginado<RolProyecto>> ObtenerPaginasRolProyectoAsync(Guid proyectoId, int numeroPagina, int tamanoPagina,
         CancellationToken cancellationToken)
     {

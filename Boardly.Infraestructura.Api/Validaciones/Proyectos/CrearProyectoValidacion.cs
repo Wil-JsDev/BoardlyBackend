@@ -27,8 +27,6 @@ public class CrearProyectoValidacion : AbstractValidator<CrearProyectoDto>
             .WithMessage("La fecha de finalización debe ser posterior a la fecha de inicio.");
 
         RuleFor(x => x.Estado)
-            .NotEmpty().WithMessage("El estado del proyecto es obligatorio.")
-            .Must(estado => estado is "En progreso" or "Finalizado")
-            .WithMessage("El estado del proyecto no es válido.");
+            .NotEmpty().WithMessage("El estado del proyecto es obligatorio.");
     }
 }
