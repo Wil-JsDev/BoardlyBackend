@@ -1,3 +1,5 @@
+using Boardly.Dominio.Enum;
+
 namespace Boardly.Aplicacion.DTOs.Proyecto;
 
 public sealed record CrearProyectoDto
@@ -7,5 +9,7 @@ public sealed record CrearProyectoDto
     string? Descripcion,
     DateTime FechaInicio,
     DateTime? FechaFin,
-    string Estado
+    EstadoProyecto Estado,
+    Guid EmpleadoId,
+    Guid? RolProyectoId
 );

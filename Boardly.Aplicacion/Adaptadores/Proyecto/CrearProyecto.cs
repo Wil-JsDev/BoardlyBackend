@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Proyecto;
+using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
@@ -10,7 +11,9 @@ namespace Boardly.Aplicacion.Adaptadores.Proyecto;
 public class CrearProyecto(
     ILogger<CrearProyecto> logger,
     IProyectoRepositorio repositorioProyecto,
-    IEmpresaRepositorio empresaRepositorio
+    IEmpresaRepositorio empresaRepositorio,
+    IEmpleadoProyectoRolRepositorio empleadoProyectoRolRepositorio,
+    IRolProyectoRepositorio rolProyectoRepositorio
     ) : ICrearProyecto<CrearProyectoDto, ProyectoDto>
 {
     public async Task<ResultadoT<ProyectoDto>> CrearProyectoAsync(CrearProyectoDto solicitud, CancellationToken cancellationToken)
@@ -44,14 +47,35 @@ public class CrearProyecto(
             Descripcion = solicitud.Descripcion,
             FechaInicio = solicitud.FechaInicio,
             FechaFin = solicitud.FechaFin,
-            Estado = solicitud.Estado,
+            Estado = nameof(solicitud.Estado),
             EmpresaId = solicitud.EmpresaId
         };
 
         await repositorioProyecto.CrearAsync(proyectoEntidad, cancellationToken);
 
-        logger.LogInformation("Proyecto creado exitosamente en la base de datos. ProyectoId: {ProyectoId}", proyectoEntidad.ProyectoId);
+        // Obtener el rol (usando el proporcionado o buscando "Project Manager" por defecto)
+        Guid rolLiderId = solicitud.RolProyectoId 
+                         ?? await rolProyectoRepositorio.ObtenerIdPorNombreAsync("Project Manager", cancellationToken);
 
+        if (rolLiderId == Guid.Empty)
+        {
+            logger.LogWarning("No se encontró el rol del proyecto 'Project Manager'.");
+            
+            return ResultadoT<ProyectoDto>.Fallo(Error.Fallo("400", "El rol del proyecto no fue encontrado."));
+        }
+        
+        // Relación Empleado-Proyecto-Rol
+        var empleadoProyectoRol = new EmpleadoProyectoRol
+        {
+            EmpleadoId = solicitud.EmpleadoId,
+            ProyectoId = proyectoEntidad.ProyectoId,
+            RolProyectoId = rolLiderId
+        };
+        
+        await empleadoProyectoRolRepositorio.CrearAsync(empleadoProyectoRol, cancellationToken);
+        
+        logger.LogInformation("Proyecto creado exitosamente. ProyectoId: {ProyectoId}", proyectoEntidad.ProyectoId);
+        
         ProyectoDto proyectoDto = new(
             ProyectoId: proyectoEntidad.ProyectoId,
             EmpresaId: proyectoEntidad.EmpresaId,

@@ -12,5 +12,6 @@ public interface IRolProyectoRepositorio : IGenericoRepositorio<RolProyecto>
     
     Task<ResultadoPaginado<RolProyecto>> ObtenerPaginasRolProyectoAsync(Guid proyectoId, int numeroPagina, int tamanoPagina,
         CancellationToken cancellationToken);
-    
+
+    Task<Guid> ObtenerIdPorNombreAsync(string nombre, CancellationToken cancellationToken);
 }
