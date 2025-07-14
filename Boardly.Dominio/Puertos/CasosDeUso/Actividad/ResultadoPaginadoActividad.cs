@@ -6,5 +6,5 @@ public interface IResultadoPaginadoActividad<in TSolicitud, TRespuesta>
 where TRespuesta : class
 where TSolicitud : class
 {
-    Task<ResultadoT<ResultadoPaginado<TRespuesta>>> ObtenerPaginacionActividadAsync(TSolicitud solicitud, CancellationToken cancellationToken);
+    Task<ResultadoT<ResultadoPaginado<TRespuesta>>> ObtenerPaginacionActividadAsync(Guid proyectoId, TSolicitud solicitud, CancellationToken cancellationToken);
 }
