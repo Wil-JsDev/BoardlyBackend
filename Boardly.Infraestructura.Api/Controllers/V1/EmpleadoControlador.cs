@@ -10,8 +10,7 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/employee")]
 public class EmpleadoControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
-    IObtenerIdEmpleado<EmpleadoResumenDto> obtenerEmpleado
-    ) : ControllerBase
+    IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CrearEmpleado([FromBody] CrearEmpleadoDto employee, CancellationToken cancellationToken)
@@ -26,7 +25,7 @@ public class EmpleadoControlador(
     [HttpGet("companies/{companyId}")]
     public async Task<IActionResult> ObtenerIdCeo([FromRoute] Guid companyId, CancellationToken cancellationToken)
     {
-        var resultado = await obtenerEmpleado.ObtenerIdEmpleadoAsync(companyId, cancellationToken);
+        var resultado = await obtenerEmpleado.ObtenerEmpleadoPorEmpresaIdAsync(companyId, cancellationToken);
         if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         
