@@ -43,9 +43,9 @@ public class CrearActividad(
             ActividadId = Guid.NewGuid(),
             ProyectoId = solicitud.ProyectoId,
             Nombre = solicitud.Nombre,
-            Prioridad = nameof(solicitud.Prioridad), 
+            Prioridad = solicitud.Prioridad.ToString(), 
             Descripcion = solicitud.Descripcion,
-            Estado = nameof(solicitud.Estado),       
+            Estado = solicitud.Estado.ToString(),       
             FechaInicio = solicitud.FechaInicio,
             FechaFinalizacion = solicitud.FechaFin,
             Orden = solicitud.Orden
