@@ -13,6 +13,6 @@ public class ObtenerCeoId(BoardlyContexto boardlyContexto) : IObtenerCeoId
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.UsuarioId == usuarioId, cancellationToken);
         
-        return ceo!.CeoId;
+        return ceo?.CeoId;
     }
 }
