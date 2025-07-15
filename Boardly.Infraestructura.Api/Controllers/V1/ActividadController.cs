@@ -65,15 +65,16 @@ public class ActividadController(
         return NotFound(resultado.Error);
     }
     
-    [HttpGet("pagination")]
+    [HttpGet("{projectId}/pagination")]
     public async Task<IActionResult> ResultadoPaginadoActividad(
+        [FromRoute] Guid projectId,
         [FromQuery] int numeroPagina,
         [FromQuery] int tamanoPagina,
         CancellationToken cancellationToken
     )
     {
         PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
-        var resultado = await resultadoPaginadoActividad.ObtenerPaginacionActividadAsync(parametros, cancellationToken);
+        var resultado = await resultadoPaginadoActividad.ObtenerPaginacionActividadAsync(projectId,parametros, cancellationToken);
         if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         

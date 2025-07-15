@@ -14,7 +14,7 @@ public class ResultadoPaginadoActividad(
     IDistributedCache cache
     ) : IResultadoPaginadoActividad<PaginacionParametro, ActividadDto>
 {
-    public async Task<ResultadoT<ResultadoPaginado<ActividadDto>>> ObtenerPaginacionActividadAsync(PaginacionParametro solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<ResultadoPaginado<ActividadDto>>> ObtenerPaginacionActividadAsync(Guid proyectoId, PaginacionParametro solicitud, CancellationToken cancellationToken)
     {
         if (solicitud.NumeroPagina <= 0 || solicitud.TamanoPagina <= 0)
         {
@@ -25,11 +25,12 @@ public class ResultadoPaginadoActividad(
                 Error.Fallo("400", "Los parámetros de paginación deben ser mayores a cero."));
         }
 
-        string cacheKey = $"obtener-paginado-actividad-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
+        string cacheKey = $"obtener-paginado-actividad-{proyectoId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
 
         var resultadoPagina = await cache.ObtenerOCrearAsync(
             cacheKey,
-            async () => await actividadRepositorio.ObtenerPaginadoAsync(
+            async () => await actividadRepositorio.ObtenerPaginasActividadByIdProyectoAsync(
+                proyectoId,
                 solicitud.NumeroPagina,
                 solicitud.TamanoPagina,
                 cancellationToken),

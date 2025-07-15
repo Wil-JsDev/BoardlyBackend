@@ -30,7 +30,7 @@ public class RolProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoR
     {
         var rol = await _boardlyContexto.Set<RolProyecto>()
             .AsNoTracking()
-            .Where(r => r.Nombre.Equals(nombre, StringComparison.CurrentCultureIgnoreCase))
+            .Where(r => EF.Functions.ILike(r.Nombre, nombre))
             .FirstOrDefaultAsync(cancellationToken);
 
         return rol?.RolProyectoId ?? Guid.Empty;

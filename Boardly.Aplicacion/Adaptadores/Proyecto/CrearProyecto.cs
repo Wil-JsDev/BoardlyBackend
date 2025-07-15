@@ -47,7 +47,7 @@ public class CrearProyecto(
             Descripcion = solicitud.Descripcion,
             FechaInicio = solicitud.FechaInicio,
             FechaFin = solicitud.FechaFin,
-            Estado = nameof(solicitud.Estado),
+            Estado = solicitud.Estado.ToString(),
             EmpresaId = solicitud.EmpresaId
         };
 
@@ -55,7 +55,7 @@ public class CrearProyecto(
 
         // Obtener el rol (usando el proporcionado o buscando "Project Manager" por defecto)
         Guid rolLiderId = solicitud.RolProyectoId 
-                         ?? await rolProyectoRepositorio.ObtenerIdPorNombreAsync("Project Manager", cancellationToken);
+                         ?? await rolProyectoRepositorio.ObtenerIdPorNombreAsync("Encargado", cancellationToken);
 
         if (rolLiderId == Guid.Empty)
         {

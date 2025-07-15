@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Proyecto;
+using Boardly.Dominio.Enum;
 using FluentValidation;
 
 namespace Boardly.Infraestructura.Api.Validaciones.Proyectos;
@@ -27,6 +28,8 @@ public class CrearProyectoValidacion : AbstractValidator<CrearProyectoDto>
             .WithMessage("La fecha de finalización debe ser posterior a la fecha de inicio.");
 
         RuleFor(x => x.Estado)
-            .NotEmpty().WithMessage("El estado del proyecto es obligatorio.");
+            .Must(value => Enum.IsDefined(typeof(EstadoProyecto), value))
+            .WithMessage("El estado del proyecto es obligatorio y debe ser válido.");
+
     }
 }
