@@ -1,6 +1,7 @@
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.Repositorios;
+using Boardly.Dominio.Utilidades;
 using Boardly.Infraestructura.Persistencia.Contexto;
 using Microsoft.EntityFrameworkCore;
 
@@ -108,6 +109,22 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<ResultadoPaginado<Tarea>> ObtenerPaginadoTareaAsync(Guid actividadId,int numeroPagina, int tamanioPagina, CancellationToken cancellationToken)
+    {
+        var consulta = _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(x => x.ActividadId == actividadId);
+
+        var total = await consulta.CountAsync(cancellationToken);
+        
+        var tarea = await consulta
+            .Skip((numeroPagina - 1) * tamanioPagina)
+            .Take(tamanioPagina)
+            .ToListAsync(cancellationToken);
+        
+        return new ResultadoPaginado<Tarea>(tarea, total, numeroPagina, tamanioPagina);   
+    }
+    
     public async Task<bool> ExisteDependenciaCircularAsync(Guid tareaId, Guid dependeDeId, CancellationToken cancellationToken)
     {
         if (tareaId == dependeDeId)

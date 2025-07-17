@@ -1,5 +1,6 @@
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
+using Boardly.Dominio.Utilidades;
 
 namespace Boardly.Dominio.Puertos.Repositorios;
 
@@ -107,4 +108,7 @@ public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
     /// Lista de tareas en las que el usuario está asignado.
     /// </returns>
     Task<List<Tarea>> ObtenerTareasPorUsuarioIdAsync(Guid usuarioId, CancellationToken cancellationToken);
+
+    Task<ResultadoPaginado<Tarea>> ObtenerPaginadoTareaAsync(Guid actividadId, int numeroPagina, int tamanioPagina,
+        CancellationToken cancellationToken);
 }
