@@ -6,6 +6,7 @@ using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.Adaptadores.Empresa;
 using Boardly.Aplicacion.Adaptadores.Proyecto;
 using Boardly.Aplicacion.Adaptadores.RolProyecto;
+using Boardly.Aplicacion.Adaptadores.Tarea;
 using Boardly.Aplicacion.Adaptadores.Usuario;
 using Boardly.Aplicacion.DTOs.Actividad;
 using Boardly.Aplicacion.DTOs.Autenticacion;
@@ -17,6 +18,7 @@ using Boardly.Aplicacion.DTOs.Empresa;
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Aplicacion.DTOs.Proyecto;
 using Boardly.Aplicacion.DTOs.RolProyecto;
+using Boardly.Aplicacion.DTOs.Tarea;
 using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Puertos.CasosDeUso.Actividad;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
@@ -26,9 +28,11 @@ using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
 using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
 using Boardly.Dominio.Puertos.CasosDeUso.RolProyecto;
+using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Utilidades;
 using Microsoft.Extensions.DependencyInjection;
+using ResultadoPaginadoUsuario = Boardly.Aplicacion.Adaptadores.Usuario.ResultadoPaginadoUsuario;
 
 namespace Boardly.Aplicacion;
 
@@ -43,7 +47,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IActualizarUsuario<ActualizarUsuarioDto, ActualizarUsuarioDto>, ActualizarUsuario>();
             servicios.AddScoped<IBorrarUsuario, BorrarUsuario>();
             servicios.AddScoped<IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto>, ModificarContrasenaUsuario>();
-            servicios.AddScoped<IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
+            servicios.AddScoped<Dominio.Puertos.CasosDeUso.Usuario.IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
             servicios.AddScoped<IOlvidarContrasenaUsuario, OlvidarContrasenaUsuario>();
             servicios.AddScoped<IResultadoPaginaUsuario<PaginacionParametro, UsuarioDto>, ResultadoPaginadoUsuario>();
             
@@ -122,6 +126,16 @@ public static class InyeccionDeDependencia
         servicios.AddScoped<IActualizarActividad<ActualizarActividadDto, ActividadDto>, ActualizarActividad>();
         servicios.AddScoped<IResultadoPaginadoActividad<PaginacionParametro, ActividadDto>, ResultadoPaginadoActividad>();
 
+        #endregion
+        
+        #region Tarea
+
+            servicios.AddScoped<ICrearTarea<CrearTareaDto, TareaDto>, CrearTarea>();
+            servicios.AddScoped<IResultadoPaginadoTarea<PaginacionParametro, TareaDto>, ResultadoPaginadoTarea>();
+            servicios.AddScoped<IObtenerIdTarea<TareaDto>, ObtenerIdTarea>();
+            servicios.AddScoped<IBorrarTarea, BorrarTarea>();
+            servicios.AddScoped<IActualizarTarea<ActualizarTituloTareaDto, ActualizarTituloTareaDto>, ActualizarTarea>();
+            
         #endregion
     }
 }
