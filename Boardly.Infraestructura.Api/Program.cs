@@ -1,6 +1,7 @@
 using Boardly.Aplicacion;
 using Boardly.Infraestructura.Api.ServiciosDeExtensiones;
 using Boardly.Infraestructura.Compartido;
+using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR.Hubs;
 using Boardly.Infraestructura.Persistencia;
 using Serilog;
 
@@ -51,12 +52,20 @@ try
     }
 
     app.UseHttpsRedirection();
+    
     app.UseCors("AllowLocalhost");
+    
+    app.UseRouting();
+
+    app.UseWebSockets();
+    
     app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
 
+    app.MapHub<TareasHub>("/hubs/tareas");
+    
     app.Run();
     
 }
