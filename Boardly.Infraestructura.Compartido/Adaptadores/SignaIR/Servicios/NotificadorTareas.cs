@@ -12,4 +12,10 @@ public class NotificadorTareas(IHubContext<TareasHub, ITareasHub> hubContext) : 
         await hubContext.Clients.User(usuarioId.ToString())
             .RecibirNuevaTarea(tarea);
     }
+
+    public async Task NotificarTareaEliminada(Guid usuarioId, Guid tareaId)
+    {
+        await hubContext.Clients.User(usuarioId.ToString())
+            .TareaEliminada(tareaId);       
+    }
 }
