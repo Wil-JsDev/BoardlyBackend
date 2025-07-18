@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Dominio.Enum;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR.Hubs;
 using Microsoft.AspNetCore.SignalR;
@@ -12,10 +13,9 @@ public class NotificadorTareas(IHubContext<TareasHub, ITareasHub> hubContext) : 
         await hubContext.Clients.User(usuarioId.ToString())
             .RecibirNuevaTarea(tarea);
     }
-
-    public async Task NotificarTareaEliminada(Guid usuarioId, Guid tareaId)
+    public async Task NotificarTareaActualizada(Guid usuarioId, TareaDto tareaActualizada)
     {
         await hubContext.Clients.User(usuarioId.ToString())
-            .TareaEliminada(tareaId);       
+            .ActualizarTarea(tareaActualizada);
     }
 }

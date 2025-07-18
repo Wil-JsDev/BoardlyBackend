@@ -1,6 +1,8 @@
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.Repositorios;
+using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
 using Microsoft.Extensions.Logging;
 
@@ -8,18 +10,29 @@ namespace Boardly.Aplicacion.Adaptadores.Tarea;
 
 public class ActualizarTarea(
     ILogger<ActualizarTarea> logger,
-    ITareaRepositorio tareaRepositorio
-    ) : IActualizarTarea<ActualizarTituloTareaDto, ActualizarTituloTareaDto>
+    ITareaRepositorio tareaRepositorio,
+    IUsuarioRepositorio usuarioRepositorio,
+    INotificadorTareas<TareaDto> notificadorTareas
+    ) : IActualizarTarea<ActualizarTituloTareaDto, TareaDto>
 {
-    public async Task<ResultadoT<ActualizarTituloTareaDto>> ActualizarTareaAsync(Guid tareaId, ActualizarTituloTareaDto solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<TareaDto>> ActualizarTareaAsync(Guid tareaId, ActualizarTituloTareaDto solicitud, CancellationToken cancellationToken)
     {
         var tarea = await tareaRepositorio.ObtenerByIdAsync(tareaId, cancellationToken);
         if (tarea is null)
         {
             logger.LogWarning("No se encontró la tarea con ID: {TareaId}", tareaId);
 
-            return ResultadoT<ActualizarTituloTareaDto>.Fallo(
+            return ResultadoT<TareaDto>.Fallo(
                 Error.NoEncontrado("404", "Este ID de tarea no existe."));
+        }
+        
+        var usuario = await usuarioRepositorio.ObtenerByIdAsync(solicitud.UsuarioId, cancellationToken);
+        if (usuario is null)
+        {
+            logger.LogWarning("");
+            
+            return ResultadoT<TareaDto>.Fallo(
+                Error.NoEncontrado("404", "Este ID de usuario no existe."));
         }
         
         tarea.Titulo = solicitud.Titulo;
@@ -29,10 +42,24 @@ public class ActualizarTarea(
 
         logger.LogInformation("Tarea con ID {TareaId} actualizada exitosamente. Nuevo título: '{NuevoTitulo}'", 
             tareaId, tarea.Titulo);
-
-        var actualizarDto = new ActualizarTituloTareaDto(tarea.Titulo);
-
-        return ResultadoT<ActualizarTituloTareaDto>.Exito(actualizarDto);
+        
+        TareaDto tareaDto = new
+        (
+            tarea.TareaId,
+            tarea.ProyectoId,
+            tarea.Titulo,
+            tarea.Estado,
+            tarea.Descripcion,
+            tarea.FechaInicio,
+            tarea.FechaVencimiento,
+            tarea.FechaActualizacion,
+            tarea.FechaCreado,
+            tarea.ActividadId
+        );
+        
+        await notificadorTareas.NotificarTareaActualizada(solicitud.UsuarioId, tareaDto);
+        
+        return ResultadoT<TareaDto>.Exito(tareaDto);
     }
 
 }

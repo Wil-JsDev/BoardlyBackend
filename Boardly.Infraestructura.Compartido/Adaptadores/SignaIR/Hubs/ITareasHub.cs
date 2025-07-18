@@ -5,6 +5,5 @@ namespace Boardly.Infraestructura.Compartido.Adaptadores.SignaIR.Hubs;
 public interface ITareasHub
 {
     Task RecibirNuevaTarea(TareaDto tarea);
-
-    Task TareaEliminada(Guid tareaId);
+    Task ActualizarTarea(TareaDto tarea);
 }
