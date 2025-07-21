@@ -66,6 +66,8 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IBorrarEmpresa, BorrarEmpresa>();
             servicios.AddScoped<ICrearEmpresa<CrearEmpresaDto, EmpresaDto>, CrearEmpresa>();
             servicios.AddScoped<IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>, ResultadoPaginadoEmpresa>();
+            servicios.AddScoped<IObtenerIdEmpresa<EmpresaDto>, ObtenerIdEmpresa>();
+            servicios.AddScoped<IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto>, ResultadoPaginaPorEmpleadoIdEmpresa>();
             
         #endregion
 
