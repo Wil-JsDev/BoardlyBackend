@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Empresa;
 using Boardly.Aplicacion.DTOs.Paginacion;
+using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
@@ -25,11 +26,9 @@ public class ResultadoPaginadoEmpresa(
                 Error.Fallo("400", "Los parametros de paginacion deben ser mayores a cero.")
             );
         }
-        
-        var resultadoPagina = await cache.ObtenerOCrearAsync($"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}", 
-            async () => await empresaRepositorio.ObtenerPaginasEmpresaAsync(ceoId,solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken),
-            cancellationToken: cancellationToken
-            );
+
+        var resultadoPagina = await empresaRepositorio.ObtenerPaginasEmpresaAsync(ceoId, solicitud.NumeroPagina,
+            solicitud.TamanoPagina, cancellationToken);
         
         if (resultadoPagina.Elementos is null || !resultadoPagina.Elementos.Any())
         {
@@ -41,26 +40,39 @@ public class ResultadoPaginadoEmpresa(
             );
         }
 
-        var dtoList = resultadoPagina.Elementos.Select(empresaEntidad => new EmpresaDto
-        (
-            EmpresaId: empresaEntidad.EmpresaId, 
-            CeoId: empresaEntidad.CeoId,
-            Nombre: empresaEntidad.Nombre,
-            Descripcion: empresaEntidad.Descripcion,
-            FechaCreacion: empresaEntidad.FechaCreacion,
-            Estado: empresaEntidad.Estado
-        ));
-
-        var resultadoPaginado = new ResultadoPaginado<EmpresaDto>(
-            elementos: dtoList,
-            totalElementos: resultadoPagina.TotalElementos,
-            paginaActual: solicitud.NumeroPagina,
-            tamanioPagina: solicitud.TamanoPagina
+        var empresaDtoList = await cache.ObtenerOCrearAsync(
+            $"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}",
+            async () =>
+            {
+                var dtoList = resultadoPagina.Elementos.Select(empresaEntidad => new EmpresaDto
+                (
+                    EmpresaId: empresaEntidad.EmpresaId, 
+                    CeoId: empresaEntidad.CeoId,
+                    Nombre: empresaEntidad.Nombre,
+                    Descripcion: empresaEntidad.Descripcion,
+                    FechaCreacion: empresaEntidad.FechaCreacion,
+                    Estado: empresaEntidad.Estado
+                )).ToList();
+                
+                var totalElementos = dtoList.Count;
+                
+                var elementosPaginados = dtoList
+                    .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+                    .ToList();
+                
+                return new ResultadoPaginado<EmpresaDto>(
+                    elementos: elementosPaginados,
+                    totalElementos: totalElementos,
+                    paginaActual: solicitud.NumeroPagina,
+                    tamanioPagina: solicitud.TamanoPagina
+                );
+            },
+            cancellationToken: cancellationToken
         );
 
         logger.LogInformation("Se obtuvo la pagina {NumeroPagina} de empresas con exito. Cantidad de empresas en esta pagina: {CantidadEmpresas}",
-            solicitud.NumeroPagina, dtoList.Count());
+            solicitud.NumeroPagina, empresaDtoList.Elementos!.Count());
 
-        return ResultadoT<ResultadoPaginado<EmpresaDto>>.Exito(resultadoPaginado);
+        return ResultadoT<ResultadoPaginado<EmpresaDto>>.Exito(empresaDtoList);
     }
 }

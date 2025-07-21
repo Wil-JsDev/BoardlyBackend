@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
@@ -37,51 +38,56 @@ public class ResultadoPaginadoTarea(
                 return ResultadoT<ResultadoPaginado<TareaDto>>.Fallo(
                     Error.NoEncontrado("404", "La actividad especificada no fue encontrada."));
             }
-
-            string cacheKey = $"obtener-paginado-tarea-{actividadId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
-
-            var resultadoPagina = await cache.ObtenerOCrearAsync(
-                cacheKey,
-                async () => await repositorioTarea.ObtenerPaginadoTareaAsync(
-                    actividadId,
-                    solicitud.NumeroPagina,
-                    solicitud.TamanoPagina,
-                    cancellationToken),
-                cancellationToken: cancellationToken
-            );
+            
+            var resultadoPagina = await repositorioTarea.ObtenerPaginadoTareaAsync(
+                actividadId,
+                solicitud.NumeroPagina,
+                solicitud.TamanoPagina,
+                cancellationToken);
 
             if (resultadoPagina.Elementos == null)
             {
                 logger.LogError("No se pudieron obtener las tareas paginadas para la actividad {ActividadId}", actividadId);
 
                 return ResultadoT<ResultadoPaginado<TareaDto>>.Fallo(
-                    Error.Fallo("500", "No se pudo obtener las tareas paginadas."));
+                    Error.NoEncontrado("404", "No se pudo obtener las tareas paginadas."));
             }
-
-            var resultadoPaginaDto = resultadoPagina.Elementos.Select(x => new TareaDto
-            (
-                TareaId: x.TareaId,
-                ProyectoId: x.ProyectoId,
-                Titulo: x.Titulo,
-                EstadoTarea: x.Estado,
-                Descripcion: x.Descripcion,
-                FechaInicio: x.FechaInicio,
-                FechaVencimiento: x.FechaVencimiento,
-                FechaActualizacion: x.FechaActualizacion,
-                FechaCreado: x.FechaCreado,
-                ActividadId: x.ActividadId
-            )).ToList();
-
-            var resultadoPaginado = new ResultadoPaginado<TareaDto>(
-                elementos: resultadoPaginaDto,
-                totalElementos: resultadoPagina.TotalElementos,
-                paginaActual: solicitud.NumeroPagina,
-                tamanioPagina: solicitud.TamanoPagina
-            );
-
+            
+            string cacheKey = $"obtener-paginado-tarea-{actividadId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
+            var resultadoPaginaDtoList = await cache.ObtenerOCrearAsync(cacheKey,
+                async () =>
+                {
+                    var resultadoPaginaDto = resultadoPagina.Elementos.Select(x => new TareaDto
+                    (
+                        TareaId: x.TareaId,
+                        ProyectoId: x.ProyectoId,
+                        Titulo: x.Titulo,
+                        EstadoTarea: x.Estado,
+                        Descripcion: x.Descripcion,
+                        FechaInicio: x.FechaInicio,
+                        FechaVencimiento: x.FechaVencimiento,
+                        FechaActualizacion: x.FechaActualizacion,
+                        FechaCreado: x.FechaCreado,
+                        ActividadId: x.ActividadId
+                    )).ToList();
+                    
+                    var totalElementos = resultadoPaginaDto.Count;
+                    
+                    var elementosPaginados = resultadoPaginaDto
+                        .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+                        .ToList();
+                    
+                    return  new ResultadoPaginado<TareaDto>(
+                        elementos: elementosPaginados,
+                        totalElementos: totalElementos,
+                        paginaActual: solicitud.NumeroPagina,
+                        tamanioPagina: solicitud.TamanoPagina
+                    );
+                }, cancellationToken: cancellationToken);
+            
             logger.LogInformation("Paginación de tareas para actividad {ActividadId}: Página {Pagina}, Tamaño {Tamano}. Tareas obtenidas: {Cantidad}",
-                actividadId, solicitud.NumeroPagina, solicitud.TamanoPagina, resultadoPaginaDto.Count);
+                actividadId, solicitud.NumeroPagina, solicitud.TamanoPagina, resultadoPaginaDtoList.Elementos!.Count());
 
-            return ResultadoT<ResultadoPaginado<TareaDto>>.Exito(resultadoPaginado);
+            return ResultadoT<ResultadoPaginado<TareaDto>>.Exito(resultadoPaginaDtoList);
        }
 }
