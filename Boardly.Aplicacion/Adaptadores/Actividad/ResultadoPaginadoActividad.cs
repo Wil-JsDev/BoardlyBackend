@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Actividad;
 using Boardly.Aplicacion.DTOs.Paginacion;
+using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.Actividad;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
@@ -27,42 +28,49 @@ public class ResultadoPaginadoActividad(
 
         string cacheKey = $"obtener-paginado-actividad-{proyectoId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
 
-        var resultadoPagina = await cache.ObtenerOCrearAsync(
-            cacheKey,
-            async () => await actividadRepositorio.ObtenerPaginasActividadByIdProyectoAsync(
-                proyectoId,
-                solicitud.NumeroPagina,
-                solicitud.TamanoPagina,
-                cancellationToken),
-            cancellationToken: cancellationToken
-        );
-
-        var actividades = resultadoPagina.Elementos!
-            .Select(x => new ActividadDto(
-                ActividadId: x.ActividadId,
-                ProyectoId: x.ProyectoId,       
-                Nombre: x.Nombre!,
-                Prioridad: x.Prioridad!,
-                Descripcion: x.Descripcion!,
-                Estado: x.Estado!,
-                FechaInicio: x.FechaInicio,
-                FechaFin: x.FechaFinalizacion,
-                Orden: x.Orden
-            ))
-            .ToList();
-
-        var resultadoPaginado = new ResultadoPaginado<ActividadDto>(
-            elementos: actividades,
-            totalElementos: resultadoPagina.TotalElementos,
-            paginaActual: solicitud.NumeroPagina,
-            tamanioPagina: solicitud.TamanoPagina
+        var resultadoPagina = await actividadRepositorio.ObtenerPaginasActividadByIdProyectoAsync(
+            proyectoId,
+            solicitud.NumeroPagina,
+            solicitud.TamanoPagina,
+            cancellationToken);
+        
+        var resultadoPaginaDto = await cache.ObtenerOCrearAsync(cacheKey,
+            async () =>
+            {
+                var actividadesDto = resultadoPagina.Elementos!
+                    .Select(x => new ActividadDto(
+                        ActividadId: x.ActividadId,
+                        ProyectoId: x.ProyectoId,       
+                        Nombre: x.Nombre!,
+                        Prioridad: x.Prioridad!,
+                        Descripcion: x.Descripcion!,
+                        Estado: x.Estado!,
+                        FechaInicio: x.FechaInicio,
+                        FechaFin: x.FechaFinalizacion,
+                        Orden: x.Orden
+                    ))
+                    .ToList();
+                
+                var totalElementos = actividadesDto.Count();
+                
+                var elementosPaginados = actividadesDto
+                    .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+                    .ToList();
+                
+                return  new ResultadoPaginado<ActividadDto>(
+                    elementos: elementosPaginados,
+                    totalElementos: totalElementos,
+                    paginaActual: solicitud.NumeroPagina,
+                    tamanioPagina: solicitud.TamanoPagina
+                );
+            }
         );
 
         logger.LogInformation(
             "Se obtuvo exitosamente la página {NumeroPagina} de actividades. Total de actividades en esta página: {CantidadActividades}",
-            solicitud.NumeroPagina, actividades.Count);
+            solicitud.NumeroPagina, resultadoPaginaDto.Elementos!.Count());
 
-        return ResultadoT<ResultadoPaginado<ActividadDto>>.Exito(resultadoPaginado);
+        return ResultadoT<ResultadoPaginado<ActividadDto>>.Exito(resultadoPaginaDto);
     }
 
 }

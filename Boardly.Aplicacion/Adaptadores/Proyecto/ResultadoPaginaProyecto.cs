@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Aplicacion.DTOs.Proyecto;
+using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
@@ -27,43 +28,50 @@ public class ResultadoPaginaProyecto(
             return ResultadoT<ResultadoPaginado<ProyectoDto>>.Fallo(
                 Error.Fallo("400", "Los parámetros de paginación deben ser mayores a cero."));
         }
+        
+        var resultadoPaginacion = await repositorioProyecto.ObtenerPaginasProyectoAsync(
+            empresaId,
+            solicitud.NumeroPagina,
+            solicitud.TamanoPagina,
+            cancellationToken);
 
         string cacheKey = $"obtener-paginacion-proyecto-{empresaId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
-
-        var resultadoPaginacion = await cache.ObtenerOCrearAsync(
-            cacheKey,
-            async () => await repositorioProyecto.ObtenerPaginasProyectoAsync(
-                empresaId,
-                solicitud.NumeroPagina,
-                solicitud.TamanoPagina,
-                cancellationToken),
-            cancellationToken: cancellationToken
+        var resultaPaginacionDto = await cache.ObtenerOCrearAsync(cacheKey,
+            async () =>
+            {
+                var proyectosDto = resultadoPaginacion.Elementos!
+                    .Select(x => new ProyectoDto(
+                        x.ProyectoId,
+                        x.EmpresaId,
+                        x.Nombre,
+                        x.Descripcion,
+                        x.FechaInicio,
+                        x.FechaFin,
+                        x.Estado.ToString(),
+                        x.FechaCreado
+                    ))
+                    .ToList();
+                
+                var totalElementos = proyectosDto.Count();
+                
+                var elementosPaginados = proyectosDto
+                    .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+                    .ToList();
+                
+                return  new ResultadoPaginado<ProyectoDto>(
+                    elementos: elementosPaginados,
+                    totalElementos: totalElementos,
+                    paginaActual: solicitud.NumeroPagina,
+                    tamanioPagina: solicitud.TamanoPagina
+                );
+            },
+                cancellationToken: cancellationToken
         );
-
-        var proyectosDto = resultadoPaginacion.Elementos!
-            .Select(x => new ProyectoDto(
-                x.ProyectoId,
-                x.EmpresaId,
-                x.Nombre,
-                x.Descripcion,
-                x.FechaInicio,
-                x.FechaFin,
-                x.Estado.ToString(),
-                x.FechaCreado
-            ))
-            .ToList();
-
-        var resultadoPaginado = new ResultadoPaginado<ProyectoDto>(
-            elementos: proyectosDto,
-            totalElementos: resultadoPaginacion.TotalElementos,
-            paginaActual: solicitud.NumeroPagina,
-            tamanioPagina: solicitud.TamanoPagina
-        );
-
+        
         logger.LogInformation("Se obtuvo correctamente la página {NumeroPagina} de proyectos para la empresa {EmpresaId}. Total en esta página: {CantidadProyectos}",
-            solicitud.NumeroPagina, empresaId, proyectosDto.Count);
+            solicitud.NumeroPagina, empresaId, resultaPaginacionDto.Elementos!.Count());
 
-        return ResultadoT<ResultadoPaginado<ProyectoDto>>.Exito(resultadoPaginado);
+        return ResultadoT<ResultadoPaginado<ProyectoDto>>.Exito(resultaPaginacionDto);
     }
 
 }
