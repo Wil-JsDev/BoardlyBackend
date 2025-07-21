@@ -124,6 +124,21 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
         
         return new ResultadoPaginado<Tarea>(tarea, total, numeroPagina, tamanioPagina);   
     }
+    public async Task<int> ObtenerNumeroTareasPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(x => x.ProyectoId == proyectoId)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> ObtenerNumeroDeEstadoDeTareaPorProyectoId(Guid proyectoId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(x => x.ProyectoId == proyectoId && x.Estado == EstadoTarea.EnProceso.ToString())
+            .CountAsync(cancellationToken);
+    }
     
     public async Task<bool> ExisteDependenciaCircularAsync(Guid tareaId, Guid dependeDeId, CancellationToken cancellationToken)
     {

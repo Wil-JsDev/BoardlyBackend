@@ -31,5 +31,20 @@ public class EmpresaRepositorio(BoardlyContexto contexto): GenericoRepositorio<E
         
         return new ResultadoPaginado<Empresa>(empresa, total, numeroPagina, tamanoPagina);   
     }
+
+    public async Task<IEnumerable<Empresa>> ObtenerEmpresaDetallesPorEmpleadoIdAsync(Guid empleadoId,
+        CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Empresa>()
+            .AsNoTracking()
+            .Where(x => x.Empleados.Any(empleado => empleado.EmpleadoId == empleadoId))
+            .Include(e => e.Proyectos)
+            .Include(e => e.Empleados)
+                .ThenInclude(e => e.EmpleadosProyectoRol)
+                    .ThenInclude(e => e.RolProyecto.Nombre)
+            .AsSplitQuery()
+            .ToListAsync(cancellationToken);
+        
+    }
     
 }

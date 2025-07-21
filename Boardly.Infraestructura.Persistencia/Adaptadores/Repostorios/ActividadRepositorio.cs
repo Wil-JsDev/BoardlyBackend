@@ -34,4 +34,12 @@ public class ActividadRepositorio(BoardlyContexto boardlyContexto) : GenericoRep
     {
         return await ValidarAsync(actividad => actividad.Nombre == nombreUsuario && actividad.ActividadId != actividadId, cancellationToken);
     }
+    
+    public async Task<int> ObtenerNumeroActividadesPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Actividad>()
+            .Where(a => a.ProyectoId == proyectoId)
+            .CountAsync(cancellationToken);
+    }
+    
 }
