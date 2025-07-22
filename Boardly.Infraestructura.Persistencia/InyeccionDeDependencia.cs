@@ -55,7 +55,7 @@ public static class InyeccionDeDependencia
             servicio.AddScoped<IRolProyectoRepositorio, RolProyectoRepositorio>();
             servicio.AddScoped<IEmpleadoProyectoRolRepositorio, EmpleadoProyectoRolRepositorio>();
             servicio.AddScoped<IActividadRepositorio, ActividadRepositorio>();
-
+            servicio.AddScoped<ITareaEmpleadoRepositorio, TareaEmpleadoRepositorio>();
             
         #endregion
 
