@@ -19,6 +19,7 @@ public class BoardlyContexto: DbContext
         public DbSet<Proyecto> Proyecto { get; set; }
         public DbSet<Tarea> Tarea { get; set; }
         public DbSet<TareaUsuario> TareaUsuario { get; set; }
+        public DbSet<TareaEmpleado> TareaEmpleado { get; set; }
         public DbSet<TareaDependencia> TareaDependencia { get; set; }
         public DbSet<Actividad> Actividad { get; set; }
         public DbSet<ActividadDependencia> ActividadDependencia { get; set; }
@@ -62,7 +63,10 @@ public class BoardlyContexto: DbContext
 
             modelBuilder.Entity<TareaDependencia>()
                 .ToTable("TareaDependencia");
-
+        
+            modelBuilder.Entity<TareaEmpleado>()
+                .ToTable("TareaEmpleado");
+            
             modelBuilder.Entity<Actividad>()
                 .ToTable("Actividad");
 
@@ -127,6 +131,9 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<ActividadDependencia>()
                 .HasKey(ad => new { ad.ActividadId, ad.DependeDeActividadId });
 
+            modelBuilder.Entity<TareaEmpleado>()
+                .HasKey(te => new { te.TareaId, te.EmpleadoId });
+            
             modelBuilder.Entity<Comentario>()
                 .HasKey(c => c.ComentarioId)
                 .HasName("PKComentarioId");
@@ -194,6 +201,14 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<TareaUsuario>()
                 .Property(tu => tu.UsuarioId)
                 .HasColumnName("FkUsuarioId");
+            
+            modelBuilder.Entity<TareaEmpleado>()
+                .Property(te => te.TareaId)
+                .HasColumnName("FkTareaId");
+            
+            modelBuilder.Entity<TareaEmpleado>()
+                .Property(te => te.EmpleadoId)
+                .HasColumnName("FkEmpleadoId");
 
             modelBuilder.Entity<TareaDependencia>()
                 .Property(td => td.TareaId)
@@ -290,6 +305,20 @@ public class BoardlyContexto: DbContext
                 .HasOne(tu => tu.Tarea)
                 .WithMany(t => t.TareasUsuario)
                 .HasForeignKey(tu => tu.TareaId)
+                .IsRequired();
+            
+            // Tarea -> TareaEmpleado
+            modelBuilder.Entity<TareaEmpleado>()
+                .HasOne(te => te.Tarea)
+                .WithMany(t => t.TareasEmpleado)
+                .HasForeignKey(te => te.TareaId)
+                .IsRequired();
+            
+            // Empleado -> TareaEmpleado
+            modelBuilder.Entity<TareaEmpleado>()
+                .HasOne(te => te.Empleado)
+                .WithMany(e => e.TareasEmpleado)
+                .HasForeignKey(te => te.EmpleadoId)
                 .IsRequired();
             
             // Proyecto → Tarea
@@ -682,6 +711,21 @@ public class BoardlyContexto: DbContext
                     .IsRequired();
 
                 entity.Property(tu => tu.UsuarioId)
+                    .IsRequired();
+            });
+
+            #endregion
+
+            #region TareaEmpleado
+
+            modelBuilder.Entity<TareaEmpleado>(entity =>
+            {
+                entity.HasKey(te => new { te.TareaId, te.EmpleadoId });
+                
+                entity.Property(te => te.TareaId)
+                    .IsRequired();
+                
+                entity.Property(te => te.EmpleadoId)
                     .IsRequired();
             });
 

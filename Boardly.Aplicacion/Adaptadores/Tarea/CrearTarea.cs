@@ -41,6 +41,16 @@ public class CrearTarea(
             
             return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404", "La actividad especificada no fue encontrada."));
         }
+        
+        if (!await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaVencimiento, cancellationToken))
+        {
+            logger.LogWarning("El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaVencimiento}", 
+                solicitud.FechaInicio, solicitud.FechaVencimiento);
+    
+            return ResultadoT<TareaDto>.Fallo(
+                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
+            );
+        }
 
         Dominio.Modelos.Tarea tareaEntidad = new()
         {

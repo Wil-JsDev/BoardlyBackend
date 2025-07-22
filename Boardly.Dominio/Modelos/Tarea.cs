@@ -19,6 +19,8 @@ public sealed class Tarea
     public Proyecto Proyecto { get; set; }
     public Actividad Actividad { get; set; }
     public ICollection<TareaUsuario> TareasUsuario { get; set; }
+    
+    public ICollection<TareaEmpleado>? TareasEmpleado { get; set; }
     public ICollection<Comentario> Comentarios { get; set; }
     public ICollection<TareaDependencia> Dependencias { get; set; }
     public ICollection<TareaDependencia> Dependientes { get; set; }

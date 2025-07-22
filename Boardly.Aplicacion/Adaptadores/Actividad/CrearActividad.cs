@@ -38,6 +38,16 @@ public class CrearActividad(
                 Error.Conflicto("409", "Ya existe una actividad con ese nombre."));
         }
 
+        if ( !await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaFin, cancellationToken) )
+        {
+            logger.LogWarning("El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaFin}", 
+                solicitud.FechaInicio, solicitud.FechaFin);
+    
+            return ResultadoT<ActividadDto>.Fallo(
+                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
+            );
+        }
+
         Dominio.Modelos.Actividad actividadEntidad = new()
         {
             ActividadId = Guid.NewGuid(),

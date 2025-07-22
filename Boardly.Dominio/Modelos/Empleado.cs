@@ -10,4 +10,5 @@ public sealed class Empleado
     public Usuario Usuario { get; set; }
     public ICollection<EmpleadoProyectoRol> EmpleadosProyectoRol { get; set; }
 
+    public ICollection<TareaEmpleado>? TareasEmpleado { get; set; }
 }

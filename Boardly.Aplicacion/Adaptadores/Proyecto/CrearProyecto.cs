@@ -39,6 +39,16 @@ public class CrearProyecto(
             
             return ResultadoT<ProyectoDto>.Fallo(Error.Conflicto("409", "Ya existe un proyecto con ese nombre."));
         }
+        
+        if ( !await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaFin, cancellationToken) )
+        {
+            logger.LogWarning("El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaFin}", 
+                solicitud.FechaInicio, solicitud.FechaFin);
+    
+            return ResultadoT<ProyectoDto>.Fallo(
+                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
+            );
+        }
 
         Dominio.Modelos.Proyecto proyectoEntidad = new()
         {
