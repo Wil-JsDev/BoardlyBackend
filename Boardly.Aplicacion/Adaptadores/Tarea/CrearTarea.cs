@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Tarea;
 using Boardly.Dominio.Enum;
+using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.Repositorios;
@@ -14,7 +15,9 @@ public class CrearTarea(
     ITareaRepositorio tareaRepositorio,
     IActividadRepositorio actividadRepositorio,
     INotificadorTareas<TareaDto> notificadorTareas,
-    IUsuarioRepositorio usuarioRepositorio
+    IUsuarioRepositorio usuarioRepositorio,
+    ITareaEmpleadoRepositorio tareaEmpleadoRepositorio,
+    IEmpleadoRepositorio empleadoRepositorio    
     ) : ICrearTarea<CrearTareaDto, TareaDto>
 {
     public async Task<ResultadoT<TareaDto>> CrearTareaAsync(CrearTareaDto solicitud, CancellationToken cancellationToken)
@@ -52,13 +55,21 @@ public class CrearTarea(
             );
         }
 
+        var empleado = await empleadoRepositorio.ObtenerByIdAsync(solicitud.EmpleadoId, cancellationToken);
+        if (empleado is null)
+        {
+            logger.LogWarning("No se encontró el empleado con Id {EmpleadoId}", solicitud.EmpleadoId);
+    
+            return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404", $"Empleado con Id {solicitud.EmpleadoId} no encontrado."));
+        }
+            
         Dominio.Modelos.Tarea tareaEntidad = new()
         {
             TareaId = Guid.NewGuid(),
             ProyectoId = solicitud.ProyectoId,
             Titulo = solicitud.Titulo,
             Descripcion = solicitud.Descripcion,
-            Estado = nameof(EstadoTarea.Pendiente),
+            Estado = EstadoTarea.Pendiente.ToString(),
             FechaInicio = solicitud.FechaInicio,
             FechaVencimiento = solicitud.FechaVencimiento,
             FechaActualizacion = DateTime.UtcNow,
@@ -66,6 +77,14 @@ public class CrearTarea(
             ActividadId = solicitud.ActividadId
         };
 
+        TareaEmpleado tareaEmpleado = new()
+        {
+            TareaId = tareaEntidad.TareaId,
+            EmpleadoId = solicitud.EmpleadoId
+        };
+
+        await tareaEmpleadoRepositorio.CrearAsync(tareaEmpleado, cancellationToken);
+        
         logger.LogInformation("Creando tarea {TareaId} en el proyecto {ProyectoId}", tareaEntidad.TareaId, tareaEntidad.ProyectoId);
         
         await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);

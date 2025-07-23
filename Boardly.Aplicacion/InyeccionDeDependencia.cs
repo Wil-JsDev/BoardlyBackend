@@ -137,6 +137,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IObtenerIdTarea<TareaDto>, ObtenerIdTarea>();
             servicios.AddScoped<IBorrarTarea, BorrarTarea>();
             servicios.AddScoped<IActualizarTarea<ActualizarTituloTareaDto, TareaDto>, ActualizarTarea>();
+            servicios.AddScoped<IActualizarEstadoTarea, ActualizarEstadoTarea>();
             
         #endregion
     }
