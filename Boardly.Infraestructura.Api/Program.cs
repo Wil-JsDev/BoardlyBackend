@@ -22,13 +22,14 @@ try
     
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowLocalhost",
-            builder => builder.WithOrigins("http://localhost:4200")  
-                .AllowAnyMethod()
+        options.AddPolicy("AllowLocalhost", builder =>
+        {
+            builder.WithOrigins("http://127.0.0.1:5500", "http://localhost:4200")
                 .AllowAnyHeader()
-                .WithExposedHeaders("Content-Disposition"));
+                .AllowAnyMethod()
+                .AllowCredentials(); // muy importante para SignalR con JWT o cookies
+        });
     });
-    
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     
