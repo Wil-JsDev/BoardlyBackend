@@ -84,6 +84,18 @@ public static class InyeccionDeDependencia
                             "No estás autorizado para acceder a este contenido"));
 
                         return c.Response.WriteAsync(result);
+                    },
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // Si la solicitud es para SignalR hubs
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/tareas"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
                     }
                 };
 
@@ -104,7 +116,7 @@ public static class InyeccionDeDependencia
         #region SignaIR
     
             servicios.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
-            servicios.AddSingleton<INotificadorTareas<TareaDto>, NotificadorTareas>();
+            servicios.AddScoped<INotificadorTareas<TareaDto>, NotificadorTareas>();
             servicios.AddSignalR();
 
         #endregion
