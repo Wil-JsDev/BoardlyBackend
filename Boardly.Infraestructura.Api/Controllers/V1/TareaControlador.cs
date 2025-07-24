@@ -12,7 +12,7 @@ public class TareaControlador(
     IResultadoPaginadoTarea<PaginacionParametro, TareaDto> tareaPagina,
     IObtenerIdTarea<TareaDto> obtenerTarea,
     IBorrarTarea borrarTarea,
-    IActualizarTarea<ActualizarTituloTareaDto, ActualizarTituloTareaDto> actualizarTarea
+    IActualizarTarea<ActualizarTituloTareaDto, TareaDto> actualizarTarea
     ) : ControllerBase
 {
 

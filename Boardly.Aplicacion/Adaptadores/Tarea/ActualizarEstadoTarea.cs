@@ -16,7 +16,7 @@ public class ActualizarEstadoTarea(
 {
     public async Task<Resultado> CambiarEstadoAsync(Guid tareaId, EstadoTarea nuevoEstado, CancellationToken cancellationToken)
     {
-        var tarea = await tareaRepositorio.ObtenerByIdAsync(tareaId, cancellationToken);
+        var tarea = await tareaRepositorio.ObtenerConEmpleadosAsync(tareaId, cancellationToken);
         if (tarea is null)
         {
             logger.LogWarning("");

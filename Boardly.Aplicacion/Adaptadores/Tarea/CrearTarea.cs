@@ -77,6 +77,8 @@ public class CrearTarea(
             ActividadId = solicitud.ActividadId
         };
 
+        await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);
+
         TareaEmpleado tareaEmpleado = new()
         {
             TareaId = tareaEntidad.TareaId,
@@ -85,9 +87,7 @@ public class CrearTarea(
 
         await tareaEmpleadoRepositorio.CrearAsync(tareaEmpleado, cancellationToken);
         
-        logger.LogInformation("Creando tarea {TareaId} en el proyecto {ProyectoId}", tareaEntidad.TareaId, tareaEntidad.ProyectoId);
         
-        await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);
         
         TareaDto tareaCreadaDto = new
         (

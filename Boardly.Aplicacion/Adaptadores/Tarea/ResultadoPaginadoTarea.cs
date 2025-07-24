@@ -53,41 +53,38 @@ public class ResultadoPaginadoTarea(
                     Error.NoEncontrado("404", "No se pudo obtener las tareas paginadas."));
             }
             
-            string cacheKey = $"obtener-paginado-tarea-{actividadId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
-            var resultadoPaginaDtoList = await cache.ObtenerOCrearAsync(cacheKey,
-                async () =>
-                {
-                    var resultadoPaginaDto = resultadoPagina.Elementos.Select(x => new TareaDto
-                    (
-                        TareaId: x.TareaId,
-                        ProyectoId: x.ProyectoId,
-                        Titulo: x.Titulo,
-                        EstadoTarea: x.Estado,
-                        Descripcion: x.Descripcion,
-                        FechaInicio: x.FechaInicio,
-                        FechaVencimiento: x.FechaVencimiento,
-                        FechaActualizacion: x.FechaActualizacion,
-                        FechaCreado: x.FechaCreado,
-                        ActividadId: x.ActividadId
-                    )).ToList();
-                    
-                    var totalElementos = resultadoPaginaDto.Count;
-                    
-                    var elementosPaginados = resultadoPaginaDto
-                        .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
-                        .ToList();
-                    
-                    return  new ResultadoPaginado<TareaDto>(
-                        elementos: elementosPaginados,
-                        totalElementos: totalElementos,
-                        paginaActual: solicitud.NumeroPagina,
-                        tamanioPagina: solicitud.TamanoPagina
-                    );
-                }, cancellationToken: cancellationToken);
+        
+            var resultadoPaginaDto = resultadoPagina.Elementos.Select(x => new TareaDto
+            (
+                TareaId: x.TareaId,
+                ProyectoId: x.ProyectoId,
+                Titulo: x.Titulo,
+                EstadoTarea: x.Estado,
+                Descripcion: x.Descripcion,
+                FechaInicio: x.FechaInicio,
+                FechaVencimiento: x.FechaVencimiento,
+                FechaActualizacion: x.FechaActualizacion,
+                FechaCreado: x.FechaCreado,
+                ActividadId: x.ActividadId
+            )).ToList();
+        
+            var totalElementos = resultadoPaginaDto.Count;
+        
+            var elementosPaginados = resultadoPaginaDto
+                .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+                .ToList();
+        
+            var resultadoPaginado = new ResultadoPaginado<TareaDto>(
+                elementos: elementosPaginados,
+                totalElementos: totalElementos,
+                paginaActual: solicitud.NumeroPagina,
+                tamanioPagina: solicitud.TamanoPagina
+            );
+   
             
             logger.LogInformation("Paginación de tareas para actividad {ActividadId}: Página {Pagina}, Tamaño {Tamano}. Tareas obtenidas: {Cantidad}",
-                actividadId, solicitud.NumeroPagina, solicitud.TamanoPagina, resultadoPaginaDtoList.Elementos!.Count());
+                actividadId, solicitud.NumeroPagina, solicitud.TamanoPagina, resultadoPaginado.Elementos!.Count());
 
-            return ResultadoT<ResultadoPaginado<TareaDto>>.Exito(resultadoPaginaDtoList);
+            return ResultadoT<ResultadoPaginado<TareaDto>>.Exito(resultadoPaginado);
        }
 }

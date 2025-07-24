@@ -9,6 +9,8 @@ namespace Boardly.Dominio.Puertos.Repositorios;
 /// </summary>
 public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
 {
+    Task<Tarea?> ObtenerConEmpleadosAsync(Guid tareaId, CancellationToken cancellationToken);
+
     /// <summary>
     /// Verifica si existe una tarea con el mismo nombre en un proyecto determinado.
     /// </summary>

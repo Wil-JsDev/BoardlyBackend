@@ -149,6 +149,14 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
         return await BuscarCicloAsync(tareaId, dependeDeId, visitados, cancellationToken);
     }
 
+    // En TareaRepositorio.cs
+    public async Task<Tarea?> ObtenerConEmpleadosAsync(Guid tareaId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Tarea
+            .Include(t => t.TareasEmpleado)  // Esto carga la relación con empleados
+            .FirstOrDefaultAsync(t => t.TareaId == tareaId, cancellationToken);
+    }
+    
     #region Metodos privados
         private async Task<bool> BuscarCicloAsync(
             Guid actual,
