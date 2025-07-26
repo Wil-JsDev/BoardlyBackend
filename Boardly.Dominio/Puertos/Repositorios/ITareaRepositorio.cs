@@ -136,4 +136,6 @@ public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
     /// <param name="cancellationToken">Token para cancelar la operación asincrónica.</param>
     /// <returns>Número total de tareas del proyecto.</returns>
     Task<int> ObtenerNumeroTareasPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken);
+
+    Task<Tarea?> ObtenerDetallesPorTareaIdAsync(Guid tareaId, CancellationToken cancellationToken);
 }

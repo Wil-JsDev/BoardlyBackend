@@ -17,7 +17,11 @@ public class ObtenerIdTarea(
     {
         var tarea = await cache.ObtenerOCrearAsync(
             $"obtener-tarea-{tareaId}",
-            async () => await tareaRepositorio.ObtenerByIdAsync(tareaId, cancellationToken),
+            async () =>
+            {
+                var tareaDetalles = await tareaRepositorio.ObtenerDetallesPorTareaIdAsync(tareaId, cancellationToken);
+                
+            },
             cancellationToken: cancellationToken
         );
 

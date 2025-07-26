@@ -1,6 +1,7 @@
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
+using Boardly.Dominio.Utilidades;
 using Boardly.Infraestructura.Persistencia.Contexto;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,4 +75,28 @@ public class EmpleadoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepo
                 .Any(tareaEmpleado => tareaEmpleado.EmpleadoId == empleadoId))
             .CountAsync(cancellationToken);
     }
+    public async Task<ResultadoPaginado<Empleado>> ObtenerPaginasEmpleadoProyectoIdAsync(Guid proyectoId,
+        int numeroPagina,
+        int tamanoPagina,
+        CancellationToken cancellationToken)
+    {
+        var consulta = await _boardlyContexto.Set<Empleado>()
+            .AsNoTracking()
+            .Where(e => e.EmpleadosProyectoRol.Any(empleadoProyectoRol => empleadoProyectoRol.ProyectoId == proyectoId))
+            .Include(em => em.Usuario)
+            .Include(em => em.EmpleadosProyectoRol)
+                .ThenInclude(epr => epr.RolProyecto)
+            .AsSplitQuery()
+            .ToListAsync(cancellationToken);
+        
+        var totalCount = consulta.Count;
+        
+        var empleados = consulta
+            .Skip((numeroPagina - 1) * tamanoPagina)
+            .Take(tamanoPagina)
+            .ToList();
+        
+        return new ResultadoPaginado<Empleado>(empleados, totalCount, numeroPagina, tamanoPagina);   
+    }
+    
 }

@@ -82,6 +82,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto>, ObtenerEstadisticasEnConteoEmpleado>();
             servicios.AddScoped<IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto>, ObtenerConteoDeEmpleadosCeo>();
             servicios.AddScoped<IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto>, ObtenerConteoDeEstadisticasCeo>();
+            servicios.AddScoped<IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto>, ResultadoPaginadoEmpleadoPorProyectoId>();
             
         #endregion
         
