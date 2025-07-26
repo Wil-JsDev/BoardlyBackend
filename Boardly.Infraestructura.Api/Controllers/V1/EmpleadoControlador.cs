@@ -10,7 +10,8 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/employee")]
 public class EmpleadoControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
-    IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado) : ControllerBase
+    IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado
+    ) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CrearEmpleado([FromBody] CrearEmpleadoDto employee, CancellationToken cancellationToken)

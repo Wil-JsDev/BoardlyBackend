@@ -16,7 +16,7 @@ public class EmpresaControlador(
     IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto> resultadoPaginaEmpresa,
     IObtenerIdEmpresa<EmpresaDto> obtenerEmpresa,
     IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto> empleadoIdEmpresa
-        ) : ControllerBase
+    ) : ControllerBase
 {
    
     [HttpPost]

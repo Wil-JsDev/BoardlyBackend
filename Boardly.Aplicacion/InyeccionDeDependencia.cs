@@ -78,7 +78,6 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IObtenerIdEmpleado<EmpleadoDto>, ObtenerIdEmpleado>(); 
             servicios.AddScoped<IResultadoPaginadoEmpleado<PaginacionParametro,EmpleadoDto>, ResultadoPaginadoEmpleado>(); 
             servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>();
-            servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>();
             servicios.AddScoped<IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto>, ObtenerEstadisticasEnConteoEmpleado>();
             servicios.AddScoped<IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto>, ObtenerConteoDeEmpleadosCeo>();
             servicios.AddScoped<IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto>, ObtenerConteoDeEstadisticasCeo>();

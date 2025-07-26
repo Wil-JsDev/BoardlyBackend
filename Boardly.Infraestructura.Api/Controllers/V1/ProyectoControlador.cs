@@ -14,7 +14,7 @@ public class ProyectoControlador(
     IActualizarProyecto<ActualizarProyectoDto, ActualizarProyectoDto> actualizarProyecto,
     IObtenerIdProyecto<ProyectoDto> obtenerProyecto,
     IBorrarProyecto borrarProyecto,
-    IResultadoPaginaProyecto<PaginacionParametro, ProyectoDto> resultadoPaginaProyecto
+    IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto> resultadoPaginaProyecto
     ) : ControllerBase
 {
 
