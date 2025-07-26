@@ -44,4 +44,8 @@ public interface IEmpresaRepositorio : IGenericoRepositorio<Empresa>
     /// <returns>Lista de empresas asociadas al empleado.</returns>
     Task<IEnumerable<Empresa>> ObtenerEmpresaDetallesPorEmpleadoIdAsync(Guid empleadoId,
         CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeEmpleadosPorEmpresaIdAsync(Guid empresaId, CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeProyectosPorEmpresaAsync(Guid empresaId, CancellationToken cancellationToken);
 }

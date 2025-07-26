@@ -11,4 +11,13 @@ public interface IProyectoRepositorio : IGenericoRepositorio<Proyecto>
     
     Task<bool> NombreProyectoEnUsoAsync(Guid proyectoId, string nombre, CancellationToken cancellationToken);
     
+    Task<int> ObtenerConteoDeTareasCompletadasProyectosAsync(Guid proyectoId,
+        CancellationToken cancellationToken);
+    
+    Task<int> ObtenerConteoDeTareasPendienteProyectosAsync(Guid proyectoId,
+        CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeTareasProyectosAsync(Guid proyectoId, CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeActividadesProyectosAsync(Guid proyectoId, CancellationToken cancellationToken);
 }
