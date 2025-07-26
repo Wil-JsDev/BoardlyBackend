@@ -12,7 +12,8 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 public class EmpleadoControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
     IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado,
-    IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto> empleadoPorProyecto
+    IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto> empleadoPorProyecto,
+    IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto> estadisticasEnConteoEmpleado
     ) : ControllerBase
 {
     [HttpPost]
@@ -25,6 +26,17 @@ public class EmpleadoControlador(
         return BadRequest(empleado.Error);
     }
 
+    [HttpGet("{employeeId}/count")]
+    public async Task<IActionResult> ObtenerCountsPorEmpleadoIdAsync([FromRoute] Guid employeeId,
+        CancellationToken cancellationToken)
+    {
+        var resultado = await estadisticasEnConteoEmpleado.ObtenerEstadisticasEnConteoEmpleadoAsync(employeeId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);
+    }
+    
     [HttpGet("companies/{companyId}")]
     public async Task<IActionResult> ObtenerIdCeo([FromRoute] Guid companyId, CancellationToken cancellationToken)
     {

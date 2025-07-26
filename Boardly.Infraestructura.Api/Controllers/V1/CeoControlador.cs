@@ -10,7 +10,9 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/ceos")]
 public class CeoControlador(
     ICrearCeo<CrearCeoDto, CeoDto> crearCeo,
-    IObtenerIdCeo obtenerCeo
+    IObtenerIdCeo obtenerCeo,
+    IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto> obtenerConteoDeEmpleados,
+    IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto> obtenerConteoDeEstadisticas
     ) : ControllerBase
 {
     [HttpPost("{userId}")]
@@ -20,6 +22,27 @@ public class CeoControlador(
         
         var resultado = await crearCeo.CrearCeoAsync(ceoDto, cancellationToken);
         if (resultado.EsExitoso) 
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);
+    }
+
+    [HttpGet("{ceoId}/counts")]
+    public async Task<IActionResult> ObtenerConteoDeEmpleadosCeo([FromRoute] Guid ceoId,
+        CancellationToken cancellationToken)
+    {
+        var resultado = await obtenerConteoDeEmpleados.ObtenerConteoDeEmpleadosCeoAsync(ceoId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);
+    }
+
+    [HttpGet("{ceoId}/counts/overview")]
+    public async Task<IActionResult> ObtenerCountsDeEstadisticasDeCeo([FromRoute] Guid ceoId,CancellationToken cancellationToken)
+    {
+        var resultado = await obtenerConteoDeEstadisticas.ObtenerConteoDeEstadisticasCeoAsync(ceoId, cancellationToken);
+        if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         
         return BadRequest(resultado.Error);
