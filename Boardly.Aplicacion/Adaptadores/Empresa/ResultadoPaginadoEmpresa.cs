@@ -55,50 +55,40 @@ public class ResultadoPaginadoEmpresa(
             $"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}",
             async () =>
             {
-                var empresaIds = resultadoPagina.Elementos.Select(x => x.EmpresaId).ToList();
-                
-                var empleadosTarea = empresaIds
-                    .Select(id => empresaRepositorio.ObtenerConteoDeEmpleadosPorEmpresaIdAsync(id, cancellationToken))
-                    .ToList();
+                var empresas = resultadoPagina.Elementos.ToList();
+                var dtoList = new List<EmpresaProyectosDto>();
 
-                var proyectosTarea = empresaIds
-                    .Select(id => empresaRepositorio.ObtenerConteoDeProyectosPorEmpresaAsync(id, cancellationToken))
-                    .ToList(); 
+                foreach (var empresa in empresas)
+                {
+                    var totalEmpleados = await empresaRepositorio.ObtenerConteoDeEmpleadosPorEmpresaIdAsync(empresa.EmpresaId, cancellationToken);
+                    var totalProyectos = await empresaRepositorio.ObtenerConteoDeProyectosPorEmpresaAsync(empresa.EmpresaId, cancellationToken);
 
-                await Task.WhenAll(empleadosTarea);
-                
-                await Task.WhenAll(proyectosTarea);
-                
-                var dtoList = resultadoPagina.Elementos.Select((empresa, index) => new EmpresaProyectosDto
-                (
-                    EmpresaId: empresa.EmpresaId,
-                    CeoId: empresa.CeoId,
-                    Nombre: empresa.Nombre,
-                    Descripcion: empresa.Descripcion,
-                    FechaCreacion: empresa.FechaCreacion,
-                    Estado: empresa.Estado,
-                    EmpresaConteo: new EmpresaConteoDto
-                    (
-                        TotalEmpleados: empleadosTarea[index].Result,
-                        TotalProyectos: proyectosTarea[index].Result
-                    )
-                )).ToList();
-                
-                var totalElementos = dtoList.Count;
-                
-                var elementosPaginados = dtoList
-                    .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
-                    .ToList();
-                
+                    var dto = new EmpresaProyectosDto(
+                        EmpresaId: empresa.EmpresaId,
+                        CeoId: empresa.CeoId,
+                        Nombre: empresa.Nombre,
+                        Descripcion: empresa.Descripcion,
+                        FechaCreacion: empresa.FechaCreacion,
+                        Estado: empresa.Estado,
+                        EmpresaConteo: new EmpresaConteoDto(
+                            TotalEmpleados: totalEmpleados,
+                            TotalProyectos: totalProyectos
+                        )
+                    );
+
+                    dtoList.Add(dto);
+                }
+
                 return new ResultadoPaginado<EmpresaProyectosDto>(
-                    elementos: elementosPaginados,
-                    totalElementos: totalElementos,
+                    elementos: dtoList,
+                    totalElementos: resultadoPagina.TotalElementos,
                     paginaActual: solicitud.NumeroPagina,
                     tamanioPagina: solicitud.TamanoPagina
                 );
             },
             cancellationToken: cancellationToken
         );
+
 
         logger.LogInformation("Se obtuvo la pagina {NumeroPagina} de empresas con exito. Cantidad de empresas en esta pagina: {CantidadEmpresas}",
             solicitud.NumeroPagina, empresaDtoList.Elementos!.Count());
