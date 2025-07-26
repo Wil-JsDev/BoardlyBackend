@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Boardly.Aplicacion.DTOs.Empleado;
+using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,8 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/employee")]
 public class EmpleadoControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
-    IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado
+    IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado,
+    IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto> empleadoPorProyecto
     ) : ControllerBase
 {
     [HttpPost]
@@ -32,4 +34,21 @@ public class EmpleadoControlador(
         
         return BadRequest(resultado.Error);
     }
+
+    [HttpGet("{projectId}/pagination")]
+    public async Task<IActionResult> ResultadoEmpleadoPorProyectoIdAsync(
+        [FromRoute] Guid projectId,
+        [FromQuery] int numeroPagina,
+        [FromQuery] int tamanoPagina,
+        CancellationToken cancellationToken
+    )
+    {
+        PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
+        var resultado = await empleadoPorProyecto.ObtenerPaginacionEmpleadoPorProyectoIdAsync(projectId, parametros, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);;
+    }
+    
 }

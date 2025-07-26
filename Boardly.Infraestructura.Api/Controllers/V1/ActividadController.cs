@@ -15,7 +15,7 @@ public class ActividadController(
     IObtenerIdActividad<ActividadDto> obtenerActividad,
     IBorrarActividad borrarActividad,
     IActualizarActividad<ActualizarActividadDto, ActividadDto> actualizarActividad,
-    IResultadoPaginadoActividad<PaginacionParametro, ActividadDto> resultadoPaginadoActividad
+    IResultadoPaginadoActividad<PaginacionParametro, ActividadDetallesDto> resultadoPaginadoActividad
         ) : ControllerBase
 {
     [HttpPost]
