@@ -10,23 +10,27 @@ public static class TareaMapper
     {
         var primerComentario = tarea.Comentarios.FirstOrDefault();
         var primerEmpleadoTarea = tarea.TareasEmpleado?.FirstOrDefault();
+        var usuarioComentario = primerComentario?.Usuario;
 
-        var comentarioDto = primerComentario is null
+        var comentarioDto = primerComentario is null || usuarioComentario is null
             ? new ComentarioDto(Guid.Empty, string.Empty, new UsuarioDetallesComentarioDto(Guid.Empty, string.Empty, null))
             : new ComentarioDto(
                 ComentarioId: primerComentario.ComentarioId,
                 Texto: primerComentario.Contenido,
                 Usuario: new UsuarioDetallesComentarioDto(
-                    UsuarioId: primerComentario.UsuarioId,
-                    NombreCompleto: $"{primerComentario.Usuario.Nombre} {primerComentario.Usuario.Apellido}",
-                    FotoPerfil: primerComentario.Usuario.FotoPerfil
+                    UsuarioId: usuarioComentario.UsuarioId,
+                    NombreCompleto: $"{usuarioComentario.Nombre} {usuarioComentario.Apellido}",
+                    FotoPerfil: usuarioComentario.FotoPerfil
                 )
             );
 
-        var empleadoDto = primerEmpleadoTarea is null || primerEmpleadoTarea.Empleado is null
-            ? new EmpleadoTareaDto(string.Empty, string.Empty)
+        var usuarioEmpleado = primerEmpleadoTarea?.Empleado?.Usuario;
+
+        var empleadoDto = primerEmpleadoTarea is null || primerEmpleadoTarea.Empleado is null || usuarioEmpleado is null
+            ? new EmpleadoTareaDto(Guid.Empty, string.Empty, string.Empty)
             : new EmpleadoTareaDto(
-                NombreCompleto: $"{primerEmpleadoTarea.Empleado.Usuario.Nombre} {primerEmpleadoTarea.Empleado.Usuario.Apellido}",
+                EmpleadoId: primerEmpleadoTarea.EmpleadoId,
+                NombreCompleto: $"{usuarioEmpleado.Nombre} {usuarioEmpleado.Apellido}",
                 Rol: primerEmpleadoTarea.Empleado.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty
             );
 
@@ -39,4 +43,5 @@ public static class TareaMapper
             empleadoDto
         );
     }
+
 }

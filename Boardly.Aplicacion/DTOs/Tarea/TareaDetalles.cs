@@ -11,4 +11,4 @@ public record TareaDetalles
     ComentarioDto ComentarioDto,
     EmpleadoTareaDto EmpleadoTareaDto
 );
-public record EmpleadoTareaDto(string NombreCompleto, string Rol);
+public record EmpleadoTareaDto(Guid EmpleadoId,string NombreCompleto, string Rol);
