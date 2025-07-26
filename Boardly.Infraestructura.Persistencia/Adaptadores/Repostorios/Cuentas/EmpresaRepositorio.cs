@@ -41,7 +41,7 @@ public class EmpresaRepositorio(BoardlyContexto contexto): GenericoRepositorio<E
             .Include(e => e.Proyectos)
             .Include(e => e.Empleados)
                 .ThenInclude(e => e.EmpleadosProyectoRol)
-                    .ThenInclude(e => e.RolProyecto.Nombre)
+                    .ThenInclude(e => e.RolProyecto)
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
         
