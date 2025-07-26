@@ -13,7 +13,7 @@ public class EmpresaControlador(
     ICrearEmpresa<CrearEmpresaDto, EmpresaDto> crearEmpresa,
     IActualizarEmpresa<ActualizarEmpresaDto, ActualizarEmpresaDto> actualizarEmpresa,
     IBorrarEmpresa borrarEmpresa,
-    IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto> resultadoPaginaEmpresa,
+    IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto> resultadoPaginaEmpresa,
     IObtenerIdEmpresa<EmpresaDto> obtenerEmpresa,
     IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto> empleadoIdEmpresa
         ) : ControllerBase
