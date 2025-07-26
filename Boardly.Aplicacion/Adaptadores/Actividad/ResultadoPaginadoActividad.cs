@@ -37,29 +37,27 @@ public class ResultadoPaginadoActividad(
         var resultadoPaginaDto = await cache.ObtenerOCrearAsync(cacheKey,
             async () =>
             {
-                
                 var actividadesIds = resultadoPagina.Elementos!.Select(x => x.ActividadId).ToList();
-                
-                var totalConteoDeTarea = actividadesIds
-                    .Select(id => actividadRepositorio.ObtenerConteoDeTareasActividadAsync(id, cancellationToken))
-                    .ToList();
-                
-                var totalConteoDeTareaCompletadas = actividadesIds
-                    .Select(id => actividadRepositorio.ObtenerConteoDeTareasEnProcesoActividadAsync(id, cancellationToken))
-                    .ToList();
-                
-                var totalConteoDeTareasFinalizadas = actividadesIds
-                    .Select(id => actividadRepositorio.ObtenerConteoDeTareasFinalizadasActividadAsync(id, cancellationToken))
-                    .ToList();
-                
-                await Task.WhenAll(totalConteoDeTarea);
-                await Task.WhenAll(totalConteoDeTareaCompletadas);
-                await Task.WhenAll(totalConteoDeTareasFinalizadas);
-                
+
+                var totalConteoDeTarea = new List<int>();
+                var totalConteoDeTareaCompletadas = new List<int>();
+                var totalConteoDeTareasFinalizadas = new List<int>();
+
+                foreach (var id in actividadesIds)
+                {
+                    var totalTareas = await actividadRepositorio.ObtenerConteoDeTareasActividadAsync(id, cancellationToken);
+                    var totalTareasProceso = await actividadRepositorio.ObtenerConteoDeTareasEnProcesoActividadAsync(id, cancellationToken);
+                    var totalTareasFinalizadas = await actividadRepositorio.ObtenerConteoDeTareasFinalizadasActividadAsync(id, cancellationToken);
+
+                    totalConteoDeTarea.Add(totalTareas);
+                    totalConteoDeTareaCompletadas.Add(totalTareasProceso);
+                    totalConteoDeTareasFinalizadas.Add(totalTareasFinalizadas);
+                }
+
                 var actividadesDto = resultadoPagina.Elementos!
                     .Select((x, index) => new ActividadDetallesDto(
                         ActividadId: x.ActividadId,
-                        ProyectoId: x.ProyectoId,       
+                        ProyectoId: x.ProyectoId,
                         Nombre: x.Nombre!,
                         Prioridad: x.Prioridad!,
                         Descripcion: x.Descripcion!,
@@ -67,30 +65,30 @@ public class ResultadoPaginadoActividad(
                         FechaInicio: x.FechaInicio,
                         FechaFin: x.FechaFinalizacion,
                         Orden: x.Orden,
-                        ActividadConteo: new ActividadConteoDto
-                        (
-                            TotalTareas: totalConteoDeTarea[index].Result,
-                            TotalTareasProceso: totalConteoDeTareaCompletadas[index].Result,
-                            TotalTareasFinalizadas: totalConteoDeTareasFinalizadas[index].Result
+                        ActividadConteo: new ActividadConteoDto(
+                            TotalTareas: totalConteoDeTarea[index],
+                            TotalTareasProceso: totalConteoDeTareaCompletadas[index],
+                            TotalTareasFinalizadas: totalConteoDeTareasFinalizadas[index]
                         )
                     ))
                     .ToList();
-                
+
                 var totalElementos = actividadesDto.Count();
-                
+
                 var elementosPaginados = actividadesDto
                     .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
                     .ToList();
-                
-                return  new ResultadoPaginado<ActividadDetallesDto>(
+
+                return new ResultadoPaginado<ActividadDetallesDto>(
                     elementos: elementosPaginados,
                     totalElementos: totalElementos,
                     paginaActual: solicitud.NumeroPagina,
                     tamanioPagina: solicitud.TamanoPagina
                 );
-            }, 
-                cancellationToken: cancellationToken
-            );
+            },
+            cancellationToken: cancellationToken
+        );
+
 
         logger.LogInformation(
             "Se obtuvo exitosamente la página {NumeroPagina} de actividades. Total de actividades en esta página: {CantidadActividades}",
