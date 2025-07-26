@@ -65,7 +65,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IActualizarEmpresa<ActualizarEmpresaDto, ActualizarEmpresaDto>, ActualizarEmpresa>();
             servicios.AddScoped<IBorrarEmpresa, BorrarEmpresa>();
             servicios.AddScoped<ICrearEmpresa<CrearEmpresaDto, EmpresaDto>, CrearEmpresa>();
-            servicios.AddScoped<IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>, ResultadoPaginadoEmpresa>();
+            servicios.AddScoped<IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto>, ResultadoPaginadoEmpresa>();
             servicios.AddScoped<IObtenerIdEmpresa<EmpresaDto>, ObtenerIdEmpresa>();
             servicios.AddScoped<IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto>, ResultadoPaginaPorEmpleadoIdEmpresa>();
             
@@ -79,6 +79,9 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IResultadoPaginadoEmpleado<PaginacionParametro,EmpleadoDto>, ResultadoPaginadoEmpleado>(); 
             servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>();
             servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>();
+            servicios.AddScoped<IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto>, ObtenerEstadisticasEnConteoEmpleado>();
+            servicios.AddScoped<IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto>, ObtenerConteoDeEmpleadosCeo>();
+            servicios.AddScoped<IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto>, ObtenerConteoDeEstadisticasCeo>();
             
         #endregion
         
@@ -106,7 +109,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IActualizarProyecto<ActualizarProyectoDto, ActualizarProyectoDto>, ActualizarProyecto>();
             servicios.AddScoped<IBorrarProyecto, BorrarProyecto>();
             servicios.AddScoped<IObtenerIdProyecto<ProyectoDto>, ObtenerIdProyecto>();
-            servicios.AddScoped<IResultadoPaginaProyecto<PaginacionParametro, ProyectoDto>, ResultadoPaginaProyecto>();
+            servicios.AddScoped<IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto>, ResultadoPaginaProyecto>();
 
         #endregion
 
@@ -126,7 +129,7 @@ public static class InyeccionDeDependencia
         servicios.AddScoped<IObtenerIdActividad<ActividadDto>, ObtenerIdActividad>();
         servicios.AddScoped<IBorrarActividad, BorrarActividad>();
         servicios.AddScoped<IActualizarActividad<ActualizarActividadDto, ActividadDto>, ActualizarActividad>();
-        servicios.AddScoped<IResultadoPaginadoActividad<PaginacionParametro, ActividadDto>, ResultadoPaginadoActividad>();
+        servicios.AddScoped<IResultadoPaginadoActividad<PaginacionParametro, ActividadDetallesDto>, ResultadoPaginadoActividad>();
 
         #endregion
         
