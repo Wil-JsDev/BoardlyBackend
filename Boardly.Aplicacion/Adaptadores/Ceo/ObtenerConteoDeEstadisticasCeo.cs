@@ -23,28 +23,10 @@ public class ObtenerConteoDeEstadisticasCeo(
         }
 
         var conteoTotalEmpresas = await ceoRepositorio.ObtenerConteoDeEmpresasCeoAsync(ceoId, cancellationToken);
-        if (conteoTotalEmpresas == 0)
-        {
-            logger.LogWarning("El CEO con ID {CeoId} no tiene ninguna empresa registrada", ceoId);
-            
-            return ResultadoT<CeoEstadisticaDto>.Fallo(Error.Fallo("404", "Ceo no tiene empresas"));
-        }
 
         var conteoTotalProyectos = await ceoRepositorio.ObtenerConteoDeProyectosAsync(ceoId, cancellationToken);
-        if (conteoTotalProyectos == 0)
-        {
-            logger.LogWarning("El CEO con ID {CeoId} no tiene proyectos asociados a sus empresas", ceoId);
-            
-            return ResultadoT<CeoEstadisticaDto>.Fallo(Error.Fallo("404", "Ceo no tiene proyectos"));
-        }
 
         var conteoTotalEmpleados = await ceoRepositorio.ObtenerConteoDeEmpleadosDentroDeLaEmpresaAsync(ceoId, cancellationToken);
-        if (conteoTotalEmpleados == 0)
-        {
-            logger.LogWarning("El CEO con ID {CeoId} no tiene empleados en sus empresas", ceoId);
-            
-            return ResultadoT<CeoEstadisticaDto>.Fallo(Error.Fallo("404", "Ceo no tiene empleados"));
-        }
         
         logger.LogInformation("Ceo con ID {CeoId} encontrado correctamente.", ceo.CeoId);
         
