@@ -37,32 +37,30 @@ public class ResultadoPaginaProyecto(
 
         string cacheKey = $"obtener-paginacion-proyecto-{empresaId}-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}";
         var resultaPaginacionDto = await cache.ObtenerOCrearAsync(cacheKey,
-            async () =>
+        async () =>
             {
-                
-                var proyectosIds = resultadoPaginacion.Elementos!.Select(x => x.ProyectoId).ToList();
-
-                var conteoDeActividades = proyectosIds
-                    .Select(id => repositorioProyecto.ObtenerConteoDeActividadesProyectosAsync(id, cancellationToken))
-                    .ToList();
-                
-                var conteoDeTareas = proyectosIds
-                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasProyectosAsync(id, cancellationToken))
-                    .ToList();
-                
-                var conteoDeTareasCompletadas = proyectosIds
-                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasCompletadasProyectosAsync(id, cancellationToken))
+                var proyectosIds = resultadoPaginacion.Elementos!
+                    .Select(x => x.ProyectoId)
                     .ToList();
 
-                var conteoDeTareasPendientes = proyectosIds
-                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasPendienteProyectosAsync(id, cancellationToken))
-                    .ToList();
-                
-                await Task.WhenAll(conteoDeActividades);
-                await Task.WhenAll(conteoDeTareas);
-                await Task.WhenAll(conteoDeTareasCompletadas);
-                await Task.WhenAll(conteoDeTareasPendientes);
-                
+                var conteoDeActividades = new List<int>();
+                var conteoDeTareas = new List<int>();
+                var conteoDeTareasCompletadas = new List<int>();
+                var conteoDeTareasPendientes = new List<int>();
+
+                foreach (var id in proyectosIds)
+                {
+                    var actividades = await repositorioProyecto.ObtenerConteoDeActividadesProyectosAsync(id, cancellationToken);
+                    var tareas = await repositorioProyecto.ObtenerConteoDeTareasProyectosAsync(id, cancellationToken);
+                    var tareasCompletadas = await repositorioProyecto.ObtenerConteoDeTareasCompletadasProyectosAsync(id, cancellationToken);
+                    var tareasPendientes = await repositorioProyecto.ObtenerConteoDeTareasPendienteProyectosAsync(id, cancellationToken);
+
+                    conteoDeActividades.Add(actividades);
+                    conteoDeTareas.Add(tareas);
+                    conteoDeTareasCompletadas.Add(tareasCompletadas);
+                    conteoDeTareasPendientes.Add(tareasPendientes);
+                }
+
                 var proyectosDto = resultadoPaginacion.Elementos!
                     .Select((x, index) => new ProyectoDetallesConConteoDto(
                         x.ProyectoId,
@@ -75,29 +73,30 @@ public class ResultadoPaginaProyecto(
                         x.FechaCreado,
                         ProyectoConteo: new ProyectoConteoDto
                         (
-                            ConteoActividades: conteoDeActividades[index].Result,
-                            ConteoTareas: conteoDeTareas[index].Result,
-                            ConteoTareasCompletadas: conteoDeTareasCompletadas[index].Result,
-                            ConteoTareasPendientes: conteoDeTareasPendientes[index].Result
+                            ConteoActividades: conteoDeActividades[index],
+                            ConteoTareas: conteoDeTareas[index],
+                            ConteoTareasCompletadas: conteoDeTareasCompletadas[index],
+                            ConteoTareasPendientes: conteoDeTareasPendientes[index]
                         )
                     ))
                     .ToList();
-                
-                var totalElementos = proyectosDto.Count();
-                
+
+                var totalElementos = proyectosDto.Count;
+
                 var elementosPaginados = proyectosDto
                     .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
                     .ToList();
-                
-                return  new ResultadoPaginado<ProyectoDetallesConConteoDto>(
+
+                return new ResultadoPaginado<ProyectoDetallesConConteoDto>(
                     elementos: elementosPaginados,
                     totalElementos: totalElementos,
                     paginaActual: solicitud.NumeroPagina,
                     tamanioPagina: solicitud.TamanoPagina
                 );
             },
-                cancellationToken: cancellationToken
+            cancellationToken: cancellationToken
         );
+
         
         logger.LogInformation("Se obtuvo correctamente la página {NumeroPagina} de proyectos para la empresa {EmpresaId}. Total en esta página: {CantidadProyectos}",
             solicitud.NumeroPagina, empresaId, resultaPaginacionDto.Elementos!.Count());
