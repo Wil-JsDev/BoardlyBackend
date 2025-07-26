@@ -12,21 +12,32 @@ namespace Boardly.Aplicacion.Adaptadores.Empresa;
 public class ResultadoPaginadoEmpresa(
     ILogger<ResultadoPaginadoEmpresa> logger,
     IEmpresaRepositorio empresaRepositorio,
+    ICeoRepositorio ceoRepositorio,
     IDistributedCache cache
-) : IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>
+) : IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto>
 {
-    public async Task<ResultadoT<ResultadoPaginado<EmpresaDto>>> ObtenerPaginacionEmpresaAsync(Guid ceoId,PaginacionParametro solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<ResultadoPaginado<EmpresaProyectosDto>>> ObtenerPaginacionEmpresaAsync(Guid ceoId,PaginacionParametro solicitud, CancellationToken cancellationToken)
     {
         if (solicitud.TamanoPagina <= 0 || solicitud.NumeroPagina <= 0)
         {
             logger.LogWarning("Parametros invalidos de paginacion. TamanoPagina: {TamanoPagina}, NumeroPagina: {NumeroPagina}",
                 solicitud.TamanoPagina, solicitud.NumeroPagina);
 
-            return ResultadoT<ResultadoPaginado<EmpresaDto>>.Fallo(
+            return ResultadoT<ResultadoPaginado<EmpresaProyectosDto>>.Fallo(
                 Error.Fallo("400", "Los parametros de paginacion deben ser mayores a cero.")
             );
         }
 
+        var ceo = await ceoRepositorio.ObtenerByIdAsync(ceoId, cancellationToken);
+        if (ceo is null)
+        {
+            logger.LogWarning("El CEO con id {CeoId} no existe.", ceoId);
+            
+            return ResultadoT<ResultadoPaginado<EmpresaProyectosDto>>.Fallo(
+                Error.Fallo("400", "El CEO con id especificado no existe.")
+            );
+        }
+        
         var resultadoPagina = await empresaRepositorio.ObtenerPaginasEmpresaAsync(ceoId, solicitud.NumeroPagina,
             solicitud.TamanoPagina, cancellationToken);
         
@@ -35,7 +46,7 @@ public class ResultadoPaginadoEmpresa(
             logger.LogWarning("No se encontraron empresas en la pagina {NumeroPagina} con tamano {TamanoPagina}.",
                 solicitud.NumeroPagina, solicitud.TamanoPagina);
 
-            return ResultadoT<ResultadoPaginado<EmpresaDto>>.Fallo(
+            return ResultadoT<ResultadoPaginado<EmpresaProyectosDto>>.Fallo(
                 Error.Fallo("404", "No se encontraron empresas para los parametros de paginacion especificados.")
             );
         }
@@ -44,14 +55,33 @@ public class ResultadoPaginadoEmpresa(
             $"obtener-paginacion-empresa-{solicitud.TamanoPagina}-{solicitud.NumeroPagina}",
             async () =>
             {
-                var dtoList = resultadoPagina.Elementos.Select(empresaEntidad => new EmpresaDto
+                var empresaIds = resultadoPagina.Elementos.Select(x => x.EmpresaId).ToList();
+                
+                var empleadosTarea = empresaIds
+                    .Select(id => empresaRepositorio.ObtenerConteoDeEmpleadosPorEmpresaIdAsync(id, cancellationToken))
+                    .ToList();
+
+                var proyectosTarea = empresaIds
+                    .Select(id => empresaRepositorio.ObtenerConteoDeProyectosPorEmpresaAsync(id, cancellationToken))
+                    .ToList(); 
+
+                await Task.WhenAll(empleadosTarea);
+                
+                await Task.WhenAll(proyectosTarea);
+                
+                var dtoList = resultadoPagina.Elementos.Select((empresa, index) => new EmpresaProyectosDto
                 (
-                    EmpresaId: empresaEntidad.EmpresaId, 
-                    CeoId: empresaEntidad.CeoId,
-                    Nombre: empresaEntidad.Nombre,
-                    Descripcion: empresaEntidad.Descripcion,
-                    FechaCreacion: empresaEntidad.FechaCreacion,
-                    Estado: empresaEntidad.Estado
+                    EmpresaId: empresa.EmpresaId,
+                    CeoId: empresa.CeoId,
+                    Nombre: empresa.Nombre,
+                    Descripcion: empresa.Descripcion,
+                    FechaCreacion: empresa.FechaCreacion,
+                    Estado: empresa.Estado,
+                    EmpresaConteo: new EmpresaConteoDto
+                    (
+                        TotalEmpleados: empleadosTarea[index].Result,
+                        TotalProyectos: proyectosTarea[index].Result
+                    )
                 )).ToList();
                 
                 var totalElementos = dtoList.Count;
@@ -60,7 +90,7 @@ public class ResultadoPaginadoEmpresa(
                     .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
                     .ToList();
                 
-                return new ResultadoPaginado<EmpresaDto>(
+                return new ResultadoPaginado<EmpresaProyectosDto>(
                     elementos: elementosPaginados,
                     totalElementos: totalElementos,
                     paginaActual: solicitud.NumeroPagina,
@@ -73,6 +103,6 @@ public class ResultadoPaginadoEmpresa(
         logger.LogInformation("Se obtuvo la pagina {NumeroPagina} de empresas con exito. Cantidad de empresas en esta pagina: {CantidadEmpresas}",
             solicitud.NumeroPagina, empresaDtoList.Elementos!.Count());
 
-        return ResultadoT<ResultadoPaginado<EmpresaDto>>.Exito(empresaDtoList);
+        return ResultadoT<ResultadoPaginado<EmpresaProyectosDto>>.Exito(empresaDtoList);
     }
 }

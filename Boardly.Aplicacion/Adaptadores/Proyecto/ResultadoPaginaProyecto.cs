@@ -13,9 +13,9 @@ public class ResultadoPaginaProyecto(
     ILogger<ResultadoPaginaProyecto> logger,
     IProyectoRepositorio repositorioProyecto,
     IDistributedCache cache
-    ) : IResultadoPaginaProyecto<PaginacionParametro, ProyectoDto>
+    ) : IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto>
 {
-    public async Task<ResultadoT<ResultadoPaginado<ProyectoDto>>> ObtenerPaginacionProyectoAsync(
+    public async Task<ResultadoT<ResultadoPaginado<ProyectoDetallesConConteoDto>>> ObtenerPaginacionProyectoAsync(
         Guid empresaId,
         PaginacionParametro solicitud,
         CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ public class ResultadoPaginaProyecto(
             logger.LogWarning("Parámetros inválidos de paginación recibidos: TamañoPagina={TamanoPagina}, NumeroPagina={NumeroPagina}", 
                 solicitud.TamanoPagina, solicitud.NumeroPagina);
         
-            return ResultadoT<ResultadoPaginado<ProyectoDto>>.Fallo(
+            return ResultadoT<ResultadoPaginado<ProyectoDetallesConConteoDto>>.Fallo(
                 Error.Fallo("400", "Los parámetros de paginación deben ser mayores a cero."));
         }
         
@@ -39,8 +39,32 @@ public class ResultadoPaginaProyecto(
         var resultaPaginacionDto = await cache.ObtenerOCrearAsync(cacheKey,
             async () =>
             {
+                
+                var proyectosIds = resultadoPaginacion.Elementos!.Select(x => x.ProyectoId).ToList();
+
+                var conteoDeActividades = proyectosIds
+                    .Select(id => repositorioProyecto.ObtenerConteoDeActividadesProyectosAsync(id, cancellationToken))
+                    .ToList();
+                
+                var conteoDeTareas = proyectosIds
+                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasProyectosAsync(id, cancellationToken))
+                    .ToList();
+                
+                var conteoDeTareasCompletadas = proyectosIds
+                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasCompletadasProyectosAsync(id, cancellationToken))
+                    .ToList();
+
+                var conteoDeTareasPendientes = proyectosIds
+                    .Select(id => repositorioProyecto.ObtenerConteoDeTareasPendienteProyectosAsync(id, cancellationToken))
+                    .ToList();
+                
+                await Task.WhenAll(conteoDeActividades);
+                await Task.WhenAll(conteoDeTareas);
+                await Task.WhenAll(conteoDeTareasCompletadas);
+                await Task.WhenAll(conteoDeTareasPendientes);
+                
                 var proyectosDto = resultadoPaginacion.Elementos!
-                    .Select(x => new ProyectoDto(
+                    .Select((x, index) => new ProyectoDetallesConConteoDto(
                         x.ProyectoId,
                         x.EmpresaId,
                         x.Nombre,
@@ -48,7 +72,14 @@ public class ResultadoPaginaProyecto(
                         x.FechaInicio,
                         x.FechaFin,
                         x.Estado.ToString(),
-                        x.FechaCreado
+                        x.FechaCreado,
+                        ProyectoConteo: new ProyectoConteoDto
+                        (
+                            ConteoActividades: conteoDeActividades[index].Result,
+                            ConteoTareas: conteoDeTareas[index].Result,
+                            ConteoTareasCompletadas: conteoDeTareasCompletadas[index].Result,
+                            ConteoTareasPendientes: conteoDeTareasPendientes[index].Result
+                        )
                     ))
                     .ToList();
                 
@@ -58,7 +89,7 @@ public class ResultadoPaginaProyecto(
                     .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
                     .ToList();
                 
-                return  new ResultadoPaginado<ProyectoDto>(
+                return  new ResultadoPaginado<ProyectoDetallesConConteoDto>(
                     elementos: elementosPaginados,
                     totalElementos: totalElementos,
                     paginaActual: solicitud.NumeroPagina,
@@ -71,7 +102,7 @@ public class ResultadoPaginaProyecto(
         logger.LogInformation("Se obtuvo correctamente la página {NumeroPagina} de proyectos para la empresa {EmpresaId}. Total en esta página: {CantidadProyectos}",
             solicitud.NumeroPagina, empresaId, resultaPaginacionDto.Elementos!.Count());
 
-        return ResultadoT<ResultadoPaginado<ProyectoDto>>.Exito(resultaPaginacionDto);
+        return ResultadoT<ResultadoPaginado<ProyectoDetallesConConteoDto>>.Exito(resultaPaginacionDto);
     }
 
 }

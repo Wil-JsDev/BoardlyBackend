@@ -47,4 +47,19 @@ public class EmpresaRepositorio(BoardlyContexto contexto): GenericoRepositorio<E
         
     }
     
+    public async Task<int> ObtenerConteoDeEmpleadosPorEmpresaIdAsync(Guid empresaId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Empleado>()
+            .AsNoTracking()
+            .Where(x => x.EmpresaId == empresaId)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> ObtenerConteoDeProyectosPorEmpresaAsync(Guid empresaId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Proyecto>()
+            .AsNoTracking()
+            .Where(x => x.EmpresaId == empresaId)
+            .CountAsync(cancellationToken);
+    }
 }

@@ -24,6 +24,19 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
                                     && x.TareaId != tareaId, 
                                      cancellationToken);
     }
+
+    public async Task<Tarea?> ObtenerDetallesPorTareaIdAsync(Guid tareaId, CancellationToken cancellationToken)
+    {
+        var tarea = await _boardlyContexto.Set<Tarea>()
+            .Include(u => u.TareasEmpleado)!
+                .ThenInclude(te => te.Empleado)
+                    .ThenInclude(em  => em!.EmpleadosProyectoRol)
+                        .ThenInclude(em => em.RolProyecto)
+            .Include(u => u.Comentarios)
+            .FirstOrDefaultAsync(x => x.TareaId == tareaId, cancellationToken);
+        
+        return tarea;
+    }
     
     public async Task<bool> ExisteTareaPorIdAsync(Guid tareaId, CancellationToken cancellationToken)
     {

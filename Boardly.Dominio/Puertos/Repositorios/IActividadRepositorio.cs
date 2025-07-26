@@ -41,4 +41,10 @@ public interface IActividadRepositorio : IGenericoRepositorio<Actividad>
     /// <param name="cancellationToken">Token para cancelar la operación asincrónica.</param>
     /// <returns>Número total de actividades del proyecto.</returns>
     Task<int> ObtenerNumeroActividadesPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeTareasActividadAsync(Guid actividadId, CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeTareasEnProcesoActividadAsync(Guid actividadId, CancellationToken cancellationToken);
+
+    Task<int> ObtenerConteoDeTareasFinalizadasActividadAsync(Guid actividadId, CancellationToken cancellationToken);
 }

@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Empresa;
+using Boardly.Aplicacion.DTOs.Proyecto;
 using Boardly.Dominio.Modelos;
 
 namespace Boardly.Aplicacion.Mapper;
@@ -21,11 +22,14 @@ public static class EmpresaMapper
 
             return new EmpresaDetallesProyectosDto
             (
-                EmpresaId: x.EmpresaId,
-                CeoId: x.CeoId ?? Guid.Empty,
                 Nombre: x.Nombre,
                 Descripcion: x.Descripcion,
                 Rol: rol,
+                ProyectoEmpresa: new ProyectoEmpresaDto
+                (
+                    ProyectoId: proyecto?.ProyectoId ?? Guid.Empty,
+                    Nombre: proyecto?.Nombre ?? string.Empty
+                ),
                 ActividadesCount: countActividad,
                 TareasCount: countTareas,
                 EstadoTareaCount: countTareasEstado,
