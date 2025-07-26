@@ -1,3 +1,4 @@
+using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
@@ -39,6 +40,30 @@ public class ActividadRepositorio(BoardlyContexto boardlyContexto) : GenericoRep
     {
         return await _boardlyContexto.Set<Actividad>()
             .Where(a => a.ProyectoId == proyectoId)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> ObtenerConteoDeTareasActividadAsync(Guid actividadId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(t => t.ActividadId == actividadId)
+            .CountAsync(cancellationToken);
+    }
+    
+    public async Task<int> ObtenerConteoDeTareasEnProcesoActividadAsync(Guid actividadId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(t => t.Estado == EstadoTarea.EnProceso.ToString() && t.ActividadId == actividadId)
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<int> ObtenerConteoDeTareasFinalizadasActividadAsync(Guid actividadId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(t =>  t.Estado == EstadoTarea.Finalizada.ToString() && t.ActividadId == actividadId)
             .CountAsync(cancellationToken);
     }
     
