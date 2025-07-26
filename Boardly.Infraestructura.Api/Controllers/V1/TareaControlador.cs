@@ -10,7 +10,7 @@ namespace Boardly.Infraestructura.Api.Controllers.V1;
 public class TareaControlador(
     ICrearTarea<CrearTareaDto, TareaDto> crearTarea,
     IResultadoPaginadoTarea<PaginacionParametro, TareaDto> tareaPagina,
-    IObtenerIdTarea<TareaDto> obtenerTarea,
+    IObtenerIdTarea<TareaDetalles> obtenerTarea,
     IBorrarTarea borrarTarea,
     IActualizarTarea<ActualizarTituloTareaDto, TareaDto> actualizarTarea
     ) : ControllerBase
@@ -26,7 +26,7 @@ public class TareaControlador(
         return BadRequest(resultado.Error);
     }
 
-    [HttpGet("{taskId}")]
+    [HttpGet("{taskId}/info")]
     public async Task<IActionResult> ObtenerIdTareaAsync([FromRoute] Guid taskId, CancellationToken cancellationToken)
     {
         var resultado = await obtenerTarea.ObtenerIdUsuarioAsync(taskId, cancellationToken);

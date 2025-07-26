@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Aplicacion.Mapper;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
@@ -11,13 +12,20 @@ public class ObtenerIdTarea(
     ILogger<ObtenerIdTarea> logger,
     ITareaRepositorio tareaRepositorio,
     IDistributedCache cache
-    ) : IObtenerIdTarea<TareaDto>
+    ) : IObtenerIdTarea<TareaDetalles>
 {
-    public async Task<ResultadoT<TareaDto>> ObtenerIdUsuarioAsync(Guid tareaId, CancellationToken cancellationToken)
+    public async Task<ResultadoT<TareaDetalles>> ObtenerIdUsuarioAsync(Guid tareaId, CancellationToken cancellationToken)
     {
         var tarea = await cache.ObtenerOCrearAsync(
             $"obtener-tarea-{tareaId}",
-            async () => await tareaRepositorio.ObtenerByIdAsync(tareaId, cancellationToken),
+            async () =>
+            {
+                var tareaDetalle = await tareaRepositorio.ObtenerDetallesPorTareaIdAsync(tareaId, cancellationToken);
+
+                var tareaDetallesDto = TareaMapper.MapToDetalles(tareaDetalle!);
+                
+                return tareaDetallesDto;
+            },
             cancellationToken: cancellationToken
         );
 
@@ -25,27 +33,13 @@ public class ObtenerIdTarea(
         {
             logger.LogWarning("No se encontró ninguna tarea con el ID: {TareaId}", tareaId);
 
-            return ResultadoT<TareaDto>.Fallo(
+            return ResultadoT<TareaDetalles>.Fallo(
                 Error.NoEncontrado("404", "Este ID de tarea no existe."));
         }
+        
+        logger.LogInformation("Tarea encontrada con éxito. Título: {Titulo}", tarea.Titulo);
 
-        var tareaDto = new TareaDto
-        (
-            tarea.TareaId,
-            tarea.ProyectoId,
-            tarea.Titulo,
-            tarea.Estado,
-            tarea.Descripcion,
-            tarea.FechaInicio,
-            tarea.FechaVencimiento,
-            tarea.FechaActualizacion,
-            tarea.FechaCreado,
-            tarea.ActividadId
-        );
-
-        logger.LogInformation("Tarea encontrada con éxito. ID: {TareaId}, Título: {Titulo}", tarea.TareaId, tarea.Titulo);
-
-        return ResultadoT<TareaDto>.Exito(tareaDto);
+        return ResultadoT<TareaDetalles>.Exito(tarea);
     }
 
 }
