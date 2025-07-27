@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
@@ -50,12 +51,17 @@ public class ActualizarEstadoTarea(
             tarea.FechaVencimiento,
             tarea.FechaActualizacion,
             tarea.FechaCreado,
-            tarea.ActividadId
+            tarea.ActividadId,
+            UsuarioFotoPerfil: new UsuarioFotoPerfilDto
+            (
+                UsuarioId: tarea.TareasEmpleado!.First().Empleado!.UsuarioId,
+                FotoPerfil: tarea.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil           
+            )
         );
         
-        var empleadoId = tarea.TareasEmpleado.FirstOrDefault()?.EmpleadoId ?? Guid.Empty;;
+        var empleadoId = tarea.TareasEmpleado!.FirstOrDefault()?.EmpleadoId ?? Guid.Empty;;
 
-        NuevoEstadoTarea(nuevoEstado, empleadoId, tareaDto);
+        await NuevoEstadoTarea(nuevoEstado, empleadoId, tareaDto);
 
         logger.LogInformation("");
         

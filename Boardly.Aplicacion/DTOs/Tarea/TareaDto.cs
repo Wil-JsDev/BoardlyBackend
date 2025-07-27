@@ -1,3 +1,5 @@
+using Boardly.Aplicacion.DTOs.Usuario;
+
 namespace Boardly.Aplicacion.DTOs.Tarea;
 
 public record TareaDto
@@ -11,5 +13,6 @@ public record TareaDto
     DateTime FechaVencimiento,
     DateTime? FechaActualizacion,
     DateTime FechaCreado,
-    Guid ActividadId
+    Guid ActividadId,
+    UsuarioFotoPerfilDto UsuarioFotoPerfil
 );

@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
@@ -112,7 +113,12 @@ public class CrearTarea(
             FechaVencimiento: tareaEntidad.FechaVencimiento,
             FechaActualizacion:tareaEntidad.FechaActualizacion,  
             FechaCreado: tareaEntidad.FechaCreado,
-            ActividadId: solicitud.ActividadId
+            ActividadId: solicitud.ActividadId,
+            UsuarioFotoPerfil: new UsuarioFotoPerfilDto
+            (
+                UsuarioId: tareaEntidad.TareasEmpleado!.First().Empleado!.UsuarioId,
+                FotoPerfil: tareaEntidad.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil           
+            )
         );
         
         await notificadorTareas.NotificarNuevaTarea(solicitud.UsuarioId, tareaCreadaDto);
