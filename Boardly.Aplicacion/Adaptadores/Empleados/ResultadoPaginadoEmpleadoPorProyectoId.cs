@@ -49,7 +49,8 @@ public class ResultadoPaginadoEmpleadoPorProyectoId(
                     EmpleadoId: x.EmpleadoId,
                     NombreCompleto: $"{x.Usuario.Nombre} {x.Usuario.Apellido}",
                     Posicion: x.EmpleadosProyectoRol
-                        .FirstOrDefault(y => y.ProyectoId == proyectoId)?.RolProyecto?.Nombre ?? "Sin rol"
+                        .FirstOrDefault(y => y.ProyectoId == proyectoId)?.RolProyecto?.Nombre ?? "Sin rol",
+                    FotoPerfil: x.Usuario.FotoPerfil
                 )).ToList();
 
                 var totalCount = obtenerPaginas.TotalElementos;
