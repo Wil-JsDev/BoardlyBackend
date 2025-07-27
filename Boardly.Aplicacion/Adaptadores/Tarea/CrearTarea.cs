@@ -20,49 +20,63 @@ public class CrearTarea(
     IEmpleadoRepositorio empleadoRepositorio    
     ) : ICrearTarea<CrearTareaDto, TareaDto>
 {
-    public async Task<ResultadoT<TareaDto>> CrearTareaAsync(CrearTareaDto solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<TareaDto>> CrearTareaAsync(CrearTareaDto solicitud,
+        CancellationToken cancellationToken)
     {
-        if ( await tareaRepositorio.ExisteNombreTareaAsync(solicitud.Titulo, solicitud.ProyectoId, cancellationToken) )
+        if (await tareaRepositorio.ExisteNombreTareaAsync(solicitud.Titulo, solicitud.ProyectoId, cancellationToken))
         {
-            logger.LogWarning("Ya existe una tarea con el nombre {Titulo} en el proyecto {ProyectoId}", solicitud.Titulo, solicitud.ProyectoId);
+            logger.LogWarning("Ya existe una tarea con el nombre {Titulo} en el proyecto {ProyectoId}",
+                solicitud.Titulo, solicitud.ProyectoId);
 
-            return ResultadoT<TareaDto>.Fallo(Error.Conflicto("409", "Ya existe una tarea con el nombre especificado."));
+            return ResultadoT<TareaDto>.Fallo(Error.Conflicto("409",
+                "Ya existe una tarea con el nombre especificado."));
         }
 
         var usuario = await usuarioRepositorio.ObtenerByIdAsync(solicitud.UsuarioId, cancellationToken);
         if (usuario is null)
         {
             logger.LogWarning("El usuario {UsuarioId} no fue encontrado", solicitud.UsuarioId);
-            
+
             return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404", "El usuario especificado no fue encontrado."));
         }
-        
+
         var actividad = await actividadRepositorio.ObtenerByIdAsync(solicitud.ActividadId, cancellationToken);
         if (actividad is null)
         {
             logger.LogWarning("La actividad {ActividadId} no fue encontrada", solicitud.ActividadId);
-            
-            return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404", "La actividad especificada no fue encontrada."));
+
+            return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404",
+                "La actividad especificada no fue encontrada."));
         }
-        
-        if (!await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaVencimiento, cancellationToken))
+
+        if (!await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaVencimiento,
+                cancellationToken))
         {
-            logger.LogWarning("El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaVencimiento}", 
+            logger.LogWarning(
+                "El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaVencimiento}",
                 solicitud.FechaInicio, solicitud.FechaVencimiento);
-    
+
             return ResultadoT<TareaDto>.Fallo(
-                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
+                Error.Fallo("400",
+                    "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
             );
         }
 
-        var empleado = await empleadoRepositorio.ObtenerByIdAsync(solicitud.EmpleadoId, cancellationToken);
-        if (empleado is null)
+        if (solicitud.EmpleadoIds.Count == 0)
         {
-            logger.LogWarning("No se encontró el empleado con Id {EmpleadoId}", solicitud.EmpleadoId);
-    
-            return ResultadoT<TareaDto>.Fallo(Error.NoEncontrado("404", $"Empleado con Id {solicitud.EmpleadoId} no encontrado."));
+            logger.LogWarning("No se proporcionaron empleados para asignar la tarea. Solicitud inválida.");
+
+            return ResultadoT<TareaDto>.Fallo(Error.Fallo("400", "Debe proporcionar al menos un empleado para asignar la tarea."));
         }
+        
+        var empleadosIds = await tareaEmpleadoRepositorio.ObtenerEmpleadoIdsAsync(solicitud.EmpleadoIds, cancellationToken);
+        if (empleadosIds is null)
+        {
+            logger.LogWarning("No se encontraron empleados con los IDs proporcionados.");
             
+            return ResultadoT<TareaDto>.Fallo(Error.Fallo("400", "No se encontraron empleados con los IDs proporcionados."));
+        }
+        
         Dominio.Modelos.Tarea tareaEntidad = new()
         {
             TareaId = Guid.NewGuid(),
@@ -78,16 +92,14 @@ public class CrearTarea(
         };
 
         await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);
-
-        TareaEmpleado tareaEmpleado = new()
+        
+        var tareaEmpleado = solicitud.EmpleadoIds.Select(id => new TareaEmpleado
         {
-            TareaId = tareaEntidad.TareaId,
-            EmpleadoId = solicitud.EmpleadoId
-        };
+            TareaId = tareaEntidad.TareaId, 
+            EmpleadoId = id
+        }).ToList();
 
-        await tareaEmpleadoRepositorio.CrearAsync(tareaEmpleado, cancellationToken);
-        
-        
+        await tareaEmpleadoRepositorio.CrearTareasEmpleadosAsync(tareaEmpleado, cancellationToken);
         
         TareaDto tareaCreadaDto = new
         (

@@ -3,7 +3,7 @@ namespace Boardly.Aplicacion.DTOs.Tarea;
 public record CrearTareaDto(
     Guid ProyectoId,
     Guid UsuarioId,
-    Guid EmpleadoId,
+    List<Guid> EmpleadoIds,
     string Titulo,
     string? Descripcion,
     DateTime FechaVencimiento,
