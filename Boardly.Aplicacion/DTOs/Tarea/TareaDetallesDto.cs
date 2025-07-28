@@ -2,7 +2,7 @@ using Boardly.Aplicacion.DTOs.Usuario;
 
 namespace Boardly.Aplicacion.DTOs.Tarea;
 
-public record TareaDto
+public sealed record TareaDetallesDto
 (
     Guid TareaId,
     Guid ProyectoId,

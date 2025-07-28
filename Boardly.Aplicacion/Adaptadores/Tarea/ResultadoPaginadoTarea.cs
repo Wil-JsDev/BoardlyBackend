@@ -1,5 +1,6 @@
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Aplicacion.DTOs.Tarea;
+using Boardly.Aplicacion.DTOs.Usuario;
 using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.Repositorios;
@@ -65,7 +66,12 @@ public class ResultadoPaginadoTarea(
                 FechaVencimiento: x.FechaVencimiento,
                 FechaActualizacion: x.FechaActualizacion,
                 FechaCreado: x.FechaCreado,
-                ActividadId: x.ActividadId
+                ActividadId: x.ActividadId,
+                UsuarioFotoPerfil: new UsuarioFotoPerfilDto
+                (
+                    UsuarioId: x.TareasEmpleado!.First().Empleado!.UsuarioId,
+                    FotoPerfil: x.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil
+                )
             )).ToList();
         
             var totalElementos = resultadoPaginaDto.Count;

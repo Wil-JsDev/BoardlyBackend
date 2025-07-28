@@ -126,7 +126,10 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
     {
         var consulta = _boardlyContexto.Set<Tarea>()
             .AsNoTracking()
-            .Where(x => x.ActividadId == actividadId);
+            .Where(x => x.ActividadId == actividadId)
+            .Include(t => t.TareasEmpleado)!
+            .ThenInclude(te => te.Empleado)
+            .AsSplitQuery();
 
         var total = await consulta.CountAsync(cancellationToken);
         
