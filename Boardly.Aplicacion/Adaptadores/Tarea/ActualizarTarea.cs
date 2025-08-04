@@ -43,6 +43,7 @@ public class ActualizarTarea(
         }
         
         tarea.Titulo = solicitud.Titulo;
+        tarea.Descripcion = solicitud.Descripcion;
         tarea.FechaActualizacion = DateTime.UtcNow;
 
         await tareaRepositorio.ActualizarAsync(tarea, cancellationToken);
@@ -63,11 +64,11 @@ public class ActualizarTarea(
             tarea.FechaActualizacion,
             tarea.FechaCreado,
             tarea.ActividadId,
-            UsuarioFotoPerfil: new UsuarioFotoPerfilDto
-            (
-                UsuarioId: tarea.TareasEmpleado!.First().Empleado!.UsuarioId,
-                FotoPerfil: tarea.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil           
-            )
+            UsuarioFotoPerfil: tarea.TareasEmpleado
+                .Select(te => new UsuarioFotoPerfilDto(
+                    UsuarioId: te.Empleado!.UsuarioId,
+                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
+                )).ToList()
         );
 
         await notificadorTareas.NotificarTareaActualizada(solicitud.UsuarioId, tareaDto);

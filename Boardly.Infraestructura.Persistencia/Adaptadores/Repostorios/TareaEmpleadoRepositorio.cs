@@ -13,14 +13,13 @@ public class TareaEmpleadoRepositorio(BoardlyContexto boardlyContexto) : Generic
         await GuardarAsync(cancellationToken);   
     }
 
-    public async Task<TareaEmpleado?> ObtenerEmpleadoIdsAsync(IEnumerable<Guid> empleadosIds, CancellationToken cancellationToken)
+    public async Task<List<TareaEmpleado>> ObtenerEmpleadosPorIdsAsync(IEnumerable<Guid> empleadosIds, CancellationToken cancellationToken)
     {
-        var consulta = await _boardlyContexto.Set<TareaEmpleado>()
-            .AsNoTracking()
+        return await _boardlyContexto.Set<TareaEmpleado>()
             .Where(t => empleadosIds.Contains(t.EmpleadoId))
-            .FirstOrDefaultAsync(cancellationToken);
-        
-        return consulta;   
+            .Include(t => t.Empleado)
+            .ThenInclude(e => e.Usuario)
+            .ToListAsync(cancellationToken);
     }
     
     public async Task ActualizarTareasEmpleadosAsync(Guid tareaId, List<Guid> nuevosEmpleadoIds, CancellationToken cancellationToken)

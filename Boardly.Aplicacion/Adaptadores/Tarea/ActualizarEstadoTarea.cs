@@ -41,7 +41,7 @@ public class ActualizarEstadoTarea(
         
         await tareaRepositorio.ActualizarAsync(tarea, cancellationToken);
         
-        var tareaDto = new TareaDto(
+        TareaDto tareaDto = new(
             tarea.TareaId,
             tarea.ProyectoId,
             tarea.Titulo,
@@ -52,11 +52,12 @@ public class ActualizarEstadoTarea(
             tarea.FechaActualizacion,
             tarea.FechaCreado,
             tarea.ActividadId,
-            UsuarioFotoPerfil: new UsuarioFotoPerfilDto
-            (
-                UsuarioId: tarea.TareasEmpleado!.First().Empleado!.UsuarioId,
-                FotoPerfil: tarea.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil           
-            )
+            UsuarioFotoPerfil: tarea.TareasEmpleado
+                .Select(te => new UsuarioFotoPerfilDto(
+                    UsuarioId: te.Empleado!.UsuarioId,
+                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
+                ))
+                .ToList()
         );
         
         var empleadoId = tarea.TareasEmpleado!.FirstOrDefault()?.EmpleadoId ?? Guid.Empty;;
@@ -70,12 +71,15 @@ public class ActualizarEstadoTarea(
 
     private async Task NuevoEstadoTarea(EstadoTarea nuevoEstado, Guid empleadoId, TareaDto tareaDto)
     {
-        if (nuevoEstado == EstadoTarea.EnProceso)
-            await notificador.NotificarTareaEnProceso(empleadoId, tareaDto);
-        else if (nuevoEstado == EstadoTarea.EnRevision)
-            await notificador.NotificarTareaEnRevision(empleadoId, tareaDto);
-        else if (nuevoEstado == EstadoTarea.Finalizada) await notificador.NotificarTareaFinalizada(empleadoId, tareaDto);
-        
+        await (nuevoEstado switch
+        {
+            EstadoTarea.Pendiente => notificador.NotificarTareaEnPendiente(empleadoId, tareaDto),
+            EstadoTarea.EnProceso => notificador.NotificarTareaEnProceso(empleadoId, tareaDto),
+            EstadoTarea.EnRevision => notificador.NotificarTareaEnRevision(empleadoId, tareaDto),
+            EstadoTarea.Finalizada => notificador.NotificarTareaFinalizada(empleadoId, tareaDto)
+
+        });
+
     }
     
 }

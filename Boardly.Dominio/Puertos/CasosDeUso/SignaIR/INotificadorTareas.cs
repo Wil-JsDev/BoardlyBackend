@@ -6,6 +6,7 @@ public interface INotificadorTareas<TSolicitud>
     Task NotificarTareaActualizada(Guid usuarioId, TSolicitud tarea);
 
     Task NotificarTareasPaginadas(Guid usuarioId, IEnumerable<TSolicitud> tareaDtos);
+    Task NotificarTareaEnPendiente(Guid usuarioId, TSolicitud tarea);
 
     Task NotificarTareaEnProceso(Guid usuarioId, TSolicitud tarea);
     

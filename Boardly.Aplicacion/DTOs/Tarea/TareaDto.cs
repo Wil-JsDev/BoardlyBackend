@@ -14,5 +14,5 @@ public record TareaDto
     DateTime? FechaActualizacion,
     DateTime FechaCreado,
     Guid ActividadId,
-    UsuarioFotoPerfilDto UsuarioFotoPerfil
+    List<UsuarioFotoPerfilDto> UsuarioFotoPerfil
 );

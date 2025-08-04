@@ -27,11 +27,13 @@ public static class TareaMapper
         var usuarioEmpleado = primerEmpleadoTarea?.Empleado?.Usuario;
 
         var empleadoDto = primerEmpleadoTarea is null || primerEmpleadoTarea.Empleado is null || usuarioEmpleado is null
-            ? new EmpleadoTareaDto(Guid.Empty, string.Empty, string.Empty)
+            ? new EmpleadoTareaDto(Guid.Empty, string.Empty, string.Empty, null)
             : new EmpleadoTareaDto(
                 EmpleadoId: primerEmpleadoTarea.EmpleadoId,
                 NombreCompleto: $"{usuarioEmpleado.Nombre} {usuarioEmpleado.Apellido}",
-                Rol: primerEmpleadoTarea.Empleado.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty
+                Rol: primerEmpleadoTarea.Empleado.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty,
+                fotoPerfil: usuarioEmpleado.FotoPerfil!
+                
             );
 
         return new TareaDetalles(
@@ -39,6 +41,7 @@ public static class TareaMapper
             tarea.Estado,
             tarea.Descripcion,
             tarea.FechaVencimiento,
+            tarea.FechaInicio,
             comentarioDto,
             empleadoDto
         );

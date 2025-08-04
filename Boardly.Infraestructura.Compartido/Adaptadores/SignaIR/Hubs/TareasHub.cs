@@ -48,6 +48,8 @@ public class TareasHub(
         return base.OnDisconnectedAsync(exception);
     }
 
+    public async Task MarcarEnPendiente(Guid tareaId)
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.Pendiente, CancellationToken.None);
     public async Task MarcarEnProceso(Guid tareaId)
         => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso, CancellationToken.None);
 

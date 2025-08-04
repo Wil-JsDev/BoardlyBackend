@@ -70,13 +70,7 @@ public class CrearTarea(
             return ResultadoT<TareaDto>.Fallo(Error.Fallo("400", "Debe proporcionar al menos un empleado para asignar la tarea."));
         }
         
-        var empleadosIds = await tareaEmpleadoRepositorio.ObtenerEmpleadoIdsAsync(solicitud.EmpleadoIds, cancellationToken);
-        if (empleadosIds is null)
-        {
-            logger.LogWarning("No se encontraron empleados con los IDs proporcionados.");
-            
-            return ResultadoT<TareaDto>.Fallo(Error.Fallo("400", "No se encontraron empleados con los IDs proporcionados."));
-        }
+      
         
         Dominio.Modelos.Tarea tareaEntidad = new()
         {
@@ -91,16 +85,24 @@ public class CrearTarea(
             FechaCompletada = null,
             ActividadId = solicitud.ActividadId
         };
-
-        await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);
         
         var tareaEmpleado = solicitud.EmpleadoIds.Select(id => new TareaEmpleado
         {
-            TareaId = tareaEntidad.TareaId, 
+            TareaId = tareaEntidad.TareaId,
             EmpleadoId = id
         }).ToList();
+        
+        await tareaRepositorio.CrearAsync(tareaEntidad, cancellationToken);
 
         await tareaEmpleadoRepositorio.CrearTareasEmpleadosAsync(tareaEmpleado, cancellationToken);
+
+        var empleadosAsignados = await tareaEmpleadoRepositorio.ObtenerEmpleadosPorIdsAsync(solicitud.EmpleadoIds, cancellationToken);
+
+        var listaUsuariosFotoPerfil = empleadosAsignados.Select(te => new UsuarioFotoPerfilDto(
+            UsuarioId: te.Empleado!.UsuarioId,
+            FotoPerfil: te.Empleado!.Usuario.FotoPerfil
+        )).ToList();
+        
         
         TareaDto tareaCreadaDto = new
         (
@@ -109,17 +111,14 @@ public class CrearTarea(
             Titulo: tareaEntidad.Titulo,
             EstadoTarea: tareaEntidad.Estado,
             Descripcion: tareaEntidad.Descripcion,
-            FechaInicio: tareaEntidad.FechaInicio, 
+            FechaInicio: tareaEntidad.FechaInicio,
             FechaVencimiento: tareaEntidad.FechaVencimiento,
-            FechaActualizacion:tareaEntidad.FechaActualizacion,  
+            FechaActualizacion: tareaEntidad.FechaActualizacion,
             FechaCreado: tareaEntidad.FechaCreado,
             ActividadId: solicitud.ActividadId,
-            UsuarioFotoPerfil: new UsuarioFotoPerfilDto
-            (
-                UsuarioId: tareaEntidad.TareasEmpleado!.First().Empleado!.UsuarioId,
-                FotoPerfil: tareaEntidad.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil           
-            )
+            UsuarioFotoPerfil: listaUsuariosFotoPerfil
         );
+
         
         await notificadorTareas.NotificarNuevaTarea(solicitud.UsuarioId, tareaCreadaDto);
         

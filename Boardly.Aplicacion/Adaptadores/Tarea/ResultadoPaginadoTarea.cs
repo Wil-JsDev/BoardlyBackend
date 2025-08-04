@@ -54,7 +54,6 @@ public class ResultadoPaginadoTarea(
                     Error.NoEncontrado("404", "No se pudo obtener las tareas paginadas."));
             }
             
-        
             var resultadoPaginaDto = resultadoPagina.Elementos.Select(x => new TareaDto
             (
                 TareaId: x.TareaId,
@@ -67,11 +66,10 @@ public class ResultadoPaginadoTarea(
                 FechaActualizacion: x.FechaActualizacion,
                 FechaCreado: x.FechaCreado,
                 ActividadId: x.ActividadId,
-                UsuarioFotoPerfil: new UsuarioFotoPerfilDto
-                (
-                    UsuarioId: x.TareasEmpleado!.First().Empleado!.UsuarioId,
-                    FotoPerfil: x.TareasEmpleado!.First().Empleado!.Usuario.FotoPerfil
-                )
+                UsuarioFotoPerfil: x.TareasEmpleado.Select(te => new UsuarioFotoPerfilDto(
+                    UsuarioId: te.Empleado!.UsuarioId,
+                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
+                )).ToList()
             )).ToList();
         
             var totalElementos = resultadoPaginaDto.Count;

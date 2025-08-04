@@ -22,6 +22,9 @@ public class NotificadorTareas(
     public async Task NotificarTareasPaginadas(Guid usuarioId, IEnumerable<TareaDto> tareas)
         => await hubContext.Clients.User(usuarioId.ToString()).RecibirTareasPaginadas(tareas);
 
+    public async Task NotificarTareaEnPendiente(Guid usuarioId, TareaDto tarea)
+        => await hubContext.Clients.User(usuarioId.ToString()).RecibirTareaEnPendiente(tarea);
+
     public async Task NotificarTareaEnProceso(Guid usuarioId, TareaDto tarea)
         => await hubContext.Clients.User(usuarioId.ToString()).RecibirTareaEnProceso(tarea);
 

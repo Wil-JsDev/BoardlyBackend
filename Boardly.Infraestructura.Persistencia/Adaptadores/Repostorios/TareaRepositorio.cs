@@ -29,14 +29,18 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
     {
         var tarea = await _boardlyContexto.Set<Tarea>()
             .Include(u => u.TareasEmpleado)!
-                .ThenInclude(te => te.Empleado)
-                    .ThenInclude(em  => em!.EmpleadosProyectoRol)
-                        .ThenInclude(em => em.RolProyecto)
+            .ThenInclude(te => te.Empleado)
+            .ThenInclude(em => em!.EmpleadosProyectoRol)
+            .ThenInclude(epr => epr.RolProyecto)
+            .Include(u => u.TareasEmpleado)!
+            .ThenInclude(te => te.Empleado)
+            .ThenInclude(em => em.Usuario) 
             .Include(u => u.Comentarios)
             .FirstOrDefaultAsync(x => x.TareaId == tareaId, cancellationToken);
-        
+
         return tarea;
     }
+
     
     public async Task<bool> ExisteTareaPorIdAsync(Guid tareaId, CancellationToken cancellationToken)
     {
@@ -122,24 +126,30 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ResultadoPaginado<Tarea>> ObtenerPaginadoTareaAsync(Guid actividadId,int numeroPagina, int tamanioPagina, CancellationToken cancellationToken)
+    public async Task<ResultadoPaginado<Tarea>> ObtenerPaginadoTareaAsync(
+        Guid actividadId,
+        int numeroPagina,
+        int tamanioPagina,
+        CancellationToken cancellationToken)
     {
         var consulta = _boardlyContexto.Set<Tarea>()
             .AsNoTracking()
             .Where(x => x.ActividadId == actividadId)
             .Include(t => t.TareasEmpleado)!
             .ThenInclude(te => te.Empleado)
+            .ThenInclude(e => e.Usuario)
             .AsSplitQuery();
 
         var total = await consulta.CountAsync(cancellationToken);
-        
+    
         var tarea = await consulta
             .Skip((numeroPagina - 1) * tamanioPagina)
             .Take(tamanioPagina)
             .ToListAsync(cancellationToken);
-        
+    
         return new ResultadoPaginado<Tarea>(tarea, total, numeroPagina, tamanioPagina);   
     }
+
     public async Task<int> ObtenerNumeroTareasPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken)
     {
         return await _boardlyContexto.Set<Tarea>()

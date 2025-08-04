@@ -8,6 +8,7 @@ public interface ITareasHub
     Task ActualizarTarea(TareaDto tarea);
     
     Task RecibirTareasPaginadas(IEnumerable<TareaDto> tareas);
+    Task RecibirTareaEnPendiente(TareaDto tarea);
     
     Task RecibirTareaEnProceso(TareaDto tarea);
 

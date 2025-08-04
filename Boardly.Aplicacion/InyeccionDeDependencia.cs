@@ -82,6 +82,12 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto>, ObtenerConteoDeEmpleadosCeo>();
             servicios.AddScoped<IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto>, ObtenerConteoDeEstadisticasCeo>();
             servicios.AddScoped<IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto>, ResultadoPaginadoEmpleadoPorProyectoId>();
+            servicios
+                .AddScoped<IActualizarRolEmpleado<ActualizarRolEmpleadoDto, EmpleadoResumenDto>,
+                    ActualizarRolEmpleado>();
+            servicios.AddScoped<IAgregarEmpleadoProyecto<AgregarEmpleadoProyectoDto, EmpleadoResumenDto>, AgregarEmpleadoProyecto>();
+            servicios.AddScoped<IResultadoPaginadoEmpleadoEmpresaId<PaginacionParametro, EmpleadoRolProyectoDto>, ResultadoPaginadoEmpleadoEmpresaId>();
+            servicios.AddScoped<IBorrarEmpleadoProyecto, BorrarEmpleadoProyecto>();
             
         #endregion
         
@@ -110,7 +116,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IBorrarProyecto, BorrarProyecto>();
             servicios.AddScoped<IObtenerIdProyecto<ProyectoDto>, ObtenerIdProyecto>();
             servicios.AddScoped<IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto>, ResultadoPaginaProyecto>();
-
+            
         #endregion
 
         #region Rol Proyecto
