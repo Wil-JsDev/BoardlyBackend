@@ -31,7 +31,8 @@ public class CrearRolProyecto(
         {
             RolProyectoId = Guid.NewGuid(),
             Nombre = solicitud.Nombre,
-            Descripcion = solicitud.Descripcion
+            Descripcion = solicitud.Descripcion,
+            ProyectoId = solicitud.ProyectoId
         };
 
         await repositorioRolProyecto.CrearAsync(rolProyectoEntidad, cancellationToken);

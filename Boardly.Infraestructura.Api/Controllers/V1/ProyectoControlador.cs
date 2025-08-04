@@ -14,8 +14,7 @@ public class ProyectoControlador(
     IActualizarProyecto<ActualizarProyectoDto, ActualizarProyectoDto> actualizarProyecto,
     IObtenerIdProyecto<ProyectoDto> obtenerProyecto,
     IBorrarProyecto borrarProyecto,
-    IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto> resultadoPaginaProyecto
-    ) : ControllerBase
+    IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto> resultadoPaginaProyecto) : ControllerBase
 {
 
     [HttpPost]
@@ -28,9 +27,9 @@ public class ProyectoControlador(
         
         return BadRequest(resultado.Error);
     }
-
+    
     [HttpGet("{companyId}/pagination")]
-    public async Task<IActionResult> ResultadoPaginaProyecto(
+    public async Task<IActionResult> ResultadoPaginaProyectoEmpleado(
         [FromRoute] Guid companyId,
         [FromQuery] int numeroPagina,
         [FromQuery] int tamanoPagina,

@@ -27,8 +27,9 @@ public static class EmpresaMapper
                 Rol: rol,
                 ProyectoEmpresa: new ProyectoEmpresaDto
                 (
-                    ProyectoId: proyecto?.ProyectoId ?? Guid.Empty,
-                    Nombre: proyecto?.Nombre ?? string.Empty
+                    ProyectoId: proyecto?.ProyectoId,
+                    Nombre: proyecto?.Nombre ?? string.Empty,
+                    Descripcion: proyecto?.Descripcion ?? string.Empty
                 ),
                 ActividadesCount: countActividad,
                 TareasCount: countTareas,

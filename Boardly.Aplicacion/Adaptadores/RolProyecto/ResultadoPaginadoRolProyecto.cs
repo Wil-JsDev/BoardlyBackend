@@ -4,7 +4,6 @@ using Boardly.Dominio.Helper;
 using Boardly.Dominio.Puertos.CasosDeUso.RolProyecto;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Utilidades;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace Boardly.Aplicacion.Adaptadores.RolProyecto;
@@ -12,8 +11,7 @@ namespace Boardly.Aplicacion.Adaptadores.RolProyecto;
 public class ResultadoPaginadoRolProyecto(
     ILogger<ResultadoPaginadoRolProyecto> logger,
     IRolProyectoRepositorio rolProyectoRepositorio,
-    IProyectoRepositorio proyectoRepositorio,
-    IDistributedCache cache
+    IProyectoRepositorio proyectoRepositorio
     ) : IResultadoPaginadoRolProyecto<PaginacionParametro, RolProyectoDto>
 {
     public async Task<ResultadoT<ResultadoPaginado<RolProyectoDto>>> ObtenerPaginacionRolProyectoAsync(Guid proyectoId, PaginacionParametro solicitud,
@@ -36,31 +34,24 @@ public class ResultadoPaginadoRolProyecto(
             return ResultadoT<ResultadoPaginado<RolProyectoDto>>.Fallo(Error.Fallo("404", "No se encontraron roles de proyecto para los parametros de paginacion especificados."));
         }
         
-        var resultadoPaginadoDtoList = await cache.ObtenerOCrearAsync(
-            $"obtener-paginacion-rol-proyecto-{solicitud.NumeroPagina}-{solicitud.TamanoPagina}",
-            async () =>
-            {
-                var rolProyectoDto = resultadoPaginado.Elementos!.Select(x => new RolProyectoDto
-                (
-                    RolProyectoId: x.RolProyectoId,
-                    Nombre: x.Nombre,
-                    Descripcion: x.Descripcion!
-                )).ToList();
+        var rolProyectoDto = resultadoPaginado.Elementos!.Select(x => new RolProyectoDto
+        (
+            RolProyectoId: x.RolProyectoId,
+            Nombre: x.Nombre,
+            Descripcion: x.Descripcion!
+        )).ToList();
 
-                var totalElementos = rolProyectoDto.Count;
+        var totalElementos = rolProyectoDto.Count;
 
-                var elementosPaginados = rolProyectoDto
-                    .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
-                    .ToList();
-                
-                return new ResultadoPaginado<RolProyectoDto>(
-                    elementos: elementosPaginados,
-                    totalElementos: totalElementos,
-                    paginaActual: solicitud.NumeroPagina,
-                    tamanioPagina: solicitud.TamanoPagina
-                );
-            },
-            cancellationToken: cancellationToken
+        var elementosPaginados = rolProyectoDto
+            .Paginar(solicitud.NumeroPagina, solicitud.TamanoPagina)
+            .ToList();
+        
+        var resultadoPaginadoDtoList = new ResultadoPaginado<RolProyectoDto>(
+            elementos: elementosPaginados,
+            totalElementos: totalElementos,
+            paginaActual: solicitud.NumeroPagina,
+            tamanioPagina: solicitud.TamanoPagina
         );
         
         logger.LogInformation("Se obtuvo la pagina {NumeroPagina} de roles de proyecto con exito. Cantidad de roles de proyecto en esta pagina: {CantidadRolesDeProyecto}",

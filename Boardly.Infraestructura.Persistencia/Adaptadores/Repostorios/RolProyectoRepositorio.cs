@@ -41,7 +41,7 @@ public class RolProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoR
     {
         var consulta = _boardlyContexto.Set<RolProyecto>()
             .AsNoTracking()
-            .Where(x => x.EmpleadosProyectoRol.Any(empleadoProyectoRol => empleadoProyectoRol.ProyectoId == proyectoId));
+            .Where(rp => rp.ProyectoId == proyectoId);
         
         var total = await consulta.CountAsync(cancellationToken);
         

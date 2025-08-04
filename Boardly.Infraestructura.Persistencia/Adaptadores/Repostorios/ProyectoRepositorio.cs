@@ -9,6 +9,7 @@ namespace Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios;
 
 public class ProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepositorio<Proyecto>(boardlyContexto), IProyectoRepositorio
 {
+
     public async Task<ResultadoPaginado<Proyecto>> ObtenerPaginasProyectoAsync(Guid empresaId, int numeroPagina, int tamanoPagina,
         CancellationToken cancellationToken)
     {
@@ -25,6 +26,13 @@ public class ProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepo
             .ToListAsync(cancellationToken);
         
         return new ResultadoPaginado<Proyecto>(proyecto, total, numeroPagina, tamanoPagina);   
+    }
+
+    public async Task<Proyecto> ObtenerProyectoEmpleadosPorIdAsync(Guid proyectoId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Proyecto>()
+            .Include(p => p.EmpleadosProyectoRol)
+            .FirstOrDefaultAsync(p => p.ProyectoId == proyectoId, cancellationToken);
     }
 
     public async Task<bool> ExisteProyectoAsync(string nombre, CancellationToken cancellationToken)

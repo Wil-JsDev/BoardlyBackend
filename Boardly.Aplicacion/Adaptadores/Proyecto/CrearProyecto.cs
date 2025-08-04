@@ -21,7 +21,6 @@ public class CrearProyecto(
         if (solicitud is null)
         {
             logger.LogWarning("Solicitud nula recibida al intentar crear un proyecto.");
-            
             return ResultadoT<ProyectoDto>.Fallo(Error.Fallo("400", "La solicitud no puede ser nula."));
         }
 
@@ -29,28 +28,27 @@ public class CrearProyecto(
         if (empresa is null)
         {
             logger.LogWarning("No se encontró la empresa con ID: {EmpresaId}", solicitud.EmpresaId);
-            
             return ResultadoT<ProyectoDto>.Fallo(Error.NoEncontrado("404", "La empresa asociada no fue encontrada."));
         }
 
         if (await repositorioProyecto.ExisteProyectoAsync(solicitud.Nombre, cancellationToken))
         {
             logger.LogWarning("Ya existe un proyecto con el nombre: {Nombre}", solicitud.Nombre);
-            
             return ResultadoT<ProyectoDto>.Fallo(Error.Conflicto("409", "Ya existe un proyecto con ese nombre."));
         }
-        
-        if ( !await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaFin, cancellationToken) )
+
+        if (!await ValidacionFecha.ValidarRangoDeFechasAsync(solicitud.FechaInicio, solicitud.FechaFin, cancellationToken))
         {
-            logger.LogWarning("El rango de fechas proporcionado no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaFin}", 
+            logger.LogWarning("El rango de fechas no es válido. FechaInicio: {FechaInicio}, FechaFin: {FechaFin}",
                 solicitud.FechaInicio, solicitud.FechaFin);
-    
+
             return ResultadoT<ProyectoDto>.Fallo(
-                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y la fecha de inicio debe ser futuras.")
+                Error.Fallo("400", "El rango de fechas no es válido. La fecha de inicio debe ser menor que la fecha de fin y debe estar en el futuro.")
             );
         }
 
-        Dominio.Modelos.Proyecto proyectoEntidad = new()
+
+        var proyectoEntidad = new Dominio.Modelos.Proyecto
         {
             ProyectoId = Guid.NewGuid(),
             Nombre = solicitud.Nombre,
@@ -63,30 +61,29 @@ public class CrearProyecto(
 
         await repositorioProyecto.CrearAsync(proyectoEntidad, cancellationToken);
 
-        // Obtener el rol (usando el proporcionado o buscando "Project Manager" por defecto)
-        Guid rolLiderId = solicitud.RolProyectoId 
-                         ?? await rolProyectoRepositorio.ObtenerIdPorNombreAsync("Encargado", cancellationToken);
-
-        if (rolLiderId == Guid.Empty)
+        var rolEncargado = new Dominio.Modelos.RolProyecto
         {
-            logger.LogWarning("No se encontró el rol del proyecto 'Project Manager'.");
-            
-            return ResultadoT<ProyectoDto>.Fallo(Error.Fallo("400", "El rol del proyecto no fue encontrado."));
-        }
-        
-        // Relación Empleado-Proyecto-Rol
+            RolProyectoId = Guid.NewGuid(),
+            Nombre = "Encargado",
+            Descripcion = "Responsable del proyecto",
+            ProyectoId = proyectoEntidad.ProyectoId
+        };
+
+        await rolProyectoRepositorio.CrearAsync(rolEncargado, cancellationToken);
+
+
         var empleadoProyectoRol = new EmpleadoProyectoRol
         {
             EmpleadoId = solicitud.EmpleadoId,
             ProyectoId = proyectoEntidad.ProyectoId,
-            RolProyectoId = rolLiderId
+            RolProyectoId = rolEncargado.RolProyectoId
         };
-        
+
         await empleadoProyectoRolRepositorio.CrearAsync(empleadoProyectoRol, cancellationToken);
-        
+
         logger.LogInformation("Proyecto creado exitosamente. ProyectoId: {ProyectoId}", proyectoEntidad.ProyectoId);
-        
-        ProyectoDto proyectoDto = new(
+
+        var proyectoDto = new ProyectoDto(
             ProyectoId: proyectoEntidad.ProyectoId,
             EmpresaId: proyectoEntidad.EmpresaId,
             Nombre: proyectoEntidad.Nombre,
@@ -99,5 +96,4 @@ public class CrearProyecto(
 
         return ResultadoT<ProyectoDto>.Exito(proyectoDto);
     }
-
 }
