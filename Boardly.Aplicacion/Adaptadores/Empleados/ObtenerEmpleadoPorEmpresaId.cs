@@ -33,7 +33,11 @@ public class ObtenerEmpleadoPorEmpresaId(
                 return empleados
                     .Select(x => new EmpleadoResumenDto(
                         x.EmpleadoId,
-                        x.Usuario.Nombre
+                        x.Usuario.Nombre + " " + x.Usuario?.Apellido,
+                        x.Usuario!.Correo,
+                        x.EmpleadosProyectoRol.FirstOrDefault()?.RolProyectoId ?? Guid.Empty,
+                        x.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty,
+                        x.EmpleadosProyectoRol.FirstOrDefault()?.ProyectoId ?? Guid.Empty
                     ))
                     .ToList();
             },

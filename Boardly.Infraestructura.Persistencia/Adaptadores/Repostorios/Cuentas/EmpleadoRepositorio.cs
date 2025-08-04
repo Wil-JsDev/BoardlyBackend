@@ -9,14 +9,41 @@ namespace Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios.Cuentas;
 
 public class EmpleadoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepositorio<Empleado>(boardlyContexto), IEmpleadoRepositorio
 {
-    public async Task<IEnumerable<Empleado>> ObtenerPorEmpresaIdAsync(Guid empresaId, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Empleado>> ObtenerPorEmpresaIdAsync(Guid empresaId,
+        CancellationToken cancellationToken)
     {
         return await _boardlyContexto.Set<Empleado>()
-            .AsNoTracking()
-            .Include(e => e.Usuario)
             .Where(e => e.EmpresaId == empresaId)
+            .Include(e => e.Usuario)
+            .Include(e => e.EmpleadosProyectoRol)
+            .ThenInclude(epr => epr.RolProyecto)
             .ToListAsync(cancellationToken);
     }
+    
+    public async Task<Empleado?> ObtenerEmpleadoByIdAsync(Guid empleadoId, CancellationToken cancellationToken)
+    {
+        return await _boardlyContexto.Set<Empleado>()
+            .Include(e => e.Usuario)
+            .Include(e => e.EmpleadosProyectoRol)
+            .FirstOrDefaultAsync(e => e.EmpleadoId == empleadoId, cancellationToken);
+    }
+
+    public async Task<int> BorrarEmpleadoDeUnProyectoAsync(Guid empleadoId, Guid proyectoId, CancellationToken cancellationToken)
+    {
+        var empleado = await _boardlyContexto.Set<Empleado>()
+            .Include(e => e.EmpleadosProyectoRol)
+            .ThenInclude(epr => epr.RolProyecto)
+            .FirstOrDefaultAsync(e => e.EmpleadoId == empleadoId, cancellationToken);
+
+        var relacionesAEliminar = empleado.EmpleadosProyectoRol
+            .Where(epr => epr.RolProyecto.ProyectoId == proyectoId)
+            .ToList();
+
+        _boardlyContexto.EmpleadoProyectoRol.RemoveRange(relacionesAEliminar);
+        return await _boardlyContexto.SaveChangesAsync(cancellationToken);
+    }
+
+
     public async Task<int> ObtenerConteoDeEmpresasQuePerteneceAsync(Guid empleadoId,
         CancellationToken cancellationToken)
     {
@@ -98,5 +125,22 @@ public class EmpleadoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepo
         
         return new ResultadoPaginado<Empleado>(empleados, totalCount, numeroPagina, tamanoPagina);   
     }
-    
+
+    public async Task<ResultadoPaginado<Empleado>> ObtenerPaginasEmpleadoEmpresaId(Guid empresaId, int numeroPagina, int tamanoPagina,
+        CancellationToken cancellationToken)
+    {
+        var consulta = _boardlyContexto.Set<Empleado>()
+            .AsNoTracking()
+            .Where(e => e.EmpresaId == empresaId)
+            .Include(e => e.Usuario);
+
+        var totalCount = await consulta.CountAsync(cancellationToken);
+
+        var empleados = await consulta
+            .Skip((numeroPagina - 1) * tamanoPagina)
+            .Take(tamanoPagina)
+            .ToListAsync(cancellationToken);
+
+        return new ResultadoPaginado<Empleado>(empleados, totalCount, numeroPagina, tamanoPagina);
+    }
 }

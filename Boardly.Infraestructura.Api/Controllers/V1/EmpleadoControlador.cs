@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Paginacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
@@ -13,8 +14,11 @@ public class EmpleadoControlador(
     ICrearEmpleado<CrearEmpleadoDto, EmpleadoDto> crearEmpleado,
     IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>obtenerEmpleado,
     IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto> empleadoPorProyecto,
-    IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto> estadisticasEnConteoEmpleado
-    ) : ControllerBase
+    IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto> estadisticasEnConteoEmpleado,
+    IActualizarRolEmpleado<ActualizarRolEmpleadoDto, EmpleadoResumenDto> rolEmpleado,
+    IResultadoPaginadoEmpleadoEmpresaId<PaginacionParametro, EmpleadoRolProyectoDto> paginacionEmpleadoEmpresaId,
+    IBorrarEmpleadoProyecto borrarEmpleado,
+    IAgregarEmpleadoProyecto<AgregarEmpleadoProyectoDto, EmpleadoResumenDto> empleadoProyecto) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CrearEmpleado([FromBody] CrearEmpleadoDto employee, CancellationToken cancellationToken)
@@ -25,12 +29,58 @@ public class EmpleadoControlador(
              
         return BadRequest(empleado.Error);
     }
-
+    
+    [HttpPut("{employeeId}/role")]
+    public async Task<IActionResult> CrearEmpleado([FromRoute] Guid employeeId,[FromBody] ActualizarRolEmpleadoDto rolEmpleadoDto ,CancellationToken cancellationToken)
+    {
+        var empleado = await rolEmpleado.ActualizarRolEmpleadoAsync(employeeId,rolEmpleadoDto, cancellationToken);
+        if (empleado.EsExitoso)
+            return Ok(empleado.Valor);
+             
+        return BadRequest(empleado.Error);
+    }
+    
+    [HttpPut("{employeeId}")]
+    public async Task<IActionResult> CrearEmpleado([FromRoute] Guid employeeId, [FromBody] AgregarEmpleadoProyectoDto empleadoProyectoDto  ,CancellationToken cancellationToken)
+    {
+        var empleado = await empleadoProyecto.AgregarEmpleadoProyectoAsync(employeeId,empleadoProyectoDto , cancellationToken);
+        if (empleado.EsExitoso)
+            return Ok(empleado.Valor);
+             
+        return BadRequest(empleado.Error);
+    }
+    
+    [HttpDelete("{employeeId}/projects/{projectId}")]
+    public async Task<IActionResult> RemoverEmpleadoDeProyecto([FromRoute] Guid employeeId, [FromRoute] Guid projectId ,CancellationToken cancellationToken)
+    {
+        var empleado = await borrarEmpleado.BorrarEmpleadoProyectoAsync(employeeId,projectId , cancellationToken);
+        if (empleado.EsExitoso)
+            return Ok(empleado.Valor);
+             
+        return BadRequest(empleado.Error);
+    }
+    
     [HttpGet("{employeeId}/count")]
     public async Task<IActionResult> ObtenerCountsPorEmpleadoIdAsync([FromRoute] Guid employeeId,
         CancellationToken cancellationToken)
     {
         var resultado = await estadisticasEnConteoEmpleado.ObtenerEstadisticasEnConteoEmpleadoAsync(employeeId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);
+    }
+    
+    [HttpGet("by-company/{companyId}")]
+    public async Task<IActionResult> ObtenerEmpleadosPorEmpresaId(
+        [FromRoute] Guid companyId, 
+        [FromQuery] int numeroPagina, 
+        [FromQuery] int tamanoPagina, 
+        CancellationToken cancellationToken
+        )
+    {
+        PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
+        var resultado = await paginacionEmpleadoEmpresaId.ResultadoPaginadoEmpleadoEmpresaIdAsync(companyId,parametros, cancellationToken);
         if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         
