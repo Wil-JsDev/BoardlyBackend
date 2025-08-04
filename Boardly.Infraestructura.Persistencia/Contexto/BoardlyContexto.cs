@@ -148,8 +148,7 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<RolProyecto>()
                 .HasKey(rp => rp.RolProyectoId)
                 .HasName("PKRolProyectoId");
-
-
+            
             #endregion
 
             #region ForeignKeys
@@ -249,6 +248,10 @@ public class BoardlyContexto: DbContext
             modelBuilder.Entity<RolProyecto>()
                 .Property(rp => rp.RolProyectoId)
                 .HasColumnName("PkRolProyectoId");
+            
+            modelBuilder.Entity<RolProyecto>()
+                .Property(rp => rp.ProyectoId)
+                .HasColumnName("FkProyectoId");
 
             modelBuilder.Entity<Actividad>()
                 .Property(a => a.ProyectoId)
@@ -418,6 +421,13 @@ public class BoardlyContexto: DbContext
                 .WithOne(a => a.Proyecto)
                 .HasForeignKey(p => p.ProyectoId)
                 .IsRequired();
+            
+            modelBuilder.Entity<RolProyecto>()
+                .HasOne(rp => rp.Proyecto)
+                .WithMany(p => p.RolesProyecto)
+                .HasForeignKey(rp => rp.ProyectoId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
             
@@ -779,6 +789,10 @@ public class BoardlyContexto: DbContext
 
                 entity.Property(rp => rp.Descripcion)
                     .HasMaxLength(255);
+                
+                entity.Property(rp => rp.ProyectoId)
+                    .HasColumnName("FkProyectoId")
+                    .IsRequired();
             });
 
 
