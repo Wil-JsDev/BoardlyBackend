@@ -68,9 +68,8 @@ public class ResultadoPaginadoTarea(
                 ActividadId: x.ActividadId,
                 UsuarioFotoPerfil: x.TareasEmpleado.Select(te => new UsuarioFotoPerfilDto(
                     UsuarioId: te.Empleado!.UsuarioId,
-                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
-                )).ToList()
-            )).ToList();
+                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil)).ToList(),
+            Archivo: x.Archivo)).ToList();
         
             var totalElementos = resultadoPaginaDto.Count;
         

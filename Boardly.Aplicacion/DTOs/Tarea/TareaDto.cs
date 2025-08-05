@@ -1,4 +1,5 @@
 using Boardly.Aplicacion.DTOs.Usuario;
+using Microsoft.AspNetCore.Http;
 
 namespace Boardly.Aplicacion.DTOs.Tarea;
 
@@ -14,5 +15,7 @@ public record TareaDto
     DateTime? FechaActualizacion,
     DateTime FechaCreado,
     Guid ActividadId,
-    List<UsuarioFotoPerfilDto> UsuarioFotoPerfil
+    List<UsuarioFotoPerfilDto> UsuarioFotoPerfil,
+    string Archivo
+
 );

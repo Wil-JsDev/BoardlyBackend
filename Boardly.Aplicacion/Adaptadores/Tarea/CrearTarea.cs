@@ -4,6 +4,7 @@ using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
+using Boardly.Dominio.Puertos.Cloudinary;
 using Boardly.Dominio.Puertos.Repositorios;
 using Boardly.Dominio.Puertos.Repositorios.Cuentas;
 using Boardly.Dominio.Utilidades;
@@ -18,7 +19,7 @@ public class CrearTarea(
     INotificadorTareas<TareaDto> notificadorTareas,
     IUsuarioRepositorio usuarioRepositorio,
     ITareaEmpleadoRepositorio tareaEmpleadoRepositorio,
-    IEmpleadoRepositorio empleadoRepositorio    
+    ICloudinaryServicio cloudinaryServicio
     ) : ICrearTarea<CrearTareaDto, TareaDto>
 {
     public async Task<ResultadoT<TareaDto>> CrearTareaAsync(CrearTareaDto solicitud,
@@ -67,11 +68,21 @@ public class CrearTarea(
         {
             logger.LogWarning("No se proporcionaron empleados para asignar la tarea. Solicitud inválida.");
 
-            return ResultadoT<TareaDto>.Fallo(Error.Fallo("400", "Debe proporcionar al menos un empleado para asignar la tarea."));
+            return ResultadoT<TareaDto>.Fallo(Error.Fallo("400",
+                "Debe proporcionar al menos un empleado para asignar la tarea."));
+        }
+
+        string url = "";
+        if (solicitud.Archivo != null)
+        {
+            using var stream = solicitud.Archivo.OpenReadStream();
+            url = await cloudinaryServicio.SubirArchivoAsync(
+                stream,
+                solicitud.Archivo.FileName,
+                cancellationToken);
         }
         
-      
-        
+
         Dominio.Modelos.Tarea tareaEntidad = new()
         {
             TareaId = Guid.NewGuid(),
@@ -79,6 +90,7 @@ public class CrearTarea(
             Titulo = solicitud.Titulo,
             Descripcion = solicitud.Descripcion,
             Estado = EstadoTarea.Pendiente.ToString(),
+            Archivo = url,
             FechaInicio = solicitud.FechaInicio,
             FechaVencimiento = solicitud.FechaVencimiento,
             FechaActualizacion = DateTime.UtcNow,
@@ -116,7 +128,8 @@ public class CrearTarea(
             FechaActualizacion: tareaEntidad.FechaActualizacion,
             FechaCreado: tareaEntidad.FechaCreado,
             ActividadId: solicitud.ActividadId,
-            UsuarioFotoPerfil: listaUsuariosFotoPerfil
+            UsuarioFotoPerfil: listaUsuariosFotoPerfil,
+            Archivo: tareaEntidad.Archivo
         );
 
         

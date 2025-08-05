@@ -68,7 +68,8 @@ public class ActualizarTarea(
                 .Select(te => new UsuarioFotoPerfilDto(
                     UsuarioId: te.Empleado!.UsuarioId,
                     FotoPerfil: te.Empleado!.Usuario.FotoPerfil
-                )).ToList()
+                )).ToList(),
+        tarea.Archivo
         );
 
         await notificadorTareas.NotificarTareaActualizada(solicitud.UsuarioId, tareaDto);

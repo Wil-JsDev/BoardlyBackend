@@ -9,7 +9,6 @@ public static class TareaMapper
     public static TareaDetalles MapToDetalles(Tarea tarea)
     {
         var primerComentario = tarea.Comentarios.FirstOrDefault();
-        var primerEmpleadoTarea = tarea.TareasEmpleado?.FirstOrDefault();
         var usuarioComentario = primerComentario?.Usuario;
 
         var comentarioDto = primerComentario is null || usuarioComentario is null
@@ -24,26 +23,25 @@ public static class TareaMapper
                 )
             );
 
-        var usuarioEmpleado = primerEmpleadoTarea?.Empleado?.Usuario;
-
-        var empleadoDto = primerEmpleadoTarea is null || primerEmpleadoTarea.Empleado is null || usuarioEmpleado is null
-            ? new EmpleadoTareaDto(Guid.Empty, string.Empty, string.Empty, null)
-            : new EmpleadoTareaDto(
-                EmpleadoId: primerEmpleadoTarea.EmpleadoId,
-                NombreCompleto: $"{usuarioEmpleado.Nombre} {usuarioEmpleado.Apellido}",
-                Rol: primerEmpleadoTarea.Empleado.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty,
-                fotoPerfil: usuarioEmpleado.FotoPerfil!
-                
-            );
+        var empleadosDto = tarea.TareasEmpleado?
+            .Where(te => te.Empleado != null && te.Empleado.Usuario != null)
+            .Select(te => new EmpleadoTareaDto(
+                EmpleadoId: te.EmpleadoId,
+                NombreCompleto: $"{te.Empleado.Usuario.Nombre} {te.Empleado.Usuario.Apellido}",
+                Rol: te.Empleado.EmpleadosProyectoRol.FirstOrDefault()?.RolProyecto.Nombre ?? string.Empty,
+                fotoPerfil: te.Empleado.Usuario.FotoPerfil!
+            ))
+            .ToList() ?? new List<EmpleadoTareaDto>();
 
         return new TareaDetalles(
             tarea.Titulo,
             tarea.Estado,
             tarea.Descripcion,
+            tarea.Archivo,
             tarea.FechaVencimiento,
             tarea.FechaInicio,
             comentarioDto,
-            empleadoDto
+            empleadosDto
         );
     }
 

@@ -7,9 +7,10 @@ public record TareaDetalles
     string Titulo,
     string? EstadoTarea,
     string? Descripcion,
+    string? Archivos,
     DateTime FechaVencimiento,
     DateTime FechaInicio,
     ComentarioDto ComentarioDto,
-    EmpleadoTareaDto EmpleadoTareaDto
+    List<EmpleadoTareaDto> EmpleadoTareaDto
 );
 public record EmpleadoTareaDto(Guid EmpleadoId,string NombreCompleto, string Rol, string fotoPerfil);

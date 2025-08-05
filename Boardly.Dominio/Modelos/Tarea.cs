@@ -9,6 +9,7 @@ public sealed class Tarea
     public string Titulo { get; set; } = null!;
     public string? Descripcion { get; set; }
     public string Estado { get; set; } 
+    public string? Archivo { get; set; }
     public DateTime FechaCreado { get; set; } = DateTime.UtcNow;
     public DateTime FechaInicio { get; set; }
     public DateTime FechaVencimiento { get; set; }

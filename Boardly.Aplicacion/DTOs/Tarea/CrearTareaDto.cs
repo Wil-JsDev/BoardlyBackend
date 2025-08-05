@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Boardly.Aplicacion.DTOs.Tarea;
 
 public record CrearTareaDto(
@@ -8,5 +10,6 @@ public record CrearTareaDto(
     string? Descripcion,
     DateTime FechaVencimiento,
     DateTime FechaInicio,
-    Guid ActividadId
-);
+    Guid ActividadId,
+    IFormFile? Archivo
+    );

@@ -30,4 +30,21 @@ public class CloudinaryServicio : ICloudinaryServicio
         
         return subirResultado.SecureUrl.ToString();
     }
+    
+    public async Task<string> SubirArchivoAsync(Stream archivo, string nombreArchivo, CancellationToken cancellationToken)
+    {
+        {
+            var cloudinary = new Cloudinary(_cloudinary.CloudinaryUrl);
+            var subirArchivo = new RawUploadParams
+            {
+                File = new FileDescription(nombreArchivo, archivo),
+                UseFilename = true,
+                UniqueFilename = false,
+                Overwrite = true
+            };
+
+            RawUploadResult subirResultado = await cloudinary.UploadAsync(subirArchivo, "raw", cancellationToken);
+            return subirResultado.SecureUrl.ToString();
+        }
+    }
 }

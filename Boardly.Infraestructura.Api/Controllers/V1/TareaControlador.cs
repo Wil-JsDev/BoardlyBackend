@@ -17,7 +17,7 @@ public class TareaControlador(
 {
 
     [HttpPost]
-    public async Task<IActionResult> CrearTarea([FromBody] CrearTareaDto tarea, CancellationToken cancellationToken)
+    public async Task<IActionResult> CrearTarea([FromForm] CrearTareaDto tarea, CancellationToken cancellationToken)
     {
         var resultado = await crearTarea.CrearTareaAsync(tarea, cancellationToken);
         if (resultado.EsExitoso)

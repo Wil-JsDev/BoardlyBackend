@@ -57,7 +57,8 @@ public class ActualizarEstadoTarea(
                     UsuarioId: te.Empleado!.UsuarioId,
                     FotoPerfil: te.Empleado!.Usuario.FotoPerfil
                 ))
-                .ToList()
+                .ToList(),
+            tarea.Archivo
         );
         
         var empleadoId = tarea.TareasEmpleado!.FirstOrDefault()?.EmpleadoId ?? Guid.Empty;;
