@@ -604,7 +604,9 @@ public class BoardlyContexto: DbContext
                     .HasMaxLength(150);
 
                 entity.Property(e => e.Descripcion);
-
+                
+                entity.Property(e => e.Archivo);
+                
                 entity.Property(e => e.Estado)
                     .IsRequired()
                     .HasColumnType("varchar(50)");
