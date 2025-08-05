@@ -48,7 +48,7 @@ public class ResultadoPaginadoUsuario(
                     Nombre: usuarioEntidad.Nombre,
                     Apellido: usuarioEntidad.Apellido,
                     Correo: usuarioEntidad.Correo,
-                    NombreUsuario: usuarioEntidad.Nombre,
+                    NombreUsuario: usuarioEntidad.NombreUsuario,
                     FechaCreacion: usuarioEntidad.FechaCreacion,
                     Estado: usuarioEntidad.Estado,
                     FotoPerfil: usuarioEntidad.FotoPerfil,
