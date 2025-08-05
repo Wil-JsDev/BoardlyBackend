@@ -44,7 +44,8 @@ public static class InyeccionDeDependencia
         #region Usuario
 
             servicios.AddScoped<ICrearUsuario<CrearUsuarioDto, UsuarioDto>, CrearUsuario>();
-            servicios.AddScoped<IActualizarUsuario<ActualizarUsuarioDto, ActualizarUsuarioDto>, ActualizarUsuario>();
+            servicios.AddScoped<IActualizarNombreUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto>, ActualizarNombreUsuario>();
+            servicios.AddScoped<IActualizarApellidoUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto>, ActualizarApellidoUsuario>();
             servicios.AddScoped<IBorrarUsuario, BorrarUsuario>();
             servicios.AddScoped<IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto>, ModificarContrasenaUsuario>();
             servicios.AddScoped<Dominio.Puertos.CasosDeUso.Usuario.IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();

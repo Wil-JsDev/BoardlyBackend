@@ -7,13 +7,14 @@ public class ActualizarUsuarioValidacion : AbstractValidator<ActualizarUsuarioDt
 {
     public ActualizarUsuarioValidacion()
     {
-        RuleFor(x => x.NombreUsuario)
-            .MaximumLength(30).WithMessage("El nombre de usuario no puede tener más de 30 caracteres.")
-            .When(x => !string.IsNullOrWhiteSpace(x.NombreUsuario));
+        RuleFor(x => x.Nombre)
+            .MaximumLength(40).WithMessage("El nombre del usuario no puede tener más de 40 caracteres.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Nombre));
 
-        RuleFor(x => x.Correo)
-            .NotEmpty().WithMessage("El correo es obligatorio.")
-            .EmailAddress().WithMessage("El correo no tiene un formato válido.")
-            .MaximumLength(150).WithMessage("El correo no puede tener más de 150 caracteres.");
+        RuleFor(x => x.Apellido)
+            .NotEmpty().WithMessage("El Apellido es obligatorio.")
+            .MaximumLength(40).WithMessage("El apellido del usuario no puede tener más de 40 caracteres.");
+
+
     }
 }
