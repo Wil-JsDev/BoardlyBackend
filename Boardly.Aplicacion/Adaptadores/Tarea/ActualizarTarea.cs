@@ -66,8 +66,8 @@ public class ActualizarTarea(
             tarea.ActividadId,
             UsuarioFotoPerfil: tarea.TareasEmpleado
                 .Select(te => new UsuarioFotoPerfilDto(
-                    UsuarioId: te.Empleado!.UsuarioId,
-                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
+                    UsuarioId: te.Empleado?.UsuarioId,
+                    FotoPerfil: te.Empleado?.Usuario.FotoPerfil
                 )).ToList(),
         tarea.Archivo
         );
