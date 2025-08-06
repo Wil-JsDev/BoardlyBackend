@@ -1,14 +1,19 @@
 ﻿using System.Text;
 using Boardly.Aplicacion.DTOs.Email;
 using Boardly.Aplicacion.DTOs.JWT;
+using Boardly.Aplicacion.DTOs.Tarea;
 using Boardly.Dominio.Configuraciones;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
+using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.Cloudinary;
 using Boardly.Dominio.Puertos.Email;
 using Boardly.Infraestructura.Compartido.Adaptadores;
+using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR;
+using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -79,6 +84,18 @@ public static class InyeccionDeDependencia
                             "No estás autorizado para acceder a este contenido"));
 
                         return c.Response.WriteAsync(result);
+                    },
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // Si la solicitud es para SignalR hubs
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/tareas"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
                     }
                 };
 
@@ -95,5 +112,14 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<ITokenRefrescado<TokenRefrescadoDto>, TokenRefrescado>();
 
         #endregion
+
+        #region SignaIR
+    
+            servicios.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+            servicios.AddScoped<INotificadorTareas<TareaDto>, NotificadorTareas>();
+            servicios.AddSignalR();
+
+        #endregion
+
     }
 }

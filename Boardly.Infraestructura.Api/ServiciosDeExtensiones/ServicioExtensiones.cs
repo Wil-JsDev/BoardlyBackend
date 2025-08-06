@@ -4,6 +4,7 @@ using Boardly.Infraestructura.Api.Validaciones.Autenticaciones;
 using Boardly.Infraestructura.Api.Validaciones.Ceos;
 using Boardly.Infraestructura.Api.Validaciones.Empleados;
 using Boardly.Infraestructura.Api.Validaciones.Empresas;
+using Boardly.Infraestructura.Api.Validaciones.Proyectos;
 using Boardly.Infraestructura.Api.Validaciones.Usuarios;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -28,6 +29,9 @@ public static class ServicioExtensiones
         servicio.AddValidatorsFromAssemblyContaining<CrearEmpleadoValidacion>();
         servicio.AddValidatorsFromAssemblyContaining<ActualizarUsuarioValidacion>();
         servicio.AddValidatorsFromAssemblyContaining<ModificarContrasenaUsuarioValidacion>();
+        servicio.AddValidatorsFromAssemblyContaining<CrearProyectoValidacion>();
+        servicio.AddValidatorsFromAssemblyContaining<ActualizarProyectoValidacion>();
+        
     }
     public static void AgregarVersionado(this IServiceCollection services)
     {

@@ -1,9 +1,14 @@
-﻿using Boardly.Aplicacion.Adaptadores.Autenticacion;
+﻿using Boardly.Aplicacion.Adaptadores.Actividad;
+using Boardly.Aplicacion.Adaptadores.Autenticacion;
 using Boardly.Aplicacion.Adaptadores.Ceo;
 using Boardly.Aplicacion.Adaptadores.Codigo;
 using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.Adaptadores.Empresa;
+using Boardly.Aplicacion.Adaptadores.Proyecto;
+using Boardly.Aplicacion.Adaptadores.RolProyecto;
+using Boardly.Aplicacion.Adaptadores.Tarea;
 using Boardly.Aplicacion.Adaptadores.Usuario;
+using Boardly.Aplicacion.DTOs.Actividad;
 using Boardly.Aplicacion.DTOs.Autenticacion;
 using Boardly.Aplicacion.DTOs.Ceo;
 using Boardly.Aplicacion.DTOs.Codigo;
@@ -11,16 +16,23 @@ using Boardly.Aplicacion.DTOs.Contrasena;
 using Boardly.Aplicacion.DTOs.Empleado;
 using Boardly.Aplicacion.DTOs.Empresa;
 using Boardly.Aplicacion.DTOs.Paginacion;
+using Boardly.Aplicacion.DTOs.Proyecto;
+using Boardly.Aplicacion.DTOs.RolProyecto;
+using Boardly.Aplicacion.DTOs.Tarea;
 using Boardly.Aplicacion.DTOs.Usuario;
+using Boardly.Dominio.Puertos.CasosDeUso.Actividad;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
 using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
+using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
+using Boardly.Dominio.Puertos.CasosDeUso.RolProyecto;
+using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 using Boardly.Dominio.Puertos.CasosDeUso.Usuario;
 using Boardly.Dominio.Utilidades;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ResultadoPaginadoUsuario = Boardly.Aplicacion.Adaptadores.Usuario.ResultadoPaginadoUsuario;
 
 namespace Boardly.Aplicacion;
 
@@ -32,10 +44,11 @@ public static class InyeccionDeDependencia
         #region Usuario
 
             servicios.AddScoped<ICrearUsuario<CrearUsuarioDto, UsuarioDto>, CrearUsuario>();
-            servicios.AddScoped<IActualizarUsuario<ActualizarUsuarioDto, ActualizarUsuarioDto>, ActualizarUsuario>();
+            servicios.AddScoped<IActualizarNombreUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto>, ActualizarNombreUsuario>();
+            servicios.AddScoped<IActualizarApellidoUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto>, ActualizarApellidoUsuario>();
             servicios.AddScoped<IBorrarUsuario, BorrarUsuario>();
             servicios.AddScoped<IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto>, ModificarContrasenaUsuario>();
-            servicios.AddScoped<IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
+            servicios.AddScoped<Dominio.Puertos.CasosDeUso.Usuario.IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
             servicios.AddScoped<IOlvidarContrasenaUsuario, OlvidarContrasenaUsuario>();
             servicios.AddScoped<IResultadoPaginaUsuario<PaginacionParametro, UsuarioDto>, ResultadoPaginadoUsuario>();
             
@@ -53,7 +66,9 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IActualizarEmpresa<ActualizarEmpresaDto, ActualizarEmpresaDto>, ActualizarEmpresa>();
             servicios.AddScoped<IBorrarEmpresa, BorrarEmpresa>();
             servicios.AddScoped<ICrearEmpresa<CrearEmpresaDto, EmpresaDto>, CrearEmpresa>();
-            servicios.AddScoped<IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto>, ResultadoPaginadoEmpresa>();
+            servicios.AddScoped<IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto>, ResultadoPaginadoEmpresa>();
+            servicios.AddScoped<IObtenerIdEmpresa<EmpresaDto>, ObtenerIdEmpresa>();
+            servicios.AddScoped<IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto>, ResultadoPaginaPorEmpleadoIdEmpresa>();
             
         #endregion
 
@@ -63,7 +78,18 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IBorrarEmpleado, BorrarEmpleado>();
             servicios.AddScoped<IObtenerIdEmpleado<EmpleadoDto>, ObtenerIdEmpleado>(); 
             servicios.AddScoped<IResultadoPaginadoEmpleado<PaginacionParametro,EmpleadoDto>, ResultadoPaginadoEmpleado>(); 
-
+            servicios.AddScoped<IObtenerEmpleadoPorEmpresaId<EmpleadoResumenDto>, ObtenerEmpleadoPorEmpresaId>();
+            servicios.AddScoped<IObtenerEstadisticasEnConteoEmpleado<ConteoEmpleadoDto>, ObtenerEstadisticasEnConteoEmpleado>();
+            servicios.AddScoped<IObtenerConteoDeEmpleadosCeo<ConteoEmpleadosCeoDto>, ObtenerConteoDeEmpleadosCeo>();
+            servicios.AddScoped<IObtenerConteoDeEstadisticasCeo<CeoEstadisticaDto>, ObtenerConteoDeEstadisticasCeo>();
+            servicios.AddScoped<IResultadoPaginadoEmpleadoPorProyectoId<PaginacionParametro, EmpleadoRolProyectoDto>, ResultadoPaginadoEmpleadoPorProyectoId>();
+            servicios
+                .AddScoped<IActualizarRolEmpleado<ActualizarRolEmpleadoDto, EmpleadoResumenDto>,
+                    ActualizarRolEmpleado>();
+            servicios.AddScoped<IAgregarEmpleadoProyecto<AgregarEmpleadoProyectoDto, EmpleadoResumenDto>, AgregarEmpleadoProyecto>();
+            servicios.AddScoped<IResultadoPaginadoEmpleadoEmpresaId<PaginacionParametro, EmpleadoRolProyectoDto>, ResultadoPaginadoEmpleadoEmpresaId>();
+            servicios.AddScoped<IBorrarEmpleadoProyecto, BorrarEmpleadoProyecto>();
+            
         #endregion
         
         #region Codigo
@@ -74,6 +100,7 @@ public static class InyeccionDeDependencia
         servicios.AddScoped<IConfirmarCuenta<Resultado, CodigoConfirmarCuentaDto>, ConfirmarCuenta>();
         servicios.AddScoped<IEliminarCodigo<Resultado>, EliminarCodigo>();
         servicios.AddScoped<IBuscarCodigo<CodigoDto>, BuscarCodigo>();
+        servicios.AddScoped<IObtenerIdCeo, ObtenerIdCeo>();
         
         #endregion
 
@@ -81,6 +108,47 @@ public static class InyeccionDeDependencia
 
         servicios.AddScoped<IAutenticacion<AutenticacionRespuesta, AutenticacionSolicitud>, Autenticacion>();
 
+        #endregion
+        
+        #region Proyecto
+
+            servicios.AddScoped<ICrearProyecto<CrearProyectoDto, ProyectoDto>, CrearProyecto>();
+            servicios.AddScoped<IActualizarProyecto<ActualizarProyectoDto, ActualizarProyectoDto>, ActualizarProyecto>();
+            servicios.AddScoped<IBorrarProyecto, BorrarProyecto>();
+            servicios.AddScoped<IObtenerIdProyecto<ProyectoDto>, ObtenerIdProyecto>();
+            servicios.AddScoped<IResultadoPaginaProyecto<PaginacionParametro, ProyectoDetallesConConteoDto>, ResultadoPaginaProyecto>();
+            
+        #endregion
+
+        #region Rol Proyecto
+
+            servicios.AddScoped<ICrearRolProyecto<CrearRolProyectoDto, RolProyectoDto>, CrearRolProyecto>();
+            servicios.AddScoped<IActualizarRolProyecto<CrearRolProyectoDto, string>, ActualizarRolProyecto>();
+            servicios.AddScoped<IBorrarRolProyecto, BorrarRolProyecto>();
+            servicios.AddScoped<IObtenerIdRolProyecto<RolProyectoDto>, ObtenerIdRolProyecto>();
+            servicios.AddScoped<IResultadoPaginadoRolProyecto<PaginacionParametro, RolProyectoDto>, ResultadoPaginadoRolProyecto>();
+            
+        #endregion
+
+        #region Actividad
+
+        servicios.AddScoped<ICrearActividad<CrearActividaDto, ActividadDto>, CrearActividad>();
+        servicios.AddScoped<IObtenerIdActividad<ActividadDto>, ObtenerIdActividad>();
+        servicios.AddScoped<IBorrarActividad, BorrarActividad>();
+        servicios.AddScoped<IActualizarActividad<ActualizarActividadDto, ActividadDto>, ActualizarActividad>();
+        servicios.AddScoped<IResultadoPaginadoActividad<PaginacionParametro, ActividadDetallesDto>, ResultadoPaginadoActividad>();
+
+        #endregion
+        
+        #region Tarea
+
+            servicios.AddScoped<ICrearTarea<CrearTareaDto, TareaDto>, CrearTarea>();
+            servicios.AddScoped<IResultadoPaginadoTarea<PaginacionParametro, TareaDto>, ResultadoPaginadoTarea>();
+            servicios.AddScoped<IObtenerIdTarea<TareaDetalles>, ObtenerIdTarea>();
+            servicios.AddScoped<IBorrarTarea, BorrarTarea>();
+            servicios.AddScoped<IActualizarTarea<ActualizarTituloTareaDto, TareaDto>, ActualizarTarea>();
+            servicios.AddScoped<IActualizarEstadoTarea, ActualizarEstadoTarea>();
+        
         #endregion
     }
 }

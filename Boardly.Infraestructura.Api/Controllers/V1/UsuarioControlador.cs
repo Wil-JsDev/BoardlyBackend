@@ -20,8 +20,10 @@ public class UsuarioControlador(
     IConfirmarCuenta<Resultado, CodigoConfirmarCuentaDto> confirmarCuenta,
     IObtenerIdUsuario<UsuarioDto> obtenerUsuario,
     IOlvidarContrasenaUsuario olvidarContrasena,
-    IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto> modificarContrasena
-) : ControllerBase
+    IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto> modificarContrasena,
+    IActualizarNombreUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto> actualizarNombreUsuario,
+    IActualizarApellidoUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto> actualizarApellidoUsuario
+    ): ControllerBase
 {
 
     [HttpPost]
@@ -34,7 +36,26 @@ public class UsuarioControlador(
         return BadRequest(resultado.Error);
     }
     
-
+    [HttpPatch("{userId}/name")]
+    public async Task<IActionResult> ActualizarNombreUsuario( [FromRoute] Guid userId, [FromBody] ActualizarPropiedadUsuarioDto propiedad , CancellationToken cancellationToken)
+    {
+        var resultado = await actualizarNombreUsuario.ActualizarNombreUsuarioAsync(userId, propiedad, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
+        return NotFound(resultado.Error);
+    }
+    
+    [HttpPatch("{userId}/last-name")]
+    public async Task<IActionResult> ActualizarApellidoUsuario( [FromRoute] Guid userId, [FromBody] ActualizarPropiedadUsuarioDto propiedad , CancellationToken cancellationToken)
+    {
+        var resultado = await actualizarApellidoUsuario.ActualizarApellidoUsuarioAsync(userId, propiedad, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
+        return NotFound(resultado.Error);
+    }
+    
     [HttpPost("confirm-account")]
     public async Task<IActionResult> ConfirmarCuentaAsync(
         [FromQuery] Guid userId,
@@ -42,7 +63,6 @@ public class UsuarioControlador(
         CancellationToken cancellationToken
         )
     {
-        
         var resultado = await confirmarCuenta.ConfirmarCuentaAsync(userId,code, cancellationToken);
         if (resultado.EsExitoso)
             return Ok("Se ha confirmado su cuenta");

@@ -47,9 +47,15 @@ public static class InyeccionDeDependencia
             servicio.AddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
             servicio.AddTransient<IEmpresaRepositorio, EmpresaRepositorio>();
             servicio.AddTransient<ICodigoRepositorio, CodigoRepositorio>();
-            servicio.AddTransient<IProyectoRepositorio,ProyetoRepositorio>();
+            servicio.AddTransient<IProyectoRepositorio,ProyectoRepositorio>();
             servicio.AddTransient<ITareaRepositorio, TareaRepositorio>();
             servicio.AddScoped<IObtenerRoles, ObtenerRoles>();
+            servicio.AddScoped<IObtenerCeoId, ObtenerCeoId>();
+            servicio.AddScoped<IObtenerEmpleadoId, ObtenerEmpleadoId>();
+            servicio.AddScoped<IRolProyectoRepositorio, RolProyectoRepositorio>();
+            servicio.AddScoped<IEmpleadoProyectoRolRepositorio, EmpleadoProyectoRolRepositorio>();
+            servicio.AddScoped<IActividadRepositorio, ActividadRepositorio>();
+            servicio.AddScoped<ITareaEmpleadoRepositorio, TareaEmpleadoRepositorio>();
             
         #endregion
 

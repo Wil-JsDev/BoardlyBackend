@@ -16,6 +16,9 @@ public sealed class Proyecto
 
     public Empresa Empresa { get; set; }
     public ICollection<Tarea> Tareas { get; set; }
+    
+    public ICollection<RolProyecto> RolesProyecto { get; set; }
+    public ICollection<Actividad>? Actividades { get; set; } 
     public ICollection<EmpleadoProyectoRol> EmpleadosProyectoRol { get; set; }
 
 

@@ -1,0 +1,13 @@
+namespace Boardly.Aplicacion.DTOs.Proyecto;
+
+public sealed record ProyectoDto
+(
+    Guid? ProyectoId,
+    Guid EmpresaId,
+    string Nombre,
+    string? Descripcion,
+    DateTime FechaInicio,
+    DateTime? FechaFin,
+    string Estado,
+    DateTime FechaCreado
+);

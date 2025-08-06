@@ -54,8 +54,14 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<Guid>("ProyectoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkProyectoId");
+
                     b.HasKey("ActividadId")
                         .HasName("PKActividadId");
+
+                    b.HasIndex("ProyectoId");
 
                     b.ToTable("Actividad", (string)null);
                 });
@@ -178,12 +184,18 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("PkEmpleadoId");
 
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkEmpresaId");
+
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid")
                         .HasColumnName("FkUsuarioId");
 
                     b.HasKey("EmpleadoId")
                         .HasName("PKEmpleadoId");
+
+                    b.HasIndex("EmpresaId");
 
                     b.HasIndex("UsuarioId")
                         .IsUnique();
@@ -228,10 +240,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("EmpleadoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("FkEmpleadoId");
-
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -248,8 +256,6 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasName("PKEmpresaId");
 
                     b.HasIndex("CeoId");
-
-                    b.HasIndex("EmpleadoId");
 
                     b.ToTable("Empresa", (string)null);
                 });
@@ -348,8 +354,14 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<Guid>("ProyectoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkProyectoId");
+
                     b.HasKey("RolProyectoId")
                         .HasName("PKRolProyectoId");
+
+                    b.HasIndex("ProyectoId");
 
                     b.ToTable("RolProyecto", (string)null);
                 });
@@ -364,6 +376,9 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Property<Guid>("ActividadId")
                         .HasColumnType("uuid")
                         .HasColumnName("FkActividadId");
+
+                    b.Property<string>("Archivo")
+                        .HasColumnType("text");
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("text");
@@ -421,6 +436,23 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.HasIndex("DependeDeId");
 
                     b.ToTable("TareaDependencia", (string)null);
+                });
+
+            modelBuilder.Entity("Boardly.Dominio.Modelos.TareaEmpleado", b =>
+                {
+                    b.Property<Guid>("TareaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkTareaId");
+
+                    b.Property<Guid>("EmpleadoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("FkEmpleadoId");
+
+                    b.HasKey("TareaId", "EmpleadoId");
+
+                    b.HasIndex("EmpleadoId");
+
+                    b.ToTable("TareaEmpleado", (string)null);
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.TareaUsuario", b =>
@@ -496,6 +528,17 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.ToTable("Usuario", (string)null);
                 });
 
+            modelBuilder.Entity("Boardly.Dominio.Modelos.Actividad", b =>
+                {
+                    b.HasOne("Boardly.Dominio.Modelos.Proyecto", "Proyecto")
+                        .WithMany("Actividades")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
+                });
+
             modelBuilder.Entity("Boardly.Dominio.Modelos.ActividadDependencia", b =>
                 {
                     b.HasOne("Boardly.Dominio.Modelos.Actividad", "Actividad")
@@ -558,11 +601,19 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Empleado", b =>
                 {
+                    b.HasOne("Boardly.Dominio.Modelos.Empresa", "Empresa")
+                        .WithMany("Empleados")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Boardly.Dominio.Modelos.Usuario", "Usuario")
                         .WithOne("Empleado")
                         .HasForeignKey("Boardly.Dominio.Modelos.Empleado", "UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Empresa");
 
                     b.Navigation("Usuario");
                 });
@@ -600,15 +651,7 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .WithMany("Empresas")
                         .HasForeignKey("CeoId");
 
-                    b.HasOne("Boardly.Dominio.Modelos.Empleado", "Empleado")
-                        .WithMany()
-                        .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Ceo");
-
-                    b.Navigation("Empleado");
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Notificacion", b =>
@@ -637,6 +680,17 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                         .IsRequired();
 
                     b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("Boardly.Dominio.Modelos.RolProyecto", b =>
+                {
+                    b.HasOne("Boardly.Dominio.Modelos.Proyecto", "Proyecto")
+                        .WithMany("RolesProyecto")
+                        .HasForeignKey("ProyectoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyecto");
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Tarea", b =>
@@ -677,6 +731,25 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Navigation("Tarea");
                 });
 
+            modelBuilder.Entity("Boardly.Dominio.Modelos.TareaEmpleado", b =>
+                {
+                    b.HasOne("Boardly.Dominio.Modelos.Empleado", "Empleado")
+                        .WithMany("TareasEmpleado")
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Boardly.Dominio.Modelos.Tarea", "Tarea")
+                        .WithMany("TareasEmpleado")
+                        .HasForeignKey("TareaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empleado");
+
+                    b.Navigation("Tarea");
+                });
+
             modelBuilder.Entity("Boardly.Dominio.Modelos.TareaUsuario", b =>
                 {
                     b.HasOne("Boardly.Dominio.Modelos.Tarea", "Tarea")
@@ -713,16 +786,24 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
             modelBuilder.Entity("Boardly.Dominio.Modelos.Empleado", b =>
                 {
                     b.Navigation("EmpleadosProyectoRol");
+
+                    b.Navigation("TareasEmpleado");
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Empresa", b =>
                 {
+                    b.Navigation("Empleados");
+
                     b.Navigation("Proyectos");
                 });
 
             modelBuilder.Entity("Boardly.Dominio.Modelos.Proyecto", b =>
                 {
+                    b.Navigation("Actividades");
+
                     b.Navigation("EmpleadosProyectoRol");
+
+                    b.Navigation("RolesProyecto");
 
                     b.Navigation("Tareas");
                 });
@@ -741,6 +822,8 @@ namespace Boardly.Infraestructura.Persistencia.Migrations
                     b.Navigation("Dependientes");
 
                     b.Navigation("Notificaciones");
+
+                    b.Navigation("TareasEmpleado");
 
                     b.Navigation("TareasUsuario");
                 });

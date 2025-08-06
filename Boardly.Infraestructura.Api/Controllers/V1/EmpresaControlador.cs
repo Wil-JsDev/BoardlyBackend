@@ -13,7 +13,9 @@ public class EmpresaControlador(
     ICrearEmpresa<CrearEmpresaDto, EmpresaDto> crearEmpresa,
     IActualizarEmpresa<ActualizarEmpresaDto, ActualizarEmpresaDto> actualizarEmpresa,
     IBorrarEmpresa borrarEmpresa,
-    IResultadoPaginaEmpresa<PaginacionParametro, EmpresaDto> resultadoPaginaEmpresa
+    IResultadoPaginaEmpresa<PaginacionParametro, EmpresaProyectosDto> resultadoPaginaEmpresa,
+    IObtenerIdEmpresa<EmpresaDto> obtenerEmpresa,
+    IResultadoPaginaPorEmpleadoIdEmpresa<PaginacionParametro, EmpresaDetallesProyectosDto> empleadoIdEmpresa
     ) : ControllerBase
 {
    
@@ -48,18 +50,44 @@ public class EmpresaControlador(
         return NotFound(resultado.Error);
     }
 
-    [HttpGet("pagination")]
+    [HttpGet("{ceoId}/pagination")]
     public async Task<IActionResult> ResultadoPaginaEmpresa(
+        [FromRoute] Guid ceoId,
         [FromQuery] int numeroPagina,
         [FromQuery] int tamanoPagina,
         CancellationToken cancellationToken)
     {
         PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
-        var resultado = await resultadoPaginaEmpresa.ObtenerPaginacionEmpresaAsync(parametros, cancellationToken);
+        var resultado = await resultadoPaginaEmpresa.ObtenerPaginacionEmpresaAsync(ceoId,parametros, cancellationToken);
         if (resultado.EsExitoso)
             return Ok(resultado.Valor);
         
         return BadRequest(resultado.Error);
     }
-    
+
+    [HttpGet("{companyId}")]
+    public async Task<IActionResult> ObtenerEmpresaIdAsync([FromRoute] Guid companyId, CancellationToken cancellationToken)
+    {
+        var resultado = await obtenerEmpresa.ObtenerEmpresaIdAsync(companyId, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return NotFound(resultado.Error);
+    }
+
+    [HttpGet("employee/{employeeId}/pagination")]
+    public async Task<IActionResult> ResultadoPaginaEmpleado(
+        [FromRoute] Guid employeeId,
+        [FromQuery] int numeroPagina,
+        [FromQuery] int tamanoPagina,
+        CancellationToken cancellationToken
+    )
+    {
+        PaginacionParametro parametros = new(numeroPagina, tamanoPagina);
+        var resultado = await empleadoIdEmpresa.ObtenerPaginacionPorEmpleadoIdEmpresaAsync(employeeId, parametros , cancellationToken);
+        if(resultado.EsExitoso)
+            return Ok(resultado.Valor);
+        
+        return BadRequest(resultado.Error);
+    }
 }

@@ -1,5 +1,6 @@
 using Boardly.Dominio.Enum;
 using Boardly.Dominio.Modelos;
+using Boardly.Dominio.Utilidades;
 
 namespace Boardly.Dominio.Puertos.Repositorios;
 
@@ -8,6 +9,8 @@ namespace Boardly.Dominio.Puertos.Repositorios;
 /// </summary>
 public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
 {
+    Task<Tarea?> ObtenerConEmpleadosAsync(Guid tareaId, CancellationToken cancellationToken);
+
     /// <summary>
     /// Verifica si existe una tarea con el mismo nombre en un proyecto determinado.
     /// </summary>
@@ -107,4 +110,32 @@ public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
     /// Lista de tareas en las que el usuario está asignado.
     /// </returns>
     Task<List<Tarea>> ObtenerTareasPorUsuarioIdAsync(Guid usuarioId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Obtiene una lista paginada de tareas asociadas a una actividad específica.
+    /// </summary>
+    /// <param name="actividadId">ID de la actividad.</param>
+    /// <param name="numeroPagina">Número de la página a recuperar.</param>
+    /// <param name="tamanioPagina">Cantidad de elementos por página.</param>
+    /// <param name="cancellationToken">Token para cancelar la operación asincrónica.</param>
+    /// <returns>Resultado paginado de tareas.</returns>
+    Task<ResultadoPaginado<Tarea>> ObtenerPaginadoTareaAsync(Guid actividadId, int numeroPagina, int tamanioPagina, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Obtiene la cantidad de tareas agrupadas por estado dentro de un proyecto.
+    /// </summary>
+    /// <param name="proyectoId">ID del proyecto.</param>
+    /// <param name="cancellationToken">Token para cancelar la operación asincrónica.</param>
+    /// <returns>Número total de tareas agrupadas por estado.</returns>
+    Task<int> ObtenerNumeroDeEstadoDeTareaPorProyectoId(Guid proyectoId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Obtiene el número total de tareas asociadas a un proyecto.
+    /// </summary>
+    /// <param name="proyectoId">ID del proyecto.</param>
+    /// <param name="cancellationToken">Token para cancelar la operación asincrónica.</param>
+    /// <returns>Número total de tareas del proyecto.</returns>
+    Task<int> ObtenerNumeroTareasPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken);
+
+    Task<Tarea?> ObtenerDetallesPorTareaIdAsync(Guid tareaId, CancellationToken cancellationToken);
 }
