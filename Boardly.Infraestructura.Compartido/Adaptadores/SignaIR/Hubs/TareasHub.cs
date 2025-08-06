@@ -49,15 +49,17 @@ public class TareasHub(
     }
 
     public async Task MarcarEnPendiente(Guid tareaId, bool enRevision)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.Pendiente, enRevision, CancellationToken.None);
+
     public async Task MarcarEnProceso(Guid tareaId, bool enRevision)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso, enRevision, CancellationToken.None);
 
     public async Task MarcarEnRevision(Guid tareaId, bool enRevision)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnRevision, enRevision, CancellationToken.None);
 
     public async Task MarcarFinalizada(Guid tareaId, bool enRevision)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.Finalizada, enRevision, CancellationToken.None);
+
 
     #region Metodos Privados
 

@@ -53,10 +53,13 @@ public class ActualizarEstadoTarea(
             tarea.FechaCreado,
             tarea.ActividadId,
             UsuarioFotoPerfil: tarea.TareasEmpleado
-                .Select(te => new UsuarioFotoPerfilDto(
-                    UsuarioId: te.Empleado!.UsuarioId,
-                    FotoPerfil: te.Empleado!.Usuario.FotoPerfil
-                ))
+                .Select(te => te.Empleado?.Usuario == null 
+                    ? null 
+                    : new UsuarioFotoPerfilDto(
+                        te.Empleado.UsuarioId,
+                        te.Empleado.Usuario.FotoPerfil ?? string.Empty
+                    ))
+                .Where(dto => dto != null)
                 .ToList(),
             tarea.Archivo,
             tarea.EnRevision
