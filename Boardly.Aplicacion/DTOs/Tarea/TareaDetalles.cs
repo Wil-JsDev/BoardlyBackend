@@ -11,6 +11,7 @@ public record TareaDetalles
     DateTime FechaVencimiento,
     DateTime FechaInicio,
     ComentarioDto ComentarioDto,
-    List<EmpleadoTareaDto> EmpleadoTareaDto
+    List<EmpleadoTareaDto> EmpleadoTareaDto,
+    bool EnRevision
 );
 public record EmpleadoTareaDto(Guid EmpleadoId,string NombreCompleto, string Rol, string fotoPerfil);

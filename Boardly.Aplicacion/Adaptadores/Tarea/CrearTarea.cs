@@ -129,7 +129,8 @@ public class CrearTarea(
             FechaCreado: tareaEntidad.FechaCreado,
             ActividadId: solicitud.ActividadId,
             UsuarioFotoPerfil: listaUsuariosFotoPerfil,
-            Archivo: tareaEntidad.Archivo
+            Archivo: tareaEntidad.Archivo,
+            EnRevision: tareaEntidad.EnRevision
         );
 
         

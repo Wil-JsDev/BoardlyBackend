@@ -15,7 +15,7 @@ public class ActualizarEstadoTarea(
     INotificadorTareas<TareaDto> notificador
     ) : IActualizarEstadoTarea
 {
-    public async Task<Resultado> CambiarEstadoAsync(Guid tareaId, EstadoTarea nuevoEstado, CancellationToken cancellationToken)
+    public async Task<Resultado> CambiarEstadoAsync(Guid tareaId, EstadoTarea nuevoEstado, bool enRevision ,CancellationToken cancellationToken)
     {
         var tarea = await tareaRepositorio.ObtenerConEmpleadosAsync(tareaId, cancellationToken);
         if (tarea is null)
@@ -58,7 +58,8 @@ public class ActualizarEstadoTarea(
                     FotoPerfil: te.Empleado!.Usuario.FotoPerfil
                 ))
                 .ToList(),
-            tarea.Archivo
+            tarea.Archivo,
+            tarea.EnRevision
         );
         
         var empleadoId = tarea.TareasEmpleado!.FirstOrDefault()?.EmpleadoId ?? Guid.Empty;;

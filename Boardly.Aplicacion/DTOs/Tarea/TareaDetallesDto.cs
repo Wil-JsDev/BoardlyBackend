@@ -14,5 +14,6 @@ public sealed record TareaDetallesDto
     DateTime? FechaActualizacion,
     DateTime FechaCreado,
     Guid ActividadId,
-    UsuarioFotoPerfilDto UsuarioFotoPerfil
+    UsuarioFotoPerfilDto UsuarioFotoPerfil,
+    bool EnRevision
 );

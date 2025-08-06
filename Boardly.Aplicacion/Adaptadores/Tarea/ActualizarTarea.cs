@@ -69,7 +69,8 @@ public class ActualizarTarea(
                     UsuarioId: te.Empleado?.UsuarioId,
                     FotoPerfil: te.Empleado?.Usuario.FotoPerfil
                 )).ToList(),
-        tarea.Archivo
+        tarea.Archivo,
+        tarea.EnRevision 
         );
 
         await notificadorTareas.NotificarTareaActualizada(solicitud.UsuarioId, tareaDto);

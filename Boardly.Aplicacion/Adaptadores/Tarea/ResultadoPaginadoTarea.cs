@@ -69,7 +69,8 @@ public class ResultadoPaginadoTarea(
                 UsuarioFotoPerfil: x.TareasEmpleado.Select(te => new UsuarioFotoPerfilDto(
                     UsuarioId: te.Empleado!.UsuarioId,
                     FotoPerfil: te.Empleado!.Usuario.FotoPerfil)).ToList(),
-            Archivo: x.Archivo)).ToList();
+            Archivo: x.Archivo,
+                EnRevision: x.EnRevision)).ToList();
         
             var totalElementos = resultadoPaginaDto.Count;
         
@@ -84,10 +85,14 @@ public class ResultadoPaginadoTarea(
                 tamanioPagina: solicitud.TamanoPagina
             );
    
+            // logger.LogInformation("Datos: " + resultadoPaginado.Elementos!.First().EnRevision);
+            
+            // Console.WriteLine(resultadoPaginaDto.First().EnRevision);
             
             logger.LogInformation("Paginación de tareas para actividad {ActividadId}: Página {Pagina}, Tamaño {Tamano}. Tareas obtenidas: {Cantidad}",
                 actividadId, solicitud.NumeroPagina, solicitud.TamanoPagina, resultadoPaginado.Elementos!.Count());
-
+            
+            
             return ResultadoT<ResultadoPaginado<TareaDto>>.Exito(resultadoPaginado);
        }
 }
