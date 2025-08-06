@@ -51,6 +51,7 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<Dominio.Puertos.CasosDeUso.Usuario.IObtenerIdUsuario<UsuarioDto>, ObtenerIdUsuario>();
             servicios.AddScoped<IOlvidarContrasenaUsuario, OlvidarContrasenaUsuario>();
             servicios.AddScoped<IResultadoPaginaUsuario<PaginacionParametro, UsuarioDto>, ResultadoPaginadoUsuario>();
+            servicios.AddScoped<IRestablecerContrasena<RestablecerContrasenaDto>, RestablecerContrasena>();
             
         #endregion
         
