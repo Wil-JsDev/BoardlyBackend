@@ -22,7 +22,8 @@ public class UsuarioControlador(
     IOlvidarContrasenaUsuario olvidarContrasena,
     IModificarContrasenaUsuario<ModificarContrasenaUsuarioDto> modificarContrasena,
     IActualizarNombreUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto> actualizarNombreUsuario,
-    IActualizarApellidoUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto> actualizarApellidoUsuario
+    IActualizarApellidoUsuario<ActualizarPropiedadUsuarioDto,ActualizarUsuarioDto> actualizarApellidoUsuario,
+    IRestablecerContrasena<RestablecerContrasenaDto> restablecerContrasena
     ): ControllerBase
 {
 
@@ -106,5 +107,21 @@ public class UsuarioControlador(
             
         return BadRequest(resultado.Error);
     }
-    
+
+    [HttpPut("{userId}/reset-password")]
+    public async Task<IActionResult> RestablecerContrasenaAsync([FromRoute] Guid userId,
+        [FromBody] ParametroDeContrasena parametro,
+        CancellationToken cancellationToken)
+    {
+        RestablecerContrasenaDto contrasena = new(userId,
+            parametro.ContrasenaAntigua,
+            parametro.NuevaContrasena,
+            parametro.ConfirmacionDeContrsena);
+
+        var resultado = await restablecerContrasena.RestablecerContrasenaAsync(contrasena, cancellationToken);
+        if (resultado.EsExitoso)
+            return Ok(resultado.Valor);
+            
+        return BadRequest(resultado.Error);
+    }
 }

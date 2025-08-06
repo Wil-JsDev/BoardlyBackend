@@ -31,6 +31,7 @@ public static class ServicioExtensiones
         servicio.AddValidatorsFromAssemblyContaining<ModificarContrasenaUsuarioValidacion>();
         servicio.AddValidatorsFromAssemblyContaining<CrearProyectoValidacion>();
         servicio.AddValidatorsFromAssemblyContaining<ActualizarProyectoValidacion>();
+        servicio.AddValidatorsFromAssemblyContaining<ValidacionRestablecerContrasena>();
         
     }
     public static void AgregarVersionado(this IServiceCollection services)
