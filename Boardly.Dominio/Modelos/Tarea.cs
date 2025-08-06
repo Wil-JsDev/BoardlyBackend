@@ -17,6 +17,7 @@ public sealed class Tarea
     public DateTime? FechaCompletada { get; set; }
     public Guid ActividadId { get; set; }
 
+    public bool EnRevision { get; set; } = false;
     public Proyecto Proyecto { get; set; }
     public Actividad Actividad { get; set; }
     public ICollection<TareaUsuario> TareasUsuario { get; set; }

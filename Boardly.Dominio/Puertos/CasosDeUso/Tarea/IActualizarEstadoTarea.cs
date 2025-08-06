@@ -5,5 +5,5 @@ namespace Boardly.Dominio.Puertos.CasosDeUso.Tarea;
 
 public interface IActualizarEstadoTarea
 {
-    Task<Resultado> CambiarEstadoAsync(Guid tareaId, EstadoTarea nuevoEstado, CancellationToken cancellationToken);
+    Task<Resultado> CambiarEstadoAsync(Guid tareaId, EstadoTarea nuevoEstado, bool enRevision ,CancellationToken cancellationToken);
 }

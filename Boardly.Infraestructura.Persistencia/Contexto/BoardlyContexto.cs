@@ -625,6 +625,9 @@ public class BoardlyContexto: DbContext
                 entity.Property(e => e.FechaCompletada);
 
                 entity.Property(e => e.ActividadId);
+
+                entity.Property(t => t.EnRevision)
+                    .HasDefaultValue(false);
             });
 
             #endregion

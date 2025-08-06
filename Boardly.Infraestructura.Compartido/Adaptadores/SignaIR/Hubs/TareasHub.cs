@@ -48,18 +48,16 @@ public class TareasHub(
         return base.OnDisconnectedAsync(exception);
     }
 
-    public async Task MarcarEnPendiente(Guid tareaId)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.Pendiente, CancellationToken.None);
-    public async Task MarcarEnProceso(Guid tareaId)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso, CancellationToken.None);
+    public async Task MarcarEnPendiente(Guid tareaId, bool enRevision)
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
+    public async Task MarcarEnProceso(Guid tareaId, bool enRevision)
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
 
-    public async Task MarcarEnRevision(Guid tareaId)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnRevision,
-            CancellationToken.None);
+    public async Task MarcarEnRevision(Guid tareaId, bool enRevision)
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
 
-    public async Task MarcarFinalizada(Guid tareaId)
-        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.Finalizada, CancellationToken.None);
-
+    public async Task MarcarFinalizada(Guid tareaId, bool enRevision)
+        => await actualizarEstadoTarea.CambiarEstadoAsync(tareaId, EstadoTarea.EnProceso,enRevision ,CancellationToken.None);
 
     #region Metodos Privados
 

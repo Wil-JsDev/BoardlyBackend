@@ -16,6 +16,7 @@ public record TareaDto
     DateTime FechaCreado,
     Guid ActividadId,
     List<UsuarioFotoPerfilDto> UsuarioFotoPerfil,
-    string Archivo
+    string Archivo,
+    bool EnRevision
 
 );

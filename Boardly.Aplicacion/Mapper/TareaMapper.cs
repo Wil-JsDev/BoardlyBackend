@@ -41,7 +41,8 @@ public static class TareaMapper
             tarea.FechaVencimiento,
             tarea.FechaInicio,
             comentarioDto,
-            empleadosDto
+            empleadosDto,
+            EnRevision: tarea.EnRevision
         );
     }
 
