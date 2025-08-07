@@ -4,5 +4,5 @@ namespace Boardly.Dominio.Puertos.CasosDeUso.PDF;
 
 public interface IGenerarReporte<TSolicitud>
 {
-    Task<ResultadoT<byte[]>> GenerarReporteProyectosFinalizadosAsync(TSolicitud solicitud, CancellationToken cancellationToken);
+    Task<ResultadoT<byte[]>> GenerarReporteAsync(TSolicitud solicitud, CancellationToken cancellationToken);
 }

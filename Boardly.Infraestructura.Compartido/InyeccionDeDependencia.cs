@@ -111,7 +111,9 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<ICloudinaryServicio, CloudinaryServicio>();
             servicios.AddScoped<IGenerarToken<Usuario>, GenerarToken>();
             servicios.AddScoped<ITokenRefrescado<TokenRefrescadoDto>, TokenRefrescado>();
-            servicios.AddScoped<IGeneradorPdf<ProyectoDatosPdf>, GeneradorPdf>();
+            servicios.AddScoped<IGeneradorPdf<List<ProyectoDatosPdf>>, GeneradorPdf>();
+            servicios.AddScoped<IGeneradorPdf<IList<TareasNoFinalizadasPdf>>, GenerarReporteDeTareasNoRealizadas>();
+            // servicios.AddScoped(typeof(IGeneradorPdf<>), typeof(GeneradorPdf<>));
 
         #endregion
 

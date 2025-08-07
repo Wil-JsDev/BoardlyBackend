@@ -9,20 +9,22 @@ namespace Boardly.Aplicacion.Adaptadores.PDF;
 
 public class GenerarReporte(
     IProyectoRepositorio repositorioProyecto,
-    IGeneradorPdf<ProyectoDatosPdf> generadorPdf,
+    IGeneradorPdf<List<ProyectoDatosPdf>> generadorPdf,
     ILogger<GenerarReporte> logger
     ) : IGenerarReporte<ProyectoPaginacionParametroDto>
 {
-    public async Task<ResultadoT<byte[]>> GenerarReporteProyectosFinalizadosAsync(ProyectoPaginacionParametroDto solicitud, CancellationToken cancellationToken)
+    public async Task<ResultadoT<byte[]>> GenerarReporteAsync(ProyectoPaginacionParametroDto solicitud, CancellationToken cancellationToken)
     {
         var proyectosFinalizados = await repositorioProyecto.ProyectosFinalizados(solicitud.EmpresaId ?? Guid.Empty,
             solicitud.NumeroPagina, solicitud.TamanoPagina, cancellationToken);
 
         if (!proyectosFinalizados.Elementos!.Any())
         {
-            logger.LogInformation("");
-            
-            return ResultadoT<byte[]>.Fallo(Error.Fallo("400", ""));
+            logger.LogInformation("No se encontraron proyectos finalizados con los parámetros proporcionados.");
+    
+            return ResultadoT<byte[]>.Fallo(
+                Error.Fallo("400", "No hay proyectos finalizados que coincidan con los criterios de búsqueda.")
+            );
         }
         
         var proyectosDto = proyectosFinalizados.Elementos!.Select(proyecto => new ProyectoDtoPdf(
@@ -32,10 +34,14 @@ public class GenerarReporte(
             FechaFin: proyecto.FechaFin
         )).ToList();
 
-        var datosReporte = new ProyectoDatosPdf(
-            Fecha: DateTime.UtcNow,
-            ProyectoDto: proyectosDto
-        );
+        // Convertimos en lista porque el generador espera List<ProyectoDatosPdf>
+        var datosReporte = new List<ProyectoDatosPdf>
+        {
+            new ProyectoDatosPdf(
+                Fecha: DateTime.UtcNow,
+                ProyectoDto: proyectosDto
+            )
+        };
 
         var pdfBytes = await generadorPdf.GenerarReporteAsync(datosReporte);
 

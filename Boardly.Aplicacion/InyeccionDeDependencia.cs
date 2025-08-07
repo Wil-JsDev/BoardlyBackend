@@ -157,8 +157,9 @@ public static class InyeccionDeDependencia
         #region PDF
 
             servicios.AddScoped<IGenerarReporte<ProyectoPaginacionParametroDto>, GenerarReporte>();
+            servicios.AddScoped<IGenerarReporte<ParametroPaginacionTareaDto>, ReporteDeTareasNoRealizadas>();
 
-        #endregion
+            #endregion
 
     }
 }

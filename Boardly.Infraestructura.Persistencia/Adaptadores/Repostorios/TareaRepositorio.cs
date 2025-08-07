@@ -182,6 +182,35 @@ public class TareaRepositorio(BoardlyContexto boardlyContexto) : GenericoReposit
             .Include(t => t.TareasEmpleado)  // Esto carga la relación con empleados
             .FirstOrDefaultAsync(t => t.TareaId == tareaId, cancellationToken);
     }
+
+    public async Task<ResultadoPaginado<Tarea>> ObtenerTareasNoTerminadasEnPlazoDeTiempoAsync(
+        Guid proyectoId,
+        int numeroPagina,
+        int tamanoPagina,
+        CancellationToken cancellationToken
+    )
+    {
+        var fechaFinProyecto = await _boardlyContexto.Set<Proyecto>()
+            .Where(p => p.ProyectoId == proyectoId)
+            .Select(p => p.FechaFin)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var consulta = _boardlyContexto.Set<Tarea>()
+            .AsNoTracking()
+            .Where(t => t.ProyectoId == proyectoId)
+            .Where(t => t.Estado != EstadoTarea.Finalizada.ToString())
+            .Where(t => t.FechaVencimiento <= fechaFinProyecto);
+
+        var total = await consulta.CountAsync(cancellationToken);
+
+        var tareas = await consulta
+            .Skip((numeroPagina - 1) * tamanoPagina)
+            .Take(tamanoPagina)
+            .ToListAsync(cancellationToken);
+
+        return new ResultadoPaginado<Tarea>(tareas, total, numeroPagina, tamanoPagina);
+    }
+
     
     #region Metodos privados
         private async Task<bool> BuscarCicloAsync(
