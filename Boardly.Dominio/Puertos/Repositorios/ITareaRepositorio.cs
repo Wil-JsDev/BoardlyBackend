@@ -138,4 +138,10 @@ public interface ITareaRepositorio : IGenericoRepositorio<Tarea>
     Task<int> ObtenerNumeroTareasPorProyectoIdAsync(Guid proyectoId, CancellationToken cancellationToken);
 
     Task<Tarea?> ObtenerDetallesPorTareaIdAsync(Guid tareaId, CancellationToken cancellationToken);
+
+    Task<ResultadoPaginado<Tarea>> ObtenerTareasNoTerminadasEnPlazoDeTiempoAsync(Guid proyectoId,
+        int numeroPagina,
+        int tamanoPagina,
+        CancellationToken cancellationToken
+    );
 }

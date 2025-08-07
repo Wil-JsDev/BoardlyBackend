@@ -1,14 +1,17 @@
 ﻿using System.Text;
 using Boardly.Aplicacion.DTOs.Email;
 using Boardly.Aplicacion.DTOs.JWT;
+using Boardly.Aplicacion.DTOs.PDF;
 using Boardly.Aplicacion.DTOs.Tarea;
 using Boardly.Dominio.Configuraciones;
 using Boardly.Dominio.Modelos;
 using Boardly.Dominio.Puertos.CasosDeUso.Autenticacion;
+using Boardly.Dominio.Puertos.CasosDeUso.PDF;
 using Boardly.Dominio.Puertos.CasosDeUso.SignaIR;
 using Boardly.Dominio.Puertos.Cloudinary;
 using Boardly.Dominio.Puertos.Email;
 using Boardly.Infraestructura.Compartido.Adaptadores;
+using Boardly.Infraestructura.Compartido.Adaptadores.PDF;
 using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR;
 using Boardly.Infraestructura.Compartido.Adaptadores.SignaIR.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,8 +28,6 @@ public static class InyeccionDeDependencia
 {
     public static void AgregarCompartido(this IServiceCollection servicios, IConfiguration configuracion)
     {
-
-        
         #region Configuraciones
         
             servicios.Configure<CorreoConfiguraciones>(configuracion.GetSection("CorreoConfiguraciones"));
@@ -110,6 +111,9 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<ICloudinaryServicio, CloudinaryServicio>();
             servicios.AddScoped<IGenerarToken<Usuario>, GenerarToken>();
             servicios.AddScoped<ITokenRefrescado<TokenRefrescadoDto>, TokenRefrescado>();
+            servicios.AddScoped<IGeneradorPdf<List<ProyectoDatosPdf>>, GeneradorPdf>();
+            servicios.AddScoped<IGeneradorPdf<IList<TareasNoFinalizadasPdf>>, GenerarReporteDeTareasNoRealizadas>();
+            // servicios.AddScoped(typeof(IGeneradorPdf<>), typeof(GeneradorPdf<>));
 
         #endregion
 

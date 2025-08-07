@@ -4,6 +4,7 @@ using Boardly.Aplicacion.Adaptadores.Ceo;
 using Boardly.Aplicacion.Adaptadores.Codigo;
 using Boardly.Aplicacion.Adaptadores.Empleados;
 using Boardly.Aplicacion.Adaptadores.Empresa;
+using Boardly.Aplicacion.Adaptadores.PDF;
 using Boardly.Aplicacion.Adaptadores.Proyecto;
 using Boardly.Aplicacion.Adaptadores.RolProyecto;
 using Boardly.Aplicacion.Adaptadores.Tarea;
@@ -26,6 +27,7 @@ using Boardly.Dominio.Puertos.CasosDeUso.Ceo;
 using Boardly.Dominio.Puertos.CasosDeUso.Codigo;
 using Boardly.Dominio.Puertos.CasosDeUso.Empleado;
 using Boardly.Dominio.Puertos.CasosDeUso.Empresa;
+using Boardly.Dominio.Puertos.CasosDeUso.PDF;
 using Boardly.Dominio.Puertos.CasosDeUso.Proyecto;
 using Boardly.Dominio.Puertos.CasosDeUso.RolProyecto;
 using Boardly.Dominio.Puertos.CasosDeUso.Tarea;
@@ -151,5 +153,13 @@ public static class InyeccionDeDependencia
             servicios.AddScoped<IActualizarEstadoTarea, ActualizarEstadoTarea>();
         
         #endregion
+
+        #region PDF
+
+            servicios.AddScoped<IGenerarReporte<ProyectoPaginacionParametroDto>, GenerarReporte>();
+            servicios.AddScoped<IGenerarReporte<ParametroPaginacionTareaDto>, ReporteDeTareasNoRealizadas>();
+
+            #endregion
+
     }
 }
