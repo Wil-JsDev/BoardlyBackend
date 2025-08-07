@@ -23,4 +23,9 @@ public interface IProyectoRepositorio : IGenericoRepositorio<Proyecto>
     Task<int> ObtenerConteoDeTareasProyectosAsync(Guid proyectoId, CancellationToken cancellationToken);
 
     Task<int> ObtenerConteoDeActividadesProyectosAsync(Guid proyectoId, CancellationToken cancellationToken);
+
+    Task<ResultadoPaginado<Proyecto>> ProyectosFinalizados(Guid empresaId,
+        int numeroPagina,
+        int tamanoPagina,
+        CancellationToken cancellationToken);
 }

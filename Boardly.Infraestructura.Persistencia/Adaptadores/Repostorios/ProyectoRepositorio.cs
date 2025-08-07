@@ -10,6 +10,27 @@ namespace Boardly.Infraestructura.Persistencia.Adaptadores.Repostorios;
 public class ProyectoRepositorio(BoardlyContexto boardlyContexto) : GenericoRepositorio<Proyecto>(boardlyContexto), IProyectoRepositorio
 {
 
+    public async Task<ResultadoPaginado<Proyecto>> ProyectosFinalizados(Guid empresaId,
+        int numeroPagina,
+        int tamanoPagina,
+        CancellationToken cancellationToken)
+    {
+        var consulta = _boardlyContexto.Set<Proyecto>()
+            .Where(p => p.EmpresaId == empresaId)
+            .Where(p => p.Estado == EstadoProyecto.Finalizado.ToString())
+            .OrderByDescending(p => p.FechaCreado) 
+            .AsNoTracking();
+        
+        var total = await consulta.CountAsync(cancellationToken);
+        
+        var proyecto = await consulta
+            .Skip((numeroPagina - 1) * tamanoPagina)
+            .Take(tamanoPagina)
+            .ToListAsync(cancellationToken);
+
+        return new ResultadoPaginado<Proyecto>(proyecto, total, numeroPagina, tamanoPagina);
+    }
+    
     public async Task<ResultadoPaginado<Proyecto>> ObtenerPaginasProyectoAsync(Guid empresaId, int numeroPagina, int tamanoPagina,
         CancellationToken cancellationToken)
     {
